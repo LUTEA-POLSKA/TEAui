@@ -13,41 +13,52 @@
  * a consumer's stack trace.
  */
 import { access, readFile } from "node:fs/promises";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
 
-void fileURLToPath;
-// Editors and PowerShell's own `Set-Content` add a byte order mark. JSON.parse
-// rejects it, and a guard that dies with a stack trace instead of its message is
-// a guard nobody reads. Escaped rather than written literally, so the file itself
-// carries no invisible character.
-const manifest = JSON.parse((await readFile(process.argv[2], "utf8")).replace(/^\\uFEFF/, ""));
-const directory = dirname(resolve(process.argv[2]));
+/**
+ * Which manifest to check.
+ *
+ * npm runs `prepublishOnly` with the package directory as the working directory
+ * and passes no arguments, so that is the default — an earlier version read
+ * `argv[2]` unconditionally and died with a TypeError the first time npm invoked
+ * it. An explicit path still works, which is what makes this checkable from the
+ * outside: a guard you can only run through the thing it guards is a guard
+ * nobody runs until it is too late.
+ */
+const target = process.argv[2] ?? resolve(process.cwd(), "package.json");
+
+// Editors and PowerShell's own `Set-Content` add a byte order mark, which
+// JSON.parse rejects. Escaped, not written literally, so this file carries no
+// invisible character of its own.
+const manifest = JSON.parse((await readFile(target, "utf8")).replace(/^\uFEFF/, ""));
+const directory = dirname(resolve(target));
 
 /** The entry points `exports` promises. Each one is a promise, and a promise kept is not kept. */
 const promised = [];
 for (const entry of Object.values(manifest.exports ?? {})) {
   if (typeof entry === "string") promised.push(entry);
-  else for (const target of Object.values(entry)) promised.push(target);
+  else for (const value of Object.values(entry)) promised.push(value);
 }
 
 const missing = [];
-for (const target of promised) {
-  if (target === "./package.json") continue;
+for (const promise of promised) {
+  if (promise === "./package.json") continue;
   try {
-    await access(resolve(directory, target));
+    await access(resolve(directory, promise));
   } catch {
-    missing.push(target);
+    missing.push(promise);
   }
 }
 
 if (missing.length > 0) {
   console.error(
-    `\n[tea-ui] ${manifest.name} is missing ${missing.length} file(s) its exports map promises:\n` +
-      missing.map((target) => `  ${target}`).join("\n") +
+    `\n[tea-ui] ${manifest.name} is missing ${[...new Set(missing)].length} file(s) its exports map promises:\n` +
+      [...new Set(missing)].map((promise) => `  ${promise}`).join("\n") +
       `\n\nRun \`npm run build:packages\` from the repository root, then publish again.`,
   );
   process.exit(1);
 }
 
-console.log(`[tea-ui] ${manifest.name} ${manifest.version} is ready to publish (${promised.length} entry points present).`);
+console.log(
+  `[tea-ui] ${manifest.name} ${manifest.version} is ready to publish (${promised.length} entry points present).`,
+);
