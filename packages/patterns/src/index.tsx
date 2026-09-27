@@ -1,5 +1,3 @@
-import * as React from "react";
-
 /**
  * TEA UI Patterns — scope registry.
  *
@@ -118,5 +116,3 @@ export function patternMeta(id: string): PatternMeta | undefined {
  * actually knows — and so a new pattern is a type change, not a silent string.
  */
 export type PatternId = (typeof PATTERNS)[number]["id"];
-
-export type { React };
