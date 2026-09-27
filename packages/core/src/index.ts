@@ -1,5 +1,5 @@
-/**
- * TEA UI — Core.
+﻿/**
+ * TEA UI â€” Core.
  *
  * The product-agnostic layer. Nothing here knows what a server, a backup or a
  * user is, and nothing here calls an API. If a component needs to know, it
@@ -64,6 +64,20 @@ export {
   type TextProps,
 } from "./typography";
 
+/* -- the surface ------------------------------------------------------------- */
+export {
+  Card,
+  CardBody,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Panel,
+  type CardProps,
+  type CardTitleProps,
+  type PanelProps,
+} from "./card";
+
 /* -- inputs ---------------------------------------------------------------- */
 export * from "./inputs";
 
@@ -115,6 +129,9 @@ export {
   type StepperProps,
   type TabsProps,
 } from "./navigation";
+
+/* -- the shared attribute vocabulary --------------------------------------- */
+export { dataSlot, stateAttributes, type StateAttributes } from "./internal";
 
 /* -- formatting ------------------------------------------------------------ */
 export {

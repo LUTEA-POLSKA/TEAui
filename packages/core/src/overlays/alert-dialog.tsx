@@ -94,11 +94,11 @@ export function ConfirmDialog({
   const [typed, setTyped] = React.useState("");
   const [busy, setBusy] = React.useState(false);
 
-  // The typed word is a gate on the destructive action, never a stored value:
-  // reopening the dialog must not inherit a previous confirmation.
-  React.useEffect(() => {
-    if (!open) setTyped("");
-  }, [open]);
+  // The typed word is a gate on the destructive action, never a stored value.
+  // It is cleared during render rather than in an effect, so reopening the
+  // dialog never inherits a previous confirmation — and never renders one frame
+  // with the old word still in the field.
+  if (!open && typed !== "") setTyped("");
 
   const needsWord = level === "irreversible" && Boolean(confirmWord);
   const canConfirm = !needsWord || typed.trim() === confirmWord;

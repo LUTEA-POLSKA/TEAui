@@ -24,12 +24,11 @@
     "access": "restricted"
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/sync-styles.mjs"
+    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs public && node ../../scripts/sync-styles.mjs"
   },
   "dependencies": {
     "@tea-ui/core": "*",
     "@tea-ui/icons": "*",
-    "@tea-ui/tokens": "*",
     "@tea-ui/ux-standards": "*",
     "@tea-ui/utils": "*",
     "radix-ui": "^1.4.3"

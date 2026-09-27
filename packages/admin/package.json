@@ -24,7 +24,7 @@
     "access": "restricted"
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/sync-styles.mjs"
+    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs admin && node ../../scripts/sync-styles.mjs"
   },
   "dependencies": {
     "@tea-ui/core": "*",

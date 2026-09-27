@@ -224,7 +224,7 @@ export const ToastClose = React.forwardRef<HTMLButtonElement, React.ComponentPro
   },
 );
 
-export interface ToasterProps extends React.ComponentProps<typeof ToastPrimitive.Viewport> {}
+export type ToasterProps = React.ComponentProps<typeof ToastPrimitive.Viewport>;
 
 /**
  * The live region. Mount this ONCE, near the root of the application, and

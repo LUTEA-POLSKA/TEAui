@@ -121,22 +121,23 @@ export function toErrorAnatomy(cause: unknown, fallback: Partial<ErrorAnatomy> =
 }
 
 /**
- * Environment check that does not assume a bundler. This package is imported by
- * browser bundles, by Node scripts and by tests, so `import.meta.env` is not
- * available everywhere it runs.
+ * Environment check that does not assume a bundler.
+ *
+ * This package is imported by browser bundles, by Node scripts and by tests, so
+ * neither `process` nor `import.meta.env` is available everywhere it runs — which
+ * is why both are behind a guard and why nothing here declares a Node type
+ * dependency. A package that cannot say where it runs cannot be used everywhere.
  */
 function isDevelopment(): boolean {
   try {
-    const meta = import.meta as ImportMeta & { env?: Record<string, string | undefined> };
-    if (typeof meta.env?.DEV === "boolean") return meta.env.DEV;
+    const meta = import.meta as ImportMeta & { env?: Record<string, unknown> };
+    const dev = meta.env?.DEV ?? meta.env?.MODE;
+    if (typeof dev === "boolean") return dev;
+    if (typeof dev === "string") return dev === "development";
   } catch {
     /* not a bundler context */
   }
-  try {
-    return typeof process !== "undefined" && process.env?.NODE_ENV === "development";
-  } catch {
-    return false;
-  }
+  return false;
 }
 
 function isErrorAnatomy(value: unknown): value is ErrorAnatomy {

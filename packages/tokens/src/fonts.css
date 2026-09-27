@@ -1,0 +1,25 @@
+/* ============================================================================
+ * TEA UI — the typefaces
+ * ----------------------------------------------------------------------------
+ * The three families of the design language, self-hosted and loaded through
+ * `@fontsource`, which is the only way they get subsetting and sane defaults.
+ *
+ * They live here rather than in each application because typography is a
+ * *token*. Both source projects loaded three families through a render-blocking
+ * CSS `@import` in their global stylesheet, on every route, including the public
+ * marketing pages that never render a monospace character — and one of them
+ * shipped a fourth family that was never referenced at all.
+ *
+ * Import once, at the root:
+ *
+ *   import "@tea-ui/tokens/fonts.css";
+ *   import "@tea-ui/tokens/styles.css";
+ *
+ * A product that only needs the sans face can skip the others by importing
+ * `@fontsource-variable/jost` directly; the names are the token names, so that
+ * is not a fork, just a smaller subset.
+ * ========================================================================== */
+
+@import "@fontsource-variable/jost";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource/lilita-one";

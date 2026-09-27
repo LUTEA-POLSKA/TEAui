@@ -142,7 +142,7 @@ const InputGroupAddon = React.forwardRef<HTMLSpanElement, InputGroupAddonProps>(
   );
 });
 
-export interface InputGroupStartProps extends React.ComponentProps<"span"> {}
+export type InputGroupStartProps = React.ComponentProps<"span">;
 
 /**
  * An addon at the start edge â€” a decorative icon, a static prefix, a unit.
@@ -157,7 +157,7 @@ export const InputGroupStart = React.forwardRef<HTMLSpanElement, InputGroupStart
   },
 );
 
-export interface InputGroupEndProps extends React.ComponentProps<"span"> {}
+export type InputGroupEndProps = React.ComponentProps<"span">;
 
 /**
  * An addon at the end edge â€” a clear button, a suffix, a unit.

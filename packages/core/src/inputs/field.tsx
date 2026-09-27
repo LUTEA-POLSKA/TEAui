@@ -315,7 +315,7 @@ function useFieldPart(part: "description" | "error", present: boolean): void {
   }, [register, part, present]);
 }
 
-export interface FieldDescriptionProps extends React.ComponentProps<"p"> {}
+export type FieldDescriptionProps = React.ComponentProps<"p">;
 
 /**
  * Help text for the field, associated through `aria-describedby`.

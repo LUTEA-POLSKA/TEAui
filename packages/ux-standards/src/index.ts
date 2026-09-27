@@ -20,8 +20,12 @@ export {
   type StatusDomain,
   type StatusKey,
   type AnyStatusKey,
-  type Tone,
 } from "./status";
+
+/* The tone vocabulary is defined in the token layer — a theme colours it, the
+ * standards layer names it — and re-exported here so a product reasoning about
+ * status has one import for the whole vocabulary. */
+export { TONES, type Tone } from "@tea-ui/tokens";
 
 export {
   FEEDBACK,

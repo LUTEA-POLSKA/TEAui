@@ -94,6 +94,7 @@ export {
   KeyRound,
   Wifi,
   WifiOff,
+  CloudOff,
 } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
@@ -168,6 +169,8 @@ export { Calendar, CalendarClock, Timer, History, ArrowRightLeft } from "lucide-
 /* Misc                                                                        */
 /* -------------------------------------------------------------------------- */
 export {
+  SearchX,
+  ServerCrash,
   Sparkles,
   Lightbulb,
   Wrench,

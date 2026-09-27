@@ -12,7 +12,7 @@ import { resolve } from "node:path";
  * actually export what they claim, and that importing them costs what we say it
  * costs. Source for tests, dist for the contract.
  */
-const pkg = (name: string): string => resolve(import.meta.dirname, "packages", name, "src/index.ts");
+const pkg = (name: string): string => resolve(import.meta.dirname, "packages", name, "src");
 
 export default defineConfig({
   resolve: {

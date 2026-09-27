@@ -103,6 +103,25 @@ export const DrawerHeader = React.forwardRef<HTMLDivElement, React.ComponentProp
   },
 );
 
+/**
+ * A drawer, like a dialog, must have an accessible name. Radix wires the title
+ * into the content, so a drawer without one is an unnamed dialog — which is why
+ * this exists as a part rather than a bare heading.
+ */
+export const DrawerTitle = React.forwardRef<
+  HTMLHeadingElement,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+>(function DrawerTitle({ className, ...props }, ref) {
+  return <DialogPrimitive.Title ref={ref} className={cn("text-title font-semibold text-fg", className)} {...dataSlot("drawer", "title")} {...props} />;
+});
+
+export const DrawerDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+>(function DrawerDescription({ className, ...props }, ref) {
+  return <DialogPrimitive.Description ref={ref} className={cn("text-micro text-fg-muted", className)} {...dataSlot("drawer", "description")} {...props} />;
+});
+
 export const DrawerBody = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(
   function DrawerBody({ className, ...props }, ref) {
     return <div ref={ref} className={cn("min-h-0 flex-1 overflow-y-auto p-4", className)} {...dataSlot("drawer", "body")} {...props} />;

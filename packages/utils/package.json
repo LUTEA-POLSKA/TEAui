@@ -23,7 +23,7 @@
     "access": "restricted"
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/sync-styles.mjs"
+    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs utils && node ../../scripts/sync-styles.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

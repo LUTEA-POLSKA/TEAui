@@ -101,8 +101,6 @@ const DEFAULT_FILTER = (option: ComboboxOption, query: string): boolean => {
 };
 
 /** Stable, id-safe DOM ids for one listbox. */
-let comboboxSeq = 0;
-
 export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(function Combobox(
   {
     label,
@@ -123,12 +121,13 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
   ref,
 ) {
   const field = useFieldControlProps();
-  const idRef = React.useRef<string>("");
-  if (!idRef.current) {
-    comboboxSeq += 1;
-    idRef.current = `tea-combobox-${comboboxSeq}`;
-  }
-  const listboxId = `${idRef.current}-listbox`;
+
+  // `useId` is the only correct source of a DOM id here. A module-level counter
+  // breaks under concurrent rendering and across multiple roots, and reading a
+  // ref during render is something React 19 explicitly disallows. `useId` gives a
+  // stable, SSR-safe id that React itself deduplicates.
+  const stem = `tea-combobox-${React.useId().replace(/:/g, "")}`;
+  const listboxId = `${stem}-listbox`;
 
   const [query, setQuery] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
@@ -137,11 +136,14 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
     value !== undefined ? [value] : defaultValue !== undefined ? [defaultValue] : [],
   );
 
-  // A controlled consumer owns the selection; sync without touching the input's
-  // query, so a programmatic selection never rewrites what the user is typing.
-  React.useEffect(() => {
-    if (value !== undefined) setSelected(value === "" ? [] : [value]);
-  }, [value]);
+  // A controlled value is synced during render rather than in an effect. An
+  // effect would paint one frame with the stale selection — a visible flash
+  // after a programmatic change — and comparing before writing is React's
+  // documented pattern for exactly this.
+  const controlledSelection = value === undefined ? undefined : value === "" ? [] : [value];
+  if (controlledSelection && !sameSelection(controlledSelection, selected)) {
+    setSelected(controlledSelection);
+  }
 
   const isDisabled = field.disabled ?? disabled;
   const isInvalid = field["aria-invalid"] ?? false;
@@ -204,7 +206,7 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
 
-  const activeId = activeIndex >= 0 ? `${idRef.current}-option-${activeIndex}` : undefined;
+  const activeId = activeIndex >= 0 ? `${stem}-option-${activeIndex}` : undefined;
   const displayValue = multiple ? selected.map((v) => labelFor(options, v)).join(", ") : labelFor(options, selected[0] ?? "");
 
   return (
@@ -330,7 +332,7 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
             return (
               <li
                 key={option.value}
-                id={`${idRef.current}-option-${index}`}
+                id={`${stem}-option-${index}`}
                 role="option"
                 aria-selected={isSelected}
                 aria-disabled={option.disabled || undefined}
@@ -360,6 +362,10 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
     </div>
   );
 });
+
+function sameSelection(a: readonly string[], b: readonly string[]): boolean {
+  return a.length === b.length && a.every((entry, index) => entry === b[index]);
+}
 
 function labelFor(options: readonly ComboboxOption[], value: string): string {
   if (!value) return "";

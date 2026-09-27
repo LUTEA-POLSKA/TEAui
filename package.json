@@ -16,7 +16,7 @@
     "build:packages": "npm run build -w @tea-ui/utils -w @tea-ui/tokens -w @tea-ui/ux-standards -w @tea-ui/icons -w @tea-ui/core -w @tea-ui/admin -w @tea-ui/public -w @tea-ui/patterns -w @tea-ui/templates -w @tea-ui/blueprints -w @tea-ui/specialized",
     "build:css": "npm run build:css -w @tea-ui/tokens",
     "clean": "node scripts/clean.mjs",
-    "typecheck": "tsc -b --pretty tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",

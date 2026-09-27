@@ -1,0 +1,40 @@
+/*
+ * Showcase chrome only.
+ *
+ * Everything visual here comes from TEA UI itself — no bespoke styles, no
+ * one-off colours, no shadow values. The three families come from the token
+ * layer's own stylesheet, because typography is a token and a product should
+ * not have to remember to load it.
+ *
+ * One lesson from the source projects is encoded in this file: they loaded
+ * three families through a render-blocking CSS `@import` in their global
+ * stylesheet, on every route, including public pages that never render a
+ * monospace character. Here it is one explicit import, at the root, and nothing
+ * else in the app touches typography.
+ */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+/* The Showcase is a document that scrolls, not a fixed-viewport application.
+   Admin products use the fixed shell from @tea-ui/admin instead. */
+.showcase-scroll {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* A subtle technical grid, borrowed from the design language of both reference
+   products. Purely decorative, and it never sits under text that matters. */
+.grid-texture {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+}

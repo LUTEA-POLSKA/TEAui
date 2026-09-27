@@ -107,7 +107,7 @@ export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(fu
   );
 });
 
-export interface ButtonGroupSeparatorProps extends React.ComponentProps<"span"> {}
+export type ButtonGroupSeparatorProps = React.ComponentProps<"span">;
 
 /**
  * A gap inside a `joined` group, for splitting one control into two halves â€”

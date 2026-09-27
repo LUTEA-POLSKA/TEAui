@@ -65,7 +65,11 @@ export function formatNumber(value: number, options: FormatNumberOptions = {}): 
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
   }).format(value);
-  return unit ? `${formatted} ${unit}` : formatted;
+  // A normal space, not a non-breaking one: an invisible character in a template
+  // literal is impossible to review, and the linter flags it for good reason.
+  // Where a non-breaking space is genuinely wanted (a value that must not wrap),
+  // pass it through `unit` explicitly.
+  return unit ? `${formatted} ${unit}` : formatted;
 }
 
 export function formatPercent(value: number, options: FormatNumberOptions = {}): string {
