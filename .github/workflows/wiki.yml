@@ -1,0 +1,64 @@
+name: Publish wiki
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "wiki/**"
+      - "scripts/publish-wiki.mjs"
+      - ".github/workflows/wiki.yml"
+  # A wiki is documentation, and documentation is worth refreshing on demand
+  # rather than only when a commit happens to touch it.
+  workflow_dispatch:
+  schedule:
+    # Weekly, Monday morning. Cheap, and it catches a repository that was renamed
+    # or a wiki that was reset outside the repository.
+    - cron: "17 6 * * 1"
+
+# The wiki repository has no branches worth queueing, and a second run racing the
+# first produces a non-fast-forward rejection rather than a wrong page.
+concurrency:
+  group: wiki
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the wiki is a separate repository and is cloned by URL,
+          # and a shallow checkout makes the `git remote get-url` slug detection
+          # unreliable on forks.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Configure the wiki remote
+        # The wiki is a *separate git repository*. `GITHUB_TOKEN` cannot push to
+        # it — it only grants access to the repository the workflow runs in — so
+        # a PAT with `repo` scope is the only thing that works here.
+        run: git remote add wiki "https://x-access-token:${WIKI_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git"
+        env:
+          WIKI_TOKEN: ${{ secrets.WIKI_TOKEN }}
+
+      - name: Publish
+        run: node scripts/publish-wiki.mjs
+        env:
+          WIKI_TARGET: https://x-access-token:${{ secrets.WIKI_TOKEN }}@github.com/${{ github.repository }}.wiki.git
+
+      - name: Explain, do not fail, when the wiki is not initialised
+        # GitHub has no API for creating a wiki repository, so the first page
+        # must be created once in the web UI. Failing the workflow every week
+        # over that teaches people to ignore it.
+        if: failure()
+        run: |
+          echo "::notice title=Wiki not initialised::Create the first page at"
+          echo "::notice::https://github.com/${{ github.repository }}/wiki — then re-run this workflow."
+          exit 0

@@ -112,6 +112,28 @@ failed".
 | `PORT` | `4175` | Port for `site:serve`. |
 | `SITE_BASE_PATH` | `/TEAui/` | Repository variable read by the Pages workflow. |
 
+## GitHub Wiki
+
+The wiki content lives versioned in `wiki/` and is pushed into the wiki
+repository by `node scripts/publish-wiki.mjs` (also wired as `npm run
+wiki:publish`, and run by the `wiki.yml` workflow). The repository is the source;
+the wiki is the readable surface. Content that lives only on GitHub is not
+versioned, and when the code is refactored the wiki does not move with it.
+
+A wiki repository is created by its first page, and GitHub exposes no API for
+that — so this one step has to happen once in the web UI:
+
+1. open <https://github.com/landnevermore/TEAui/wiki>
+2. click **Create the first page**
+3. title it `Home` and save
+
+After that `npm run wiki:publish` does everything, and the workflow does it
+automatically on every change under `wiki/`.
+
+The wiki is a **separate git repository**. `GITHUB_TOKEN` cannot push to it — the
+token only grants access to the repository the workflow runs in — so the workflow
+needs a `WIKI_TOKEN` secret: a personal access token with `repo` scope.
+
 ## Private npm distribution
 
 The packages are published to npm with `--access restricted`, which means a

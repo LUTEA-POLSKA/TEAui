@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "build:packages": "npm run build -w @tea-ui/utils -w @tea-ui/tokens -w @tea-ui/ux-standards -w @tea-ui/icons -w @tea-ui/core -w @tea-ui/admin -w @tea-ui/public -w @tea-ui/patterns -w @tea-ui/templates -w @tea-ui/blueprints -w @tea-ui/specialized",
+    "build:packages": "npm run build:css && npm run build --workspaces --if-present",
     "build:css": "npm run build:css -w @tea-ui/tokens",
     "clean": "node scripts/clean.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
@@ -38,7 +38,8 @@
     "changeset": "changeset",
     "site:build": "node scripts/build-site.mjs",
     "site:preview": "npx serve dist-site -l 4175",
-    "site:serve": "node scripts/serve.mjs"
+    "site:serve": "node scripts/serve.mjs",
+    "wiki:publish": "node scripts/publish-wiki.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
