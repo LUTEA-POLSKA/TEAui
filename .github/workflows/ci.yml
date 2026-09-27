@@ -50,6 +50,10 @@ jobs:
       - name: Build the library
         run: npm run build:packages
 
+      - name: Inspect the build artefacts
+        if: always()
+        run: node scripts/inspect-dist.mjs
+
       - name: Verify the public export contract
         run: npm run check:exports
 
