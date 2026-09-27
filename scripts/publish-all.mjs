@@ -79,10 +79,35 @@ if (dryRun) {
   process.exit(0);
 }
 
+/**
+ * Has this exact version already been published?
+ *
+ * A run is resumed by re-running it, not by editing a list. Without this, a run
+ * that stopped at package seven would fail on package one the second time, and
+ * the obvious fix — remembering where it got to — is state that lives in someone's
+ * head and is wrong the first time it is.
+ */
+function isPublished(name, version) {
+  const result = spawnSync("npm", ["view", `${name}@${version}`, "version"], {
+    cwd: root,
+    encoding: "utf8",
+    shell: process.platform === "win32",
+  });
+  return result.status === 0 && (result.stdout ?? "").trim() === version;
+}
+
 const published = [];
 for (const name of ordered) {
   const label = `@tea-ui/${name}`;
-  console.log(`\n[tea-ui] publishing ${label} ${manifests.get(name).version}`);
+  const version = manifests.get(name).version;
+
+  if (isPublished(label, version)) {
+    console.log(`\n[tea-ui] ${label} ${version} is already published — skipping`);
+    published.push(label);
+    continue;
+  }
+
+  console.log(`\n[tea-ui] publishing ${label} ${version}`);
   if (!run("npm", ["publish", "--workspace", label, "--access", "public"], `publishing ${label}`)) {
     console.error(`\n[tea-ui] stopped at ${label}. Published so far: ${published.join(", ") || "none"}`);
     console.error(`[tea-ui] ${label} has not been published. Fix and re-run; the rest will be skipped.`);
