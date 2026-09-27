@@ -1,0 +1,478 @@
+/* ============================================================================
+ * TEA UI — token entry stylesheet
+ * ----------------------------------------------------------------------------
+ * This is the single source of truth for styling. Every TEA UI package
+ * re-exports this one compiled file as `<pkg>/styles.css`, so a consumer
+ * imports the design system exactly once and no component can ship CSS that
+ * drifts from it.
+ *
+ * Reading order:
+ *   1  frameworks
+ *   2  the three reference themes        (themes.css — themes own ROLES only)
+ *   3  density                           (one attribute retunes every control)
+ *   4  the Tailwind namespace mapping    (semantic role -> utility name)
+ *   5  custom utilities                  (z-index, focus, density, rings)
+ *   6  base layer + accessibility floors
+ *
+ * Enforcement note: the `--color-*`, `--text-*`, `--radius-*` and `--shadow-*`
+ * namespaces are RESET below. That is deliberate and load-bearing. It removes
+ * Tailwind's default palettes from the build, so `text-red-300`, `text-[9px]`
+ * and `rounded-md` cannot compile at all. Semantic tokens are the only way to
+ * reach a colour, a type size, a radius or an elevation — the anti-patterns
+ * the audit found 30+ instances of become build errors, not review comments.
+ * ========================================================================== */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./themes.css";
+
+/* --- 3. TEA UI source is compiled into this one file ---------------------- *
+ * Tailwind emits a utility only if it finds the class in TEA UI's own source.
+ * The apps are included so documentation and showcase examples are styled by
+ * the same build rather than by a second, divergent stylesheet.
+ * ------------------------------------------------------------------------- */
+@source "../../utils/src";
+@source "../../tokens/src";
+@source "../../ux-standards/src";
+@source "../../icons/src";
+@source "../../core/src";
+@source "../../admin/src";
+@source "../../public/src";
+@source "../../patterns/src";
+@source "../../templates/src";
+@source "../../blueprints/src";
+@source "../../specialized/src";
+@source "../../../apps/docs/src";
+@source "../../../apps/showcase/src";
+
+/* ============================================================================
+ * Density
+ * One attribute on any container retunes every TEA UI control inside it.
+ * `data-density` is inherited through the custom properties, so a compact
+ * table can sit inside a comfortable page without leaking upward.
+ * ========================================================================== */
+
+:root,
+[data-density="default"] {
+  --tea-control-h: 2rem; /* 32px — the TEA default control height            */
+  --tea-control-px: 0.75rem;
+  --tea-control-icon: 1rem;
+  --tea-row-h: 2.25rem;
+  --tea-cell-py: 0.5rem;
+  --tea-cell-px: 0.75rem;
+  --tea-gap: 0.75rem;
+  --tea-section-gap: 1.5rem;
+  --tea-field-gap: 1.25rem;
+  --tea-pad-card: 1.25rem;
+  --tea-text-ui: 0.875rem; /* 14px — the working UI text size                */
+  --tea-text-label: 0.6875rem; /* 11px — uppercase micro-labels            */
+  --tea-touch-min: 2.75rem; /* 44px — minimum touch target (WCAG 2.5.5)   */
+}
+
+[data-density="compact"] {
+  --tea-control-h: 1.75rem; /* 28px — LUTEA dashboard density              */
+  --tea-control-px: 0.625rem;
+  --tea-control-icon: 0.875rem;
+  --tea-row-h: 2rem;
+  --tea-cell-py: 0.375rem;
+  --tea-cell-px: 0.625rem;
+  --tea-gap: 0.5rem;
+  --tea-section-gap: 1.25rem;
+  --tea-field-gap: 1rem;
+  --tea-pad-card: 1rem;
+  --tea-text-ui: 0.8125rem; /* 13px                                        */
+  --tea-text-label: 0.6875rem;
+  --tea-touch-min: 2.75rem;
+}
+
+[data-density="comfortable"] {
+  --tea-control-h: 2.25rem; /* 36px                                         */
+  --tea-control-px: 0.875rem;
+  --tea-control-icon: 1.125rem;
+  --tea-row-h: 2.75rem;
+  --tea-cell-py: 0.75rem;
+  --tea-cell-px: 0.875rem;
+  --tea-gap: 1rem;
+  --tea-section-gap: 2rem;
+  --tea-field-gap: 1.5rem;
+  --tea-pad-card: 1.5rem;
+  --tea-text-ui: 0.9375rem; /* 15px                                        */
+  --tea-text-label: 0.75rem;
+  --tea-touch-min: 2.75rem;
+}
+
+/* ============================================================================
+ * 4. Tailwind namespace mapping
+ * Semantic role -> utility. Utilities created: bg-canvas, text-fg-muted,
+ * border-line, shadow-modal, text-micro, rounded-pill, ease-emphasized, ...
+ * ========================================================================== */
+
+@theme {
+  /* Reset the palettes the audit found being bypassed. */
+  --color-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+}
+
+@theme inline {
+  /* --- surfaces ---------------------------------------------------------- */
+  --color-canvas: var(--tea-canvas);
+  --color-surface: var(--tea-surface);
+  --color-surface-2: var(--tea-surface-2);
+  --color-surface-3: var(--tea-surface-3);
+  --color-overlay: var(--tea-overlay);
+
+  /* --- foreground -------------------------------------------------------- */
+  --color-fg: var(--tea-fg);
+  --color-fg-muted: var(--tea-fg-muted);
+  --color-fg-subtle: var(--tea-fg-subtle);
+  --color-fg-inverse: var(--tea-fg-inverse);
+
+  /* --- lines ------------------------------------------------------------- */
+  --color-line: var(--tea-line);
+  --color-line-strong: var(--tea-line-strong);
+
+  /* --- identity ---------------------------------------------------------- */
+  --color-brand: var(--tea-brand);
+
+  /* --- primary action ---------------------------------------------------- */
+  --color-primary: var(--tea-primary);
+  --color-primary-fg: var(--tea-primary-fg);
+  --color-primary-hover: var(--tea-primary-hover);
+  --color-primary-subtle: var(--tea-primary-subtle);
+  --color-primary-border: var(--tea-primary-border);
+
+  /* --- accent ------------------------------------------------------------ */
+  --color-accent: var(--tea-accent);
+  --color-accent-fg: var(--tea-accent-fg);
+  --color-accent-subtle: var(--tea-accent-subtle);
+
+  /* --- focus ------------------------------------------------------------- */
+  --color-ring: var(--tea-ring);
+  --color-ring-strong: var(--tea-ring-strong);
+
+  /* --- the five tones ---------------------------------------------------- */
+  --color-positive: var(--tea-positive);
+  --color-positive-fg: var(--tea-positive-fg);
+  --color-positive-subtle: var(--tea-positive-subtle);
+  --color-positive-border: var(--tea-positive-border);
+
+  --color-info: var(--tea-info);
+  --color-info-fg: var(--tea-info-fg);
+  --color-info-subtle: var(--tea-info-subtle);
+  --color-info-border: var(--tea-info-border);
+
+  --color-caution: var(--tea-caution);
+  --color-caution-fg: var(--tea-caution-fg);
+  --color-caution-subtle: var(--tea-caution-subtle);
+  --color-caution-border: var(--tea-caution-border);
+
+  --color-critical: var(--tea-critical);
+  --color-critical-fg: var(--tea-critical-fg);
+  --color-critical-subtle: var(--tea-critical-subtle);
+  --color-critical-border: var(--tea-critical-border);
+
+  --color-neutral: var(--tea-neutral);
+  --color-neutral-fg: var(--tea-neutral-fg);
+  --color-neutral-subtle: var(--tea-neutral-subtle);
+  --color-neutral-border: var(--tea-neutral-border);
+
+  /* --- destructive is a ROLE, not a sixth tone --------------------------- */
+  --color-destructive: var(--tea-destructive);
+  --color-destructive-fg: var(--tea-destructive-fg);
+  --color-destructive-subtle: var(--tea-destructive-subtle);
+  --color-destructive-border: var(--tea-destructive-border);
+
+  /* --- the three functional colours Tailwind always needs ----------------- */
+  --color-transparent: transparent;
+  --color-current: currentcolor;
+  --color-inherit: inherit;
+
+  /* --- typography -------------------------------------------------------- */
+  --font-sans: var(--tea-font-sans);
+  --font-mono: var(--tea-font-mono);
+  --font-display: var(--tea-font-display);
+
+  /* Type scale. There is deliberately no 9px and no 10px step: the audit found
+   * 9px and 10px carrying real UI text in both source projects. `--text-label`
+   * (11px) is the floor, and it is reserved for uppercase micro-labels. */
+  --text-label: 0.6875rem; /* 11px — eyebrow / section label, uppercase only */
+  --text-label--line-height: 0.875rem;
+  --text-label--letter-spacing: 0.08em;
+  --text-label--font-weight: 600;
+
+  --text-micro: 0.75rem; /* 12px — secondary text, table meta              */
+  --text-micro--line-height: 1rem;
+
+  --text-ui: 0.875rem; /* 14px — the default UI text size                  */
+  --text-ui--line-height: 1.25rem;
+
+  --text-body: 1rem; /* 16px — long-form reading (Public UI)              */
+  --text-body--line-height: 1.625rem;
+
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.75rem;
+
+  --text-title: 1.25rem;
+  --text-title--line-height: 1.75rem;
+
+  --text-section: 1.5rem;
+  --text-section--line-height: 2rem;
+  --text-section--letter-spacing: -0.01em;
+
+  --text-display: 2rem;
+  --text-display--line-height: 2.5rem;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-hero: 3rem;
+  --text-hero--line-height: 1.1;
+  --text-hero--letter-spacing: -0.03em;
+
+  --text-mono: 0.8125rem;
+  --text-mono--line-height: 1.25rem;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* --- radius ------------------------------------------------------------ *
+   * TEA geometry is angular by default: every surface radius is 0. The
+   * `pill` step is a named exception, reserved for the semantics listed in
+   * UX-Standards §34 — avatars, status dots, switches, radio controls, media
+   * controls, loaders and progress. `rounded-full` outside that set is an
+   * anti-pattern, not a style choice.
+   * ---------------------------------------------------------------------- */
+  --radius-none: 0px;
+  --radius-pill: 9999px;
+
+  /* --- elevation: one concept, three steps ------------------------------- *
+   * The audit found four different hard-shadow offsets for a single
+   * "elevated surface" idea. Here the number in the name IS the offset.
+   * ---------------------------------------------------------------------- */
+  --shadow-none: 0 0 #0000;
+  --shadow-raised: var(--tea-shadow-raised);
+  --shadow-overlay: var(--tea-shadow-overlay);
+  --shadow-modal: var(--tea-shadow-modal);
+  --shadow-inset: var(--tea-shadow-inset);
+
+  /* --- motion ------------------------------------------------------------ */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  --default-transition-duration: 180ms;
+  --default-transition-timing-function: var(--tea-ease-standard);
+
+  /* --- breakpoints are documented here and mirrored in tokens/index.ts ----- */
+  --breakpoint-sm: 40rem; /*  640px */
+  --breakpoint-md: 48rem; /*  768px */
+  --breakpoint-lg: 64rem; /* 1024px — the structural breakpoint           */
+  --breakpoint-xl: 80rem; /* 1280px */
+  --breakpoint-2xl: 96rem; /* 1536px */
+}
+
+/* ============================================================================
+ * 5. Custom utilities
+ * Tailwind has no `--z-*` namespace, so the z-index scale is declared as
+ * utilities. The audit found `z-[9999]`, `z-[1001]` and four competing values
+ * for the same overlay band; this scale ends that.
+ * ========================================================================== */
+
+@utility z-base {
+  z-index: 0;
+}
+@utility z-raised {
+  z-index: 10;
+}
+@utility z-sticky {
+  z-index: 100;
+}
+@utility z-header {
+  z-index: 200;
+}
+@utility z-dropdown {
+  z-index: 300;
+}
+@utility z-overlay {
+  z-index: 400;
+}
+@utility z-modal {
+  z-index: 500;
+}
+@utility z-popover {
+  z-index: 600;
+}
+@utility z-toast {
+  z-index: 700;
+}
+@utility z-tooltip {
+  z-index: 800;
+}
+@utility z-max {
+  z-index: 900;
+}
+
+/* Density-aware control geometry. Components ask for `control` / `cell` and
+ * inherit the density of whatever container they are rendered in. */
+@utility control {
+  height: var(--tea-control-h);
+  padding-inline: var(--tea-control-px);
+}
+@utility control-h {
+  height: var(--tea-control-h);
+}
+@utility cell-y {
+  padding-block: var(--tea-cell-py);
+}
+@utility cell-x {
+  padding-inline: var(--tea-cell-px);
+}
+@utility gap-ui {
+  gap: var(--tea-gap);
+}
+@utility section-gap {
+  gap: var(--tea-section-gap);
+}
+@utility field-gap {
+  gap: var(--tea-field-gap);
+}
+@utility pad-card {
+  padding: var(--tea-pad-card);
+}
+@utility text-ui {
+  font-size: var(--tea-text-ui);
+  line-height: 1.25rem;
+}
+@utility text-label-ui {
+  font-size: var(--tea-text-label);
+  line-height: 1rem;
+}
+@utility touch-target {
+  min-height: var(--tea-touch-min);
+  min-width: var(--tea-touch-min);
+}
+
+/* ============================================================================
+ * 6. Base layer + accessibility floors
+ * ========================================================================== */
+
+@layer base {
+  *,
+  ::before,
+  ::after,
+  ::backdrop {
+    border-color: var(--tea-line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scrollbar-color: var(--tea-line-strong) var(--tea-canvas);
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--tea-canvas);
+    color: var(--tea-fg);
+    font-family: var(--tea-font-sans);
+    font-size: var(--tea-text-ui);
+    line-height: 1.25rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Focus is a structural signal, not a chromatic one: a ring with a gap
+   * around it reads differently from a filled accent surface, so a focused and
+   * selected control stays distinguishable even though `ring` and `accent`
+   * share the TEA gold. A theme may still set `ring` to its own hue. */
+  :focus-visible {
+    outline: 2px solid var(--tea-ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--tea-accent);
+    color: var(--tea-accent-fg);
+  }
+
+  /* Scrollbars: standards properties first, WebKit as the enhancement. The
+   * audit found a WebKit-only block in both source projects, which left
+   * Firefox on UA defaults. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--tea-line-strong) var(--tea-canvas);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--tea-canvas);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--tea-line-strong);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--tea-accent);
+  }
+  ::-webkit-scrollbar-corner {
+    background: var(--tea-canvas);
+  }
+
+  /* Touch targets (WCAG 2.5.8). Interactive TEA UI controls stamp
+   * `data-tea-touch`; on a coarse pointer the density height is treated as a
+   * *minimum*, so a compact 28px button is still a 44px target on a phone
+   * without making a dense desktop table airy. */
+  @media (pointer: coarse) {
+    [data-tea-touch] {
+      min-height: var(--tea-touch-min);
+      min-width: var(--tea-touch-min);
+    }
+  }
+
+  /* Motion is decorative until proven otherwise. The audit found zero
+   * `prefers-reduced-motion` handling across two projects, so this floor is
+   * non-negotiable and is enforced with `!important` to beat the enter/exit
+   * animation utilities, which are otherwise unconditional. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after,
+    ::backdrop {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    /* A spinner that stops spinning stops communicating. It is replaced by a
+     * non-motion progress signal below rather than frozen. */
+    [data-tea-motion="essential"] {
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* An indeterminate spinner, drawn without rotation, for reduced motion. */
+@layer components {
+  [data-tea-motion="essential"]::after {
+    content: "";
+    animation: tea-pulse-essential 1.6s steps(4, end) infinite;
+  }
+}
+
+@keyframes tea-pulse-essential {
+  0% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}

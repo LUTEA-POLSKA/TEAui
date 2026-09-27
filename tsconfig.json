@@ -1,0 +1,43 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "types": ["node", "vitest/globals"],
+    "paths": {
+      "@tea-ui/utils": ["./packages/utils/src/index.ts"],
+      "@tea-ui/utils/*": ["./packages/utils/src/*"],
+      "@tea-ui/tokens": ["./packages/tokens/src/index.ts"],
+      "@tea-ui/tokens/*": ["./packages/tokens/src/*"],
+      "@tea-ui/ux-standards": ["./packages/ux-standards/src/index.ts"],
+      "@tea-ui/ux-standards/*": ["./packages/ux-standards/src/*"],
+      "@tea-ui/icons": ["./packages/icons/src/index.ts"],
+      "@tea-ui/icons/*": ["./packages/icons/src/*"],
+      "@tea-ui/core": ["./packages/core/src/index.ts"],
+      "@tea-ui/core/*": ["./packages/core/src/*"],
+      "@tea-ui/admin": ["./packages/admin/src/index.ts"],
+      "@tea-ui/admin/*": ["./packages/admin/src/*"],
+      "@tea-ui/public": ["./packages/public/src/index.ts"],
+      "@tea-ui/public/*": ["./packages/public/src/*"],
+      "@tea-ui/patterns": ["./packages/patterns/src/index.ts"],
+      "@tea-ui/patterns/*": ["./packages/patterns/src/*"],
+      "@tea-ui/templates": ["./packages/templates/src/index.ts"],
+      "@tea-ui/templates/*": ["./packages/templates/src/*"],
+      "@tea-ui/blueprints": ["./packages/blueprints/src/index.ts"],
+      "@tea-ui/blueprints/*": ["./packages/blueprints/src/*"],
+      "@tea-ui/specialized": ["./packages/specialized/src/index.ts"],
+      "@tea-ui/specialized/*": ["./packages/specialized/src/*"]
+    }
+  },
+  "include": [
+    "packages/*/src/**/*.ts",
+    "packages/*/src/**/*.tsx",
+    "apps/*/src/**/*.ts",
+    "apps/*/src/**/*.tsx",
+    "apps/*/*.ts",
+    "scripts/**/*.mjs",
+    "vitest.config.ts",
+    "vitest.setup.ts"
+  ],
+  "exclude": ["**/dist", "**/node_modules", "**/.next"]
+}

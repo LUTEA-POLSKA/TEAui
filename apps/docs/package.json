@@ -1,0 +1,12 @@
+{
+  "name": "@tea-ui/docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "TEA UI Documentation — searchable reference built from the real components, with live examples and no fake screenshots.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4174"
+  }
+}

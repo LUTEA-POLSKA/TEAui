@@ -1,0 +1,260 @@
+/* ============================================================================
+ * TEA UI — reference themes
+ * ----------------------------------------------------------------------------
+ * A theme owns SEMANTIC ROLES only. It never adds a raw hex to a component and
+ * never introduces a new role. If a role is missing here, it belongs in
+ * index.css as a shared default instead.
+ *
+ * Three reference themes ship today — `tea`, `hsm`, `lutea`. All three are
+ * dark-family. That is deliberate: the audit of HomeServerManager and LUTEA
+ * Design evidences no light-theme requirement, and a second untested theme is a
+ * second untested palette. The architecture is colour-scheme ready, so adding
+ * one is a new theme with its own contrast audit — not a derived variant.
+ *
+ * Every colour below is contrast-checked by `tokens/src/__tests__/contrast.ts`
+ * against WCAG 2.2 AA. Do not hand-edit a value without running it.
+ * ========================================================================== */
+
+:root,
+[data-theme="tea"] {
+  color-scheme: dark;
+
+  /* --- surfaces ---------------------------------------------------------- */
+  --tea-canvas: #111318;
+  --tea-surface: #171a21;
+  --tea-surface-2: #1e222b;
+  --tea-surface-3: #232733;
+  --tea-overlay: rgb(0 0 0 / 0.78);
+
+  /* --- foreground -------------------------------------------------------- */
+  --tea-fg: #e8e6e0;
+  --tea-fg-muted: #a3a096;
+  --tea-fg-subtle: #83807a;
+  --tea-fg-inverse: #111318;
+
+  /* --- lines ------------------------------------------------------------- */
+  --tea-line: #343a46;
+  --tea-line-strong: #4e5666;
+
+  /* --- brand identity (unbound: themes may use it, components must not) ---- */
+  --tea-brand: #f2c012;
+
+  /* --- primary action ---------------------------------------------------- */
+  --tea-primary: #f2c012;
+  --tea-primary-fg: #111318;
+  --tea-primary-hover: #f7c72e;
+  --tea-primary-subtle: rgb(242 192 18 / 0.12);
+  --tea-primary-border: rgb(242 192 18 / 0.4);
+
+  /* --- accent: selection, active nav, highlight -------------------------- */
+  --tea-accent: #f2c012;
+  --tea-accent-fg: #111318;
+  --tea-accent-subtle: rgb(242 192 18 / 0.1);
+
+  /* --- focus ------------------------------------------------------------- */
+  --tea-ring: #f2c012;
+  --tea-ring-strong: #ffd84d;
+
+  /* --- the five semantic tones ------------------------------------------ *
+   * The tone vocabulary is CLOSED: positive | info | caution | critical |
+   * neutral. `destructive` is a role, not a tone — it deliberately shares the
+   * `critical` hue, because both mean "bad"; they differ in *use*, not colour.
+   * `caution` is deliberately orange, not amber: amber is indistinguishable
+   * from the TEA gold primary at small sizes.
+   * ---------------------------------------------------------------------- */
+  --tea-positive: #4ade80;
+  --tea-positive-fg: #0b1f14;
+  --tea-positive-subtle: rgb(74 222 128 / 0.12);
+  --tea-positive-border: rgb(74 222 128 / 0.4);
+
+  --tea-info: #60a5fa;
+  --tea-info-fg: #0a1729;
+  --tea-info-subtle: rgb(96 165 250 / 0.12);
+  --tea-info-border: rgb(96 165 250 / 0.4);
+
+  --tea-caution: #fb923c;
+  --tea-caution-fg: #241104;
+  --tea-caution-subtle: rgb(251 146 60 / 0.12);
+  --tea-caution-border: rgb(251 146 60 / 0.4);
+
+  --tea-critical: #ff6b5e;
+  --tea-critical-fg: #240705;
+  --tea-critical-subtle: rgb(255 107 94 / 0.12);
+  --tea-critical-border: rgb(255 107 94 / 0.4);
+
+  --tea-neutral: #a3a096;
+  --tea-neutral-fg: #111318;
+  --tea-neutral-subtle: rgb(163 160 150 / 0.12);
+  --tea-neutral-border: rgb(163 160 150 / 0.4);
+
+  --tea-destructive: var(--tea-critical);
+  --tea-destructive-fg: var(--tea-critical-fg);
+  --tea-destructive-subtle: var(--tea-critical-subtle);
+  --tea-destructive-border: var(--tea-critical-border);
+
+  /* --- density defaults: `default` (see the density block in index.css) -- */
+  --tea-density: default;
+
+  /* --- typography -------------------------------------------------------- */
+  --tea-font-sans: "Jost Variable", "Jost", "Futura", ui-sans-serif, system-ui, sans-serif;
+  --tea-font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  --tea-font-display: "Lilita One", "Jost Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* --- elevation: one concept, three steps -------------------------------- */
+  --tea-shadow-raised: 0 1px 3px rgb(0 0 0 / 0.3);
+  --tea-shadow-overlay: 6px 6px 0 0 rgb(0 0 0 / 0.5);
+  --tea-shadow-modal: 8px 8px 0 0 rgb(0 0 0 / 0.5);
+  --tea-shadow-inset: inset 0 1px 0 0 rgb(255 255 255 / 0.04);
+}
+
+/* HomeServerManager reference theme.
+ * Cooler and darker than `tea`, brand red exposed as an identity token. */
+[data-theme="hsm"] {
+  color-scheme: dark;
+
+  --tea-canvas: #0e1116;
+  --tea-surface: #161a21;
+  --tea-surface-2: #1c212a;
+  --tea-surface-3: #232935;
+  --tea-overlay: rgb(0 0 0 / 0.8);
+
+  --tea-fg: #e9eaee;
+  --tea-fg-muted: #a1a8b4;
+  --tea-fg-subtle: #808894;
+  --tea-fg-inverse: #0e1116;
+
+  --tea-line: #2f3743;
+  --tea-line-strong: #49525f;
+
+  --tea-brand: #e0332e;
+
+  --tea-primary: #f2c012;
+  --tea-primary-fg: #0e1116;
+  --tea-primary-hover: #f7c72e;
+  --tea-primary-subtle: rgb(242 192 18 / 0.12);
+  --tea-primary-border: rgb(242 192 18 / 0.4);
+
+  --tea-accent: #f2c012;
+  --tea-accent-fg: #0e1116;
+  --tea-accent-subtle: rgb(242 192 18 / 0.1);
+
+  --tea-ring: #f2c012;
+  --tea-ring-strong: #ffd84d;
+
+  --tea-positive: #4ade80;
+  --tea-positive-fg: #0b1f14;
+  --tea-positive-subtle: rgb(74 222 128 / 0.12);
+  --tea-positive-border: rgb(74 222 128 / 0.4);
+
+  --tea-info: #60a5fa;
+  --tea-info-fg: #0a1729;
+  --tea-info-subtle: rgb(96 165 250 / 0.12);
+  --tea-info-border: rgb(96 165 250 / 0.4);
+
+  --tea-caution: #fb923c;
+  --tea-caution-fg: #241104;
+  --tea-caution-subtle: rgb(251 146 60 / 0.12);
+  --tea-caution-border: rgb(251 146 60 / 0.4);
+
+  --tea-critical: #f87171;
+  --tea-critical-fg: #240705;
+  --tea-critical-subtle: rgb(248 113 113 / 0.12);
+  --tea-critical-border: rgb(248 113 113 / 0.4);
+
+  --tea-neutral: #a1a8b4;
+  --tea-neutral-fg: #0e1116;
+  --tea-neutral-subtle: rgb(161 168 180 / 0.12);
+  --tea-neutral-border: rgb(161 168 180 / 0.4);
+
+  --tea-destructive: var(--tea-critical);
+  --tea-destructive-fg: var(--tea-critical-fg);
+  --tea-destructive-subtle: var(--tea-critical-subtle);
+  --tea-destructive-border: var(--tea-critical-border);
+
+  --tea-density: default;
+
+  --tea-font-sans: "Jost Variable", "Jost", "Futura", ui-sans-serif, system-ui, sans-serif;
+  --tea-font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  --tea-font-display: "Lilita One", "Jost Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --tea-shadow-raised: 0 1px 3px rgb(0 0 0 / 0.35);
+  --tea-shadow-overlay: 6px 6px 0 0 rgb(0 0 0 / 0.55);
+  --tea-shadow-modal: 8px 8px 0 0 rgb(0 0 0 / 0.55);
+  --tea-shadow-inset: inset 0 1px 0 0 rgb(255 255 255 / 0.04);
+}
+
+/* LUTEA Design reference theme.
+ * Warmer surfaces, LUTEA's amber caution, and the compact dashboard density. */
+[data-theme="lutea"] {
+  color-scheme: dark;
+
+  --tea-canvas: #121317;
+  --tea-surface: #1a1b1f;
+  --tea-surface-2: #212329;
+  --tea-surface-3: #2a2c33;
+  --tea-overlay: rgb(0 0 0 / 0.78);
+
+  --tea-fg: #ede9e1;
+  --tea-fg-muted: #aba69b;
+  --tea-fg-subtle: #8a857b;
+  --tea-fg-inverse: #121317;
+
+  --tea-line: #383b44;
+  --tea-line-strong: #525663;
+
+  --tea-brand: #f2c012;
+
+  --tea-primary: #f2c012;
+  --tea-primary-fg: #121317;
+  --tea-primary-hover: #f7c72e;
+  --tea-primary-subtle: rgb(242 192 18 / 0.12);
+  --tea-primary-border: rgb(242 192 18 / 0.4);
+
+  --tea-accent: #f2c012;
+  --tea-accent-fg: #121317;
+  --tea-accent-subtle: rgb(242 192 18 / 0.1);
+
+  --tea-ring: #f2c012;
+  --tea-ring-strong: #ffd84d;
+
+  --tea-positive: #4fc97e;
+  --tea-positive-fg: #0a1f13;
+  --tea-positive-subtle: rgb(79 201 126 / 0.12);
+  --tea-positive-border: rgb(79 201 126 / 0.4);
+
+  --tea-info: #5b8def;
+  --tea-info-fg: #08142b;
+  --tea-info-subtle: rgb(91 141 239 / 0.12);
+  --tea-info-border: rgb(91 141 239 / 0.4);
+
+  --tea-caution: #f2921e;
+  --tea-caution-fg: #1f1204;
+  --tea-caution-subtle: rgb(242 146 30 / 0.12);
+  --tea-caution-border: rgb(242 146 30 / 0.4);
+
+  --tea-critical: #f0726a;
+  --tea-critical-fg: #230604;
+  --tea-critical-subtle: rgb(240 114 106 / 0.12);
+  --tea-critical-border: rgb(240 114 106 / 0.4);
+
+  --tea-neutral: #aba69b;
+  --tea-neutral-fg: #121317;
+  --tea-neutral-subtle: rgb(171 166 155 / 0.12);
+  --tea-neutral-border: rgb(171 166 155 / 0.4);
+
+  --tea-destructive: var(--tea-critical);
+  --tea-destructive-fg: var(--tea-critical-fg);
+  --tea-destructive-subtle: var(--tea-critical-subtle);
+  --tea-destructive-border: var(--tea-critical-border);
+
+  --tea-density: compact;
+
+  --tea-font-sans: "Jost Variable", "Jost", "Futura", ui-sans-serif, system-ui, sans-serif;
+  --tea-font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  --tea-font-display: "Lilita One", "Jost Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --tea-shadow-raised: 0 1px 3px rgb(0 0 0 / 0.28);
+  --tea-shadow-overlay: 6px 6px 0 0 rgb(0 0 0 / 0.5);
+  --tea-shadow-modal: 8px 8px 0 0 rgb(0 0 0 / 0.5);
+  --tea-shadow-inset: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
+}

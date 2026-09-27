@@ -1,0 +1,66 @@
+{
+  "name": "tea-ui-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "TEA UI — the shared UI, UX and product platform of the TEA ecosystem. Build once. Generalize properly. Reuse everywhere.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "build:packages": "npm run build -w @tea-ui/utils -w @tea-ui/tokens -w @tea-ui/ux-standards -w @tea-ui/icons -w @tea-ui/core -w @tea-ui/admin -w @tea-ui/public -w @tea-ui/patterns -w @tea-ui/templates -w @tea-ui/blueprints -w @tea-ui/specialized",
+    "build:css": "npm run build:css -w @tea-ui/tokens",
+    "clean": "node scripts/clean.mjs",
+    "typecheck": "tsc -b --pretty tsconfig.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:a11y": "vitest run --project a11y",
+    "check:exports": "node scripts/check-exports.mjs",
+    "check:boundaries": "node scripts/check-boundaries.mjs",
+    "check:tree": "node scripts/check-treeshaking.mjs",
+    "verify": "npm run check:boundaries && npm run typecheck && npm run lint && npm run test && npm run build:css && npm run build:packages && npm run check:exports && npm run check:tree",
+    "docs:dev": "npm run dev -w @tea-ui/docs",
+    "docs:build": "npm run build -w @tea-ui/docs",
+    "docs:preview": "npm run preview -w @tea-ui/docs",
+    "showcase:dev": "npm run dev -w @tea-ui/showcase",
+    "showcase:build": "npm run build -w @tea-ui/showcase",
+    "showcase:preview": "npm run preview -w @tea-ui/showcase",
+    "dev": "npm run showcase:dev",
+    "release": "changeset publish",
+    "version": "changeset version",
+    "changeset": "changeset"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.7",
+    "@eslint/js": "^9.39.1",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.0.4",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^16.5.0",
+    "jsdom": "^27.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1",
+    "vite": "^7.2.2",
+    "vitest": "^3.2.4"
+  },
+  "allowScripts": {
+    "esbuild@0.27.7": true
+  }
+}

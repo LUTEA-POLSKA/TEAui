@@ -1,0 +1,12 @@
+{
+  "name": "@tea-ui/showcase",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "TEA UI Showcase — the interactive demonstration site. Renders the real system, never mockups.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173"
+  }
+}

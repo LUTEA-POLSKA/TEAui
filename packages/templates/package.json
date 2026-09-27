@@ -1,0 +1,42 @@
+{
+  "name": "@tea-ui/templates",
+  "version": "0.1.0",
+  "description": "TEA UI â€” the Templates layer: complete, business-logic-free page structures assembled from components, patterns, UX Standards and themes.",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./styles.css": "./dist/styles.css"
+  },
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "scripts": {
+    "build": "tsup && node ../../scripts/sync-styles.mjs"
+  },
+  "dependencies": {
+    "@tea-ui/admin": "*",
+    "@tea-ui/core": "*",
+    "@tea-ui/patterns": "*",
+    "@tea-ui/public": "*",
+    "@tea-ui/tokens": "*",
+    "@tea-ui/ux-standards": "*",
+    "@tea-ui/utils": "*"
+  },
+  "peerDependencies": {
+    "react": ">=18.2.0 <20.0.0",
+    "react-dom": ">=18.2.0 <20.0.0"
+  }
+}
