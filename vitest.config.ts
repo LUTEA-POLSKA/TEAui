@@ -34,7 +34,14 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: [resolve(import.meta.dirname, "vitest.setup.ts")],
-    include: ["packages/*/src/**/*.test.{ts,tsx}", "packages/*/src/**/__tests__/**/*.{ts,tsx}"],
+    // `tests/` holds tests for the build tooling itself. Those are exactly the
+    // tests that are hardest to reproduce by hand, because they fail on a
+    // platform other than the one that wrote them.
+    include: [
+      "packages/*/src/**/*.test.{ts,tsx}",
+      "packages/*/src/**/__tests__/**/*.{ts,tsx}",
+      "tests/**/*.test.ts",
+    ],
     exclude: ["**/node_modules/**", "**/dist/**"],
     css: false,
     restoreMocks: true,

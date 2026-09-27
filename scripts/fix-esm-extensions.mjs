@@ -13,7 +13,7 @@
  * under `moduleResolution: "nodenext"` too.
  */
 import { readdir, readFile, stat, writeFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, posix, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -37,32 +37,28 @@ async function walk(dir) {
 /**
  * Join and collapse a `/`-separated path.
  *
- * `path.posix.resolve` cannot be used here: on Windows it treats `E:/…` as a
- * *relative* segment and prefixes the current working directory, so every lookup
- * missed and every specifier was silently left unfixed. This walks the segments
- * instead, which behaves identically on both platforms.
+ * This is `path.posix.normalize`, deliberately: it is a pure string operation,
+ * so it means the same thing on both platforms. `path.posix.resolve` cannot be
+ * used here, because it resolves against the current working directory and so
+ * prefixes anything it reads as relative.
+ *
+ * It has to preserve a leading `/`, and an earlier hand-rolled version did not —
+ * it dropped empty segments, which silently turned `/home/runner/…/dist/./mark`
+ * into `home/runner/…/dist/mark` and made every lookup miss. That is invisible
+ * on Windows, where an absolute path starts `E:/` and has no leading separator,
+ * so the published build broke only in CI. `tests/fix-esm-extensions.test.js`
+ * now pins both shapes.
  */
-function normalize(base, relative) {
-  const segments = `${base}/${relative}`.split("/");
-  const out = [];
-  for (const segment of segments) {
-    if (segment === "" || segment === ".") continue;
-    if (segment === "..") {
-      out.pop();
-      continue;
-    }
-    out.push(segment);
-  }
-  return out.join("/");
+export function normalize(base, relative) {
+  return posix.normalize(`${base.replace(/\\/g, "/")}/${relative}`);
 }
 
 /** Every built file as a normalised absolute path, for a sync lookup. */
 function indexFiles(files) {
   const set = new Set();
   for (const file of files) {
-    const normalized = file.replace(/\\/g, "/");
-    set.add(normalized.replace(/\.d\.ts$/, ".js"));
-    set.add(normalized.replace(/\.js\.map$/, ""));
+    set.add(posix.normalize(file.replace(/\\/g, "/")).replace(/\.d\.ts$/, ".js"));
+    set.add(posix.normalize(file.replace(/\\/g, "/")).replace(/\.js\.map$/, ""));
   }
   return set;
 }

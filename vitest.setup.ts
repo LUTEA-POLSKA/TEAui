@@ -5,14 +5,21 @@
  * and `toHaveAccessibleDescription` are the ones that actually catch the class of
  * defect the audit found dozens of, and they are far more meaningful than
  * snapshotting a class string.
+ *
+ * This file is loaded for every test, including the ones that declare
+ * `// @vitest-environment node` to test the build tooling. Those have no DOM, so
+ * the DOM stubs below guard on it — a build-tooling test should not have to pay
+ * for a browser, and should not fail merely for lacking one.
  */
-import "@testing-library/jest-dom/vitest";
-import { cleanup } from "@testing-library/react";
 import { afterEach } from "vitest";
 
-afterEach(() => {
-  cleanup();
-});
+if (typeof document !== "undefined") {
+  await import("@testing-library/jest-dom/vitest");
+  const { cleanup } = await import("@testing-library/react");
+  afterEach(() => {
+    cleanup();
+  });
+}
 
 /**
  * jsdom implements neither of these, and several components observe them. A
@@ -40,6 +47,6 @@ if (!("ResizeObserver" in globalThis)) {
   } as unknown as typeof ResizeObserver;
 }
 
-if (!Element.prototype.scrollIntoView) {
+if (typeof Element !== "undefined" && !Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = function scrollIntoView() {};
 }
