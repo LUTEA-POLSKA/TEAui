@@ -49,16 +49,24 @@ jobs:
           WIKI_TOKEN: ${{ secrets.WIKI_TOKEN }}
 
       - name: Publish
+        # `continue-on-error` rather than an `if: failure()` step that exits 0.
+        # A later successful step does not un-fail a job that already failed, so
+        # the job would stay red every week until the wiki is initialised — and
+        # a weekly red job is a weekly job nobody reads.
+        continue-on-error: true
         run: node scripts/publish-wiki.mjs
         env:
           WIKI_TARGET: https://x-access-token:${{ secrets.WIKI_TOKEN }}@github.com/${{ github.repository }}.wiki.git
 
-      - name: Explain, do not fail, when the wiki is not initialised
-        # GitHub has no API for creating a wiki repository, so the first page
-        # must be created once in the web UI. Failing the workflow every week
-        # over that teaches people to ignore it.
-        if: failure()
+      - name: Summary
+        if: always()
         run: |
-          echo "::notice title=Wiki not initialised::Create the first page at"
-          echo "::notice::https://github.com/${{ github.repository }}/wiki — then re-run this workflow."
-          exit 0
+          echo "### Wiki" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Content source: \`wiki/\` in this repository." >> "$GITHUB_STEP_SUMMARY"
+          echo "Published to: https://github.com/${{ github.repository }}/wiki" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "If the wiki is empty, create its first page once:" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://github.com/${{ github.repository }}/wiki → **Create the first page**" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "The script itself explains this. It is the one step GitHub exposes no API for." >> "$GITHUB_STEP_SUMMARY"

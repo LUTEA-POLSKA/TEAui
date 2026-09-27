@@ -12,8 +12,8 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "build:packages": "npm run build:css && npm run build --workspaces --if-present",
+    "build": "npm run build:packages",
+    "build:packages": "npm run build:css && npm run build -w @tea-ui/utils -w @tea-ui/icons -w @tea-ui/tokens -w @tea-ui/ux-standards -w @tea-ui/core -w @tea-ui/admin -w @tea-ui/patterns -w @tea-ui/public -w @tea-ui/templates -w @tea-ui/blueprints -w @tea-ui/specialized",
     "build:css": "npm run build:css -w @tea-ui/tokens",
     "clean": "node scripts/clean.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
