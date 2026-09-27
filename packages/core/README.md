@@ -1,0 +1,33 @@
+# @tea-ui/core
+
+The primitive layer: layout, typography, inputs, feedback, overlays, navigation.
+
+Part of [TEA UI](https://landnevermore.github.io/TEAui/) — a design system built once and reused across
+products. The whole system is documented at https://landnevermore.github.io/TEAui/docs/.
+
+## Install
+
+```bash
+npm install @tea-ui/core
+```
+
+React 18.2 or 19 is expected as a peer dependency.
+
+## Use
+
+```ts
+import { Button } from "@tea-ui/core";
+```
+
+## Styles
+
+The token layer ships its stylesheet as a separate export, so it is only
+downloaded when it is asked for:
+
+```ts
+import "@tea-ui/core/styles.css";
+```
+
+## Licence
+
+MIT. See [LICENSE](./LICENSE).

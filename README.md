@@ -199,4 +199,4 @@ changelog entry — never a silent change.
 
 ## License
 
-Private. Internal to the TEA ecosystem.
+MIT. See [LICENSE](./LICENSE).

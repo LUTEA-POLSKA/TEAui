@@ -1,13 +1,14 @@
 {
   "name": "@tea-ui/utils",
   "version": "0.1.0",
-  "description": "TEA UI — class merging, variant authoring and framework-free utilities shared by every TEA UI package.",
-  "license": "UNLICENSED",
-  "private": true,
+  "description": "Shared types, class-name composition and small helpers.",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -20,14 +21,34 @@
   "types": "./dist/index.d.ts",
   "module": "./dist/index.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs utils"
+    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs utils",
+    "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.3.1"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "cn",
+    "clsx",
+    "utility",
+    "tea-ui",
+    "design-system"
+  ],
+  "author": "landnevermore",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landnevermore/TEAui.git",
+    "directory": "packages/utils"
+  },
+  "homepage": "https://landnevermore.github.io/TEAui/docs/",
+  "bugs": {
+    "url": "https://github.com/landnevermore/TEAui/issues"
   }
 }

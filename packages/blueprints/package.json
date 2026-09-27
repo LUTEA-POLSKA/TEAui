@@ -1,13 +1,14 @@
 {
   "name": "@tea-ui/blueprints",
   "version": "0.1.0",
-  "description": "TEA UI — the Blueprints layer: reusable product feature systems (authentication, billing, onboarding, settings, monitoring, integrations, API management, notifications, permissions) composed from components, patterns and templates.",
-  "license": "UNLICENSED",
-  "private": true,
+  "description": "Full screen blueprints, down to the layout and the states.",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -21,23 +22,41 @@
   "types": "./dist/index.d.ts",
   "module": "./dist/index.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs blueprints && node ../../scripts/sync-styles.mjs"
+    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs blueprints && node ../../scripts/sync-styles.mjs",
+    "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
-    "@tea-ui/admin": "*",
-    "@tea-ui/core": "*",
-    "@tea-ui/patterns": "*",
-    "@tea-ui/public": "*",
-    "@tea-ui/templates": "*",
-    "@tea-ui/tokens": "*",
-    "@tea-ui/ux-standards": "*",
-    "@tea-ui/utils": "*"
+    "@tea-ui/admin": "^0.1.0",
+    "@tea-ui/core": "^0.1.0",
+    "@tea-ui/patterns": "^0.1.0",
+    "@tea-ui/public": "^0.1.0",
+    "@tea-ui/templates": "^0.1.0",
+    "@tea-ui/tokens": "^0.1.0",
+    "@tea-ui/ux-standards": "^0.1.0",
+    "@tea-ui/utils": "^0.1.0"
   },
   "peerDependencies": {
     "react": ">=18.2.0 <20.0.0",
     "react-dom": ">=18.2.0 <20.0.0"
+  },
+  "keywords": [
+    "blueprints",
+    "react",
+    "screens",
+    "design-system",
+    "tea-ui"
+  ],
+  "author": "landnevermore",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landnevermore/TEAui.git",
+    "directory": "packages/blueprints"
+  },
+  "homepage": "https://landnevermore.github.io/TEAui/docs/",
+  "bugs": {
+    "url": "https://github.com/landnevermore/TEAui/issues"
   }
 }

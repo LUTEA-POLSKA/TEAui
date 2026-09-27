@@ -1,13 +1,14 @@
 {
   "name": "@tea-ui/specialized",
   "version": "0.1.0",
-  "description": "TEA UI — the Specialized layer: heavy, optionally-loaded UI (charts, virtual list, tree view, diff viewer, code editor, date picker, kanban). Imported explicitly so its cost never lands on a product that does not use it.",
-  "license": "UNLICENSED",
-  "private": true,
+  "description": "Domain-specific components, kept apart from the product-agnostic core.",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -21,22 +22,41 @@
   "types": "./dist/index.d.ts",
   "module": "./dist/index.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs specialized && node ../../scripts/sync-styles.mjs"
+    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs specialized && node ../../scripts/sync-styles.mjs",
+    "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
-    "@tea-ui/admin": "*",
-    "@tea-ui/core": "*",
-    "@tea-ui/icons": "*",
-    "@tea-ui/tokens": "*",
-    "@tea-ui/ux-standards": "*",
-    "@tea-ui/utils": "*",
+    "@tea-ui/admin": "^0.1.0",
+    "@tea-ui/core": "^0.1.0",
+    "@tea-ui/icons": "^0.1.0",
+    "@tea-ui/tokens": "^0.1.0",
+    "@tea-ui/ux-standards": "^0.1.0",
+    "@tea-ui/utils": "^0.1.0",
     "radix-ui": "^1.4.3"
   },
   "peerDependencies": {
     "react": ">=18.2.0 <20.0.0",
     "react-dom": ">=18.2.0 <20.0.0"
+  },
+  "keywords": [
+    "specialized",
+    "domain",
+    "react",
+    "components",
+    "tea-ui",
+    "design-system"
+  ],
+  "author": "landnevermore",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landnevermore/TEAui.git",
+    "directory": "packages/specialized"
+  },
+  "homepage": "https://landnevermore.github.io/TEAui/docs/",
+  "bugs": {
+    "url": "https://github.com/landnevermore/TEAui/issues"
   }
 }

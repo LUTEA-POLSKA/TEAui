@@ -1,13 +1,14 @@
 {
   "name": "@tea-ui/ux-standards",
   "version": "0.1.0",
-  "description": "TEA UI — UX Standards as code: the status registry, tone model, feedback state machine, terminology deck, density scale and motion policy. Machine-readable, so rules can be enforced instead of remembered.",
-  "license": "UNLICENSED",
-  "private": true,
+  "description": "The written rules components are held to, as data rather than prose.",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -20,12 +21,32 @@
   "types": "./dist/index.d.ts",
   "module": "./dist/index.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs ux-standards"
+    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs ux-standards",
+    "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
-    "@tea-ui/tokens": "*"
+    "@tea-ui/tokens": "^0.1.0"
+  },
+  "keywords": [
+    "ux",
+    "accessibility",
+    "wcag",
+    "standards",
+    "guidelines",
+    "tea-ui",
+    "design-system"
+  ],
+  "author": "landnevermore",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landnevermore/TEAui.git",
+    "directory": "packages/ux-standards"
+  },
+  "homepage": "https://landnevermore.github.io/TEAui/docs/",
+  "bugs": {
+    "url": "https://github.com/landnevermore/TEAui/issues"
   }
 }

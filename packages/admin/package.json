@@ -1,13 +1,14 @@
 {
   "name": "@tea-ui/admin",
   "version": "0.1.0",
-  "description": "TEA UI — the Admin UI layer: form systems, data tables, dashboard and application shell, product states, infrastructure status, technical viewers, file management and security controls. Optimised for information density and keyboard-heavy work.",
-  "license": "UNLICENSED",
-  "private": true,
+  "description": "The admin layer: shell, navigation, data display and product states.",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -21,21 +22,41 @@
   "types": "./dist/index.d.ts",
   "module": "./dist/index.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs admin && node ../../scripts/sync-styles.mjs"
+    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs admin && node ../../scripts/sync-styles.mjs",
+    "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
-    "@tea-ui/core": "*",
-    "@tea-ui/icons": "*",
-    "@tea-ui/tokens": "*",
-    "@tea-ui/ux-standards": "*",
-    "@tea-ui/utils": "*",
+    "@tea-ui/core": "^0.1.0",
+    "@tea-ui/icons": "^0.1.0",
+    "@tea-ui/tokens": "^0.1.0",
+    "@tea-ui/ux-standards": "^0.1.0",
+    "@tea-ui/utils": "^0.1.0",
     "radix-ui": "^1.4.3"
   },
   "peerDependencies": {
     "react": ">=18.2.0 <20.0.0",
     "react-dom": ">=18.2.0 <20.0.0"
+  },
+  "keywords": [
+    "react",
+    "admin",
+    "dashboard",
+    "components",
+    "data-display",
+    "tea-ui",
+    "design-system"
+  ],
+  "author": "landnevermore",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landnevermore/TEAui.git",
+    "directory": "packages/admin"
+  },
+  "homepage": "https://landnevermore.github.io/TEAui/docs/",
+  "bugs": {
+    "url": "https://github.com/landnevermore/TEAui/issues"
   }
 }

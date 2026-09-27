@@ -1,13 +1,14 @@
 {
   "name": "@tea-ui/icons",
   "version": "0.1.0",
-  "description": "TEA UI — the curated icon surface. A named, stable subset of the icon set plus the TEA brand marks, so products stop importing the whole icon library.",
-  "license": "UNLICENSED",
-  "private": true,
+  "description": "The icon set, with a tea mark.",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -21,16 +22,35 @@
   "types": "./dist/index.d.ts",
   "module": "./dist/index.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
-    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs icons && node ../../scripts/sync-styles.mjs"
+    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs icons && node ../../scripts/sync-styles.mjs",
+    "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
-    "@tea-ui/utils": "*",
+    "@tea-ui/utils": "^0.1.0",
     "lucide-react": "^0.545.0"
   },
   "peerDependencies": {
     "react": ">=18.2.0 <20.0.0"
+  },
+  "keywords": [
+    "icons",
+    "svg",
+    "react",
+    "logo",
+    "tea-ui",
+    "design-system"
+  ],
+  "author": "landnevermore",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landnevermore/TEAui.git",
+    "directory": "packages/icons"
+  },
+  "homepage": "https://landnevermore.github.io/TEAui/docs/",
+  "bugs": {
+    "url": "https://github.com/landnevermore/TEAui/issues"
   }
 }
