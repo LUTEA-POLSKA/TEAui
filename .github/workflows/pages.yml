@@ -3,16 +3,17 @@ name: Deploy static site
 on:
   push:
     branches: [main]
+    # A path filter keeps a library-internal commit from rebuilding and
+    # redeploying a site that did not change. `paths` belongs to `push`, not to
+    # `on` — a YAML parser accepts either, and GitHub's schema accepts only one,
+    # so this is checked by dispatching, not by parsing.
+    paths:
+      - "apps/**"
+      - "packages/**/src/**"
+      - "scripts/build-site.mjs"
+      - "scripts/serve.mjs"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
-  # A repository can enable "Run on all pushes" instead, but an explicit path
-  # filter keeps a library-only commit from rebuilding and redeploying a site
-  # that did not change.
-  paths:
-    - "apps/**"
-    - "packages/**/src/**"
-    - "scripts/build-site.mjs"
-    - "scripts/serve.mjs"
-    - ".github/workflows/pages.yml"
   pull_request:
     branches: [main]
     paths:
