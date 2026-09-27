@@ -67,7 +67,17 @@ function indexFiles(files) {
   return set;
 }
 
-async function fixPackage(packageName) {
+/** Every relative specifier in `source` that still lacks a resolvable extension. */
+function unresolved(source) {
+  const out = [];
+  for (const match of source.matchAll(SPECIFIER)) {
+    const specifier = match[3];
+    if (!/\.(js|mjs|cjs|json|css)$/.test(specifier)) out.push(specifier);
+  }
+  return out;
+}
+
+async function fixPackage(packageName, failures) {
   const dist = resolve(root, "packages", packageName, "dist");
   if (!(await exists(dist))) return 0;
 
@@ -90,6 +100,22 @@ async function fixPackage(packageName) {
 
     if (fixed !== source) await writeFile(file, fixed, "utf8");
   }
+
+  // Verify rather than trust. This step rewrites the published output, and a
+  // partially-rewritten package installs cleanly and then throws on `import` in
+  // the consumer — the worst moment to find out. An earlier version of this
+  // script rewrote 86 files in one package while the directory went on to hold
+  // 130, and the only symptom was a directory-import error several steps later
+  // in a different job. So: re-read what was written, and name the survivors.
+  for (const file of files) {
+    const remaining = unresolved(await readFile(file, "utf8"));
+    if (remaining.length > 0) {
+      failures.push(
+        `${file.replace(/\\/g, "/").replace(`${root}/`, "")}: ${[...new Set(remaining)].join(", ")}`,
+      );
+    }
+  }
+
   return files.length;
 }
 
@@ -102,7 +128,17 @@ const targets =
         .map((entry) => entry.name);
 
 let touched = 0;
+const failures = [];
 for (const name of targets) {
-  touched += await fixPackage(name);
+  touched += await fixPackage(name, failures);
 }
 console.log(`[tea-ui] ESM specifiers normalised in ${touched} built files.`);
+
+if (failures.length > 0) {
+  console.error(`\n[tea-ui] ${failures.length} file(s) still carry an unresolvable specifier:`);
+  for (const failure of failures) console.error(`  ${failure}`);
+  console.error(
+    "\nThe published output would fail on `import`. This is a bug in the build, not a warning.",
+  );
+  process.exit(1);
+}

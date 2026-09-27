@@ -155,8 +155,24 @@ for (const [name, expected] of Object.entries(PUBLIC_CONTRACT)) {
       problems.push(`${name}: documented but not exported — ${missing.join(", ")}`);
     }
   } catch (error) {
-    if ((error?.code ?? "") === "ERR_MODULE_NOT_FOUND" || /does not exist/.test(String(error?.message))) {
-      problems.push(`${name}: dist/index.js is missing. Run \`npm run build:packages\` first.`);
+    // The tempting shortcut here is to report any `ERR_MODULE_NOT_FOUND` as
+    // "the entry point is missing". That is wrong: a package whose own imports
+    // cannot be resolved fails the same way, and reporting it as a missing entry
+    // point sends the reader to look in the wrong place. Say what actually
+    // failed.
+    const code = error?.code ?? "";
+    if (code === "ERR_MODULE_NOT_FOUND" || /Cannot find module/.test(String(error?.message))) {
+      problems.push(
+        `${name}: importing dist/index.js failed — a module it imports could not be resolved.\n` +
+          `      ${String(error?.message).split("\n")[0]}\n` +
+          `      The entry point exists; something it imports does not.`,
+      );
+    } else if (/is not supported resolving ES modules/.test(String(error?.message))) {
+      problems.push(
+        `${name}: dist/index.js contains a directory import, which Node ESM rejects.\n` +
+          `      ${String(error?.message).split("\n")[0]}\n` +
+          `      Run \`npm run build:packages\` — the ESM specifier pass rewrites these.`,
+      );
     } else {
       problems.push(`${name}: importing dist/index.js failed — ${error?.message ?? error}`);
     }
