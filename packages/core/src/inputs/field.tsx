@@ -6,11 +6,11 @@ import { COPY } from "@tea-ui/ux-standards";
 import { dataSlot, renderElement, stateAttributes } from "../internal";
 
 /**
- * TEA UI â€” the Field system.
+ * TEA UI — the Field system.
  *
  * This file exists because of a defect the audit found in **four of five**
  * field implementations across the two source projects: a `<label>` that was
- * never associated with its control. The consequence is not subtle â€” a screen
+ * never associated with its control. The consequence is not subtle — a screen
  * reader user reaches a text field and is told nothing about what belongs in
  * it, and a voice-control user simply cannot fill the form, because there is no
  * name to say. It is also invisible in review, because `<label>` next to
@@ -25,7 +25,7 @@ import { dataSlot, renderElement, stateAttributes } from "../internal";
  * <Field invalid={!!error} required>
  *   <FieldLabel>E-Mail</FieldLabel>
  *   <Input type="email" />
- *   <FieldDescription>Wir senden keine BestÃ¤tigung.</FieldDescription>
+ *   <FieldDescription>Wir senden keine Bestätigung.</FieldDescription>
  *   <FieldError>{error}</FieldError>
  * </Field>
  * ```
@@ -81,8 +81,8 @@ const FieldPartsContext = React.createContext<FieldPartsContextValue | null>(nul
 /**
  * Read the enclosing `Field`, or `null` when a control is used standalone.
  *
- * A control outside a `Field` is legal â€” a search field in a toolbar has
- * nowhere sensible to put a `FieldDescription` â€” so every control must work
+ * A control outside a `Field` is legal — a search field in a toolbar has
+ * nowhere sensible to put a `FieldDescription` — so every control must work
  * without one. That is why this returns `null` rather than throwing.
  */
 export function useField(): FieldContextValue | null {
@@ -107,12 +107,12 @@ export interface FieldControlProps {
  *
  * ```tsx
  * const field = useFieldControlProps();
- * return <input {...field} className={â€¦} />;
+ * return <input {...field} className={…} />;
  * ```
  *
  * `aria-describedby` lists the description *and* the error, in that order. The
  * ids are added only once the corresponding element is really on screen, so the
- * attribute never points at nothing â€” an `aria-describedby` reference to a
+ * attribute never points at nothing — an `aria-describedby` reference to a
  * missing id is a validation error in axe and is silently dropped by some
  * screen readers, which leaves the error text unannounced.
  *
@@ -167,7 +167,7 @@ export interface FieldProps extends Omit<React.ComponentProps<"div">, "children"
 /**
  * The container that owns a field's id space and state.
  *
- * Renders a `<div>` by default and nothing else â€” no role, no landmark. The
+ * Renders a `<div>` by default and nothing else — no role, no landmark. The
  * field is a layout relationship, and inventing a role for it would put a
  * meaningless entry in the screen reader's structure list.
  *
@@ -322,7 +322,7 @@ export type FieldDescriptionProps = React.ComponentProps<"p">;
  *
  * @example
  * ```tsx
- * <FieldDescription>Nur GroÃŸbuchstaben, Zahlen und Bindestriche.</FieldDescription>
+ * <FieldDescription>Nur Großbuchstaben, Zahlen und Bindestriche.</FieldDescription>
  * ```
  */
 export const FieldDescription = React.forwardRef<HTMLParagraphElement, FieldDescriptionProps>(
@@ -363,7 +363,7 @@ export interface FieldErrorProps extends Omit<React.ComponentProps<"p">, "childr
  * error is invisible to a screen reader user, who is left with a red box and no
  * idea what is wrong with what they just typed.
  *
- * Renders nothing when there is no message â€” including when it is inside a
+ * Renders nothing when there is no message — including when it is inside a
  * `Field` and therefore participates in `aria-describedby`.
  *
  * @example
@@ -401,7 +401,7 @@ export interface FieldGroupProps extends Omit<React.ComponentProps<"fieldset">, 
   children?: React.ReactNode;
   /**
    * The group's label. Rendered as the `<legend>`, which is what associates the
-   * set of controls with a name â€” `aria-label` on a `<fieldset>` does not
+   * set of controls with a name — `aria-label` on a `<fieldset>` does not
    * become the group's accessible name in every browser.
    */
   legend?: React.ReactNode;
@@ -413,7 +413,7 @@ export interface FieldGroupProps extends Omit<React.ComponentProps<"fieldset">, 
  * A named set of related controls: `<fieldset>` + `<legend>`.
  *
  * A native `<fieldset disabled>` also disables every form control inside it,
- * which is the cheapest possible "these five settings are not editable" â€” a
+ * which is the cheapest possible "these five settings are not editable" — a
  * `<fieldset>` in a `<form>` participates in form semantics that a `div` cannot.
  *
  * One component rather than `FieldSet` + `FieldLegend`: a legend is required

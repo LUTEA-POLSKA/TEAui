@@ -5,22 +5,22 @@ import { cn, cva, type VariantProps } from "@tea-ui/utils";
 import { dataSlot } from "../internal";
 
 /**
- * TEA UI â€” Popover, Tooltip, HoverCard.
+ * TEA UI — Popover, Tooltip, HoverCard.
  *
  * Three related surfaces that differ in one thing each, and it is worth being
  * precise about it because the audit shows what happens when they are confused:
  *
- *  - **Popover** â€” the user asked for it. Click-triggered, interactive content,
+ *  - **Popover** — the user asked for it. Click-triggered, interactive content,
  *    closes on Escape and on an outside pointer. It is for choosing a value or
  *    filling in something.
- *  - **Tooltip** â€” the user did not ask for it. It explains a control that
+ *  - **Tooltip** — the user did not ask for it. It explains a control that
  *    already has a visible label, and it is **supplementary**. Radix links it
  *    with `aria-describedby`, not a name, which is exactly right: a tooltip can
  *    never be the accessible name of a control. The audit found icon-only
  *    buttons whose only description was a tooltip, which left them unnamed for
  *    a screen reader while sighted users were fine. `IconButton.label` exists to
  *    make that impossible.
- *  - **HoverCard** â€” a preview. Pointer *and* focus triggered, because a
+ *  - **HoverCard** — a preview. Pointer *and* focus triggered, because a
  *    keyboard user must be able to reach it too.
  */
 export const popoverContentVariants = cva(

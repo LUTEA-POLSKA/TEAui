@@ -6,7 +6,7 @@ import { dataSlot, stateAttributes, useControllableState } from "../internal";
 import { useFieldControlProps } from "./field";
 
 /**
- * TEA UI â€” Slider.
+ * TEA UI — Slider.
  *
  * A slider, and the only TEA UI control with no sensible default value: a
  * slider with no name is a `<div>` a screen reader announces as "slider", and
@@ -20,7 +20,7 @@ import { useFieldControlProps } from "./field";
  *  - **One tab stop, with arrows and Home/End.** Radix owns the roving focus;
  *    the value is only reachable because the thumb is focusable.
  *  - **The filled track is the value.** A range is readable with no colour
- *    perception, and it is readable *by shape* â€” a line with a filled part and an
+ *    perception, and it is readable *by shape* — a line with a filled part and an
  *    empty part, not two colours on one line.
  */
 export interface SliderProps
@@ -29,7 +29,7 @@ export interface SliderProps
     "value" | "defaultValue" | "onValueChange" | "orientation" | "dir"
   > {
   /**
-   * The accessible name. **Required** â€” there is no default, because a slider
+   * The accessible name. **Required** — there is no default, because a slider
    * whose name is guessed is a slider nobody can identify.
    */
   label: string;

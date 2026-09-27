@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/tokens",
   "version": "0.1.0",
-  "description": "TEA UI â€” the design token layer: colour roles, typography, spacing, radii, elevation, motion, density, z-index and the reference themes `tea`, `hsm`, `lutea`.",
+  "description": "TEA UI — the design token layer: colour roles, typography, spacing, radii, elevation, motion, density, z-index and the reference themes `tea`, `hsm`, `lutea`.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

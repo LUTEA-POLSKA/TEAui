@@ -5,7 +5,7 @@ import { COPY } from "@tea-ui/ux-standards";
 import { dataSlot } from "../internal";
 
 /**
- * TEA UI â€” Spinner.
+ * TEA UI — Spinner.
  *
  * The spinner is the *least* preferred loading affordance in TEA UI: it says
  * "something is happening" without saying what or how much. Use a skeleton when
@@ -26,7 +26,7 @@ export interface SpinnerProps extends Omit<React.ComponentProps<"svg">, "childre
   size?: SpinnerSize;
   /**
    * Accessible name. Defaults to "Wird geladen". Pass an empty string only if
-   * the surrounding surface already announces the wait â€” never pass nothing.
+   * the surrounding surface already announces the wait — never pass nothing.
    */
   label?: string;
   className?: string | undefined;

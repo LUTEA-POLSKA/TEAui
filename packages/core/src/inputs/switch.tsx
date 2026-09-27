@@ -6,7 +6,7 @@ import { dataSlot, stateAttributes, useControllableState } from "../internal";
 import { useFieldControlProps } from "./field";
 
 /**
- * TEA UI â€” Switch.
+ * TEA UI — Switch.
  *
  * An on/off control, for a setting that takes effect immediately. The
  * distinction from `Checkbox` is not visual, it is semantic: a checkbox is a
@@ -14,7 +14,7 @@ import { useFieldControlProps } from "./field";
  * Rendering one as the other teaches users the wrong expectation, so both exist.
  *
  * Radix's `Switch.Root` is a `<button role="switch">` with `aria-checked`, and
- * it is labelable in exactly the same way a `<button>` is â€” so `FieldLabel`'s
+ * it is labelable in exactly the same way a `<button>` is — so `FieldLabel`'s
  * `htmlFor` gives it a name, and a standalone `label` wraps it.
  *
  * The state is also carried by the position of the thumb. A switch that only
@@ -42,7 +42,7 @@ export interface SwitchProps
  * <Field>
  *   <FieldLabel>Wartungsmodus</FieldLabel>
  *   <Switch defaultChecked />
- *   <FieldDescription>Neue AuftrÃ¤ge werden zurÃ¼ckgestellt.</FieldDescription>
+ *   <FieldDescription>Neue Aufträge werden zurückgestellt.</FieldDescription>
  * </Field>
  * ```
  */

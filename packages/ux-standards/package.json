@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/ux-standards",
   "version": "0.1.0",
-  "description": "TEA UI â€” UX Standards as code: the status registry, tone model, feedback state machine, terminology deck, density scale and motion policy. Machine-readable, so rules can be enforced instead of remembered.",
+  "description": "TEA UI — UX Standards as code: the status registry, tone model, feedback state machine, terminology deck, density scale and motion policy. Machine-readable, so rules can be enforced instead of remembered.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

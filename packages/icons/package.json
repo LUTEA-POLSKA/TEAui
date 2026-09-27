@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/icons",
   "version": "0.1.0",
-  "description": "TEA UI â€” the curated icon surface. A named, stable subset of the icon set plus the TEA brand marks, so products stop importing the whole icon library.",
+  "description": "TEA UI — the curated icon surface. A named, stable subset of the icon set plus the TEA brand marks, so products stop importing the whole icon library.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

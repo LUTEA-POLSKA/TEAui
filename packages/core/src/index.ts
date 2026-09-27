@@ -1,5 +1,5 @@
 ﻿/**
- * TEA UI â€” Core.
+ * TEA UI — Core.
  *
  * The product-agnostic layer. Nothing here knows what a server, a backup or a
  * user is, and nothing here calls an API. If a component needs to know, it

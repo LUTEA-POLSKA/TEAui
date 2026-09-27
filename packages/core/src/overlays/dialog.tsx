@@ -7,7 +7,7 @@ import { COPY } from "@tea-ui/ux-standards";
 import { dataSlot } from "../internal";
 
 /**
- * TEA UI â€” Dialog.
+ * TEA UI — Dialog.
  *
  * The audit's dialog defects, all fixed here:
  *  - A source project's dialogs shipped an English "Close" label inside an

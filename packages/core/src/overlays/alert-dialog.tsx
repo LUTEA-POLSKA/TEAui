@@ -15,7 +15,7 @@ import { Input } from "../inputs/input";
 import { Field, FieldLabel } from "../inputs/field";
 
 /**
- * TEA UI â€” AlertDialog, ConfirmDialog, `useConfirm`.
+ * TEA UI — AlertDialog, ConfirmDialog, `useConfirm`.
  *
  * The destructive-action standard, and the fix for an inversion the audit found
  * in both source products: a *reversible* two-step inline confirmation sat
@@ -28,11 +28,11 @@ import { Field, FieldLabel } from "../inputs/field";
  *  1. **Cancel is the default focus, and the destructive button is never the
  *     primary.** The default variant of the cancel button is `secondary`, the
  *     default variant of the confirm button is `outline` for recoverable work
- *     and `destructive` only for irreversible work â€” and it still sits second in
+ *     and `destructive` only for irreversible work — and it still sits second in
  *     the DOM order. A user who presses Enter reflexively must not destroy
  *     anything.
  *  2. **The consequence is stated, not implied.** `consequenceSentence()` builds
- *     it, so a dialog that says "wird gelÃ¶scht" can never sit next to a button
+ *     it, so a dialog that says "wird gelöscht" can never sit next to a button
  *     that says "Wiederherstellen".
  *
  * For `irreversible`, `confirmWord` must be typed before the action enables.
@@ -70,7 +70,7 @@ export interface ConfirmDialogProps {
   description?: string | undefined;
   /**
    * Required for `irreversible`. The user must type this exactly before the
-   * action enables â€” the last check for an action with no undo.
+   * action enables — the last check for an action with no undo.
    */
   confirmWord?: string | undefined;
   confirmLabel?: string | undefined;
@@ -199,7 +199,7 @@ export type ConfirmFn = (options: ConfirmOptions) => Promise<boolean>;
  *   const ok = await ask({ level: "irreversible", what: "Der Server", confirmWord: "srv-1" });
  *   if (ok) await remove();
  * };
- * return <>{confirm}<Button onClick={onDelete}>LÃ¶schen</Button></>;
+ * return <>{confirm}<Button onClick={onDelete}>Löschen</Button></>;
  * ```
  *
  * The pending promise is tracked in a ref and resolved in an effect, so an

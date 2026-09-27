@@ -17,7 +17,7 @@ import {
 } from "@tea-ui/core";
 
 /**
- * TEA UI Admin â€” the application shell.
+ * TEA UI Admin — the application shell.
  *
  * This component decides the information architecture of an admin product, so
  * the three rules it enforces are worth stating. All three were re-invented
@@ -213,7 +213,7 @@ function NavLink({
 
   // `aria-current` is what makes the position announceable. The background
   // colour alone is invisible to a screen reader and ambiguous in a greyscale
-  // screenshot â€” the audit found active items marked by colour alone.
+  // screenshot — the audit found active items marked by colour alone.
   const shared = {
     className,
     ...(active ? { "aria-current": "page" as const } : {}),
@@ -296,7 +296,7 @@ export interface PageProps extends React.ComponentProps<"div"> {
 
 /**
  * The page body. One component, so that "how much padding does a TEA page have"
- * has exactly one answer â€” the audit found `p-4`, `p-5` and `p-6` on the same
+ * has exactly one answer — the audit found `p-4`, `p-5` and `p-6` on the same
  * kind of page inside one product.
  */
 export const Page = React.forwardRef<HTMLDivElement, PageProps>(function Page(

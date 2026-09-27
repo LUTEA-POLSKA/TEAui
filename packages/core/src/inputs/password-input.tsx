@@ -8,7 +8,7 @@ import { Input, type InputProps } from "./input";
 import { InputGroup, InputGroupEnd } from "./input-group";
 
 /**
- * TEA UI â€” PasswordInput.
+ * TEA UI — PasswordInput.
  *
  * A password field with a show/hide toggle. Three decisions:
  *
@@ -20,8 +20,8 @@ import { InputGroup, InputGroupEnd } from "./input-group";
  *    hidden, "Passwort verbergen" while shown. A button labelled "Anzeigen"
  *    that sometimes hides is a button nobody trusts.
  *  - **Paste is never blocked.** A password manager fills this field by
- *    pasting. A `onPaste` handler that refuses a paste â€” a pattern the source
- *    project shipped â€” breaks every password manager on the planet, and is a
+ *    pasting. A `onPaste` handler that refuses a paste — a pattern the source
+ *    project shipped — breaks every password manager on the planet, and is a
  *    security control that does not measure security: a password in the
  *    clipboard is a password the user chose to copy.
  */
@@ -44,7 +44,7 @@ export interface PasswordInputProps
   onVisibleChange?: ((visible: boolean) => void) | undefined;
   /**
    * Defaults to `current-password`, the only value a browser password manager
-   * will offer to fill. Override with `new-password` on a registration form â€”
+   * will offer to fill. Override with `new-password` on a registration form —
    * leaving it as `current-password` there is why managers offer the *old*
    * password for a *new* one.
    */

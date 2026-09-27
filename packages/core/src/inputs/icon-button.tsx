@@ -5,7 +5,7 @@ import { Button, type ButtonProps } from "./button";
 import { useButtonGroupContext } from "./button-group";
 
 /**
- * TEA UI â€” IconButton.
+ * TEA UI — IconButton.
  *
  * A button whose entire content is an icon, which is the one control shape
  * where the accessible name cannot come from the content. The audit found five
@@ -13,7 +13,7 @@ import { useButtonGroupContext } from "./button-group";
  * announced "button" five times, and a voice-control user could not operate the
  * table at all, because there was no word to say.
  *
- * The fix is not a lint rule â€” it is a required prop. `label` has no default
+ * The fix is not a lint rule — it is a required prop. `label` has no default
  * and no `undefined` escape, so the compiler refuses the unnamed button. That
  * is worth more than a whole paragraph in a style guide.
  *
@@ -24,7 +24,7 @@ import { useButtonGroupContext } from "./button-group";
 export interface IconButtonProps
   extends Omit<ButtonProps, "size" | "children" | "asChild" | "as"> {
   /**
-   * The accessible name. **Required** â€” an icon-only button without one is the
+   * The accessible name. **Required** — an icon-only button without one is the
    * defect this component exists to make impossible. Write the action, not the
    * icon: "Server neu starten", not "Pfeil".
    */

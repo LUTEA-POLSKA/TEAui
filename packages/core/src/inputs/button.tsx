@@ -6,13 +6,13 @@ import { stateAttributes } from "../internal";
 import { Spinner } from "../feedback/spinner";
 
 /**
- * TEA UI â€” Button. The reference implementation for every component in TEA UI.
+ * TEA UI — Button. The reference implementation for every component in TEA UI.
  *
  * Read this file before writing another component. It encodes the house style:
  *
  *  1. `cva` for the variant surface, always with `className` passed *into* the
  *     call so a consumer's class merges correctly. (HomeServerManager's Button
- *     did this and its Badge did not â€” which is how the two drifted.)
+ *     did this and its Badge did not — which is how the two drifted.)
  *  2. `variant` and `size` are the only styling axes. There is no `color` prop
  *     and no `className` escape hatch that replaces a variant.
  *  3. State is exposed as data attributes, not only as styling.
@@ -73,7 +73,7 @@ export interface ButtonProps
   /**
    * Render the consumer's single child element instead of a `<button>`, keeping
    * the styling. Use this whenever the control is really a link or a router
-   * link â€” never to work around a nested-interactive problem.
+   * link — never to work around a nested-interactive problem.
    */
   asChild?: boolean | undefined;
   /**
@@ -83,7 +83,7 @@ export interface ButtonProps
   as?: React.ElementType | undefined;
   /**
    * The control is performing an action. Shows a spinner, keeps the width, sets
-   * `aria-busy`, and blocks repeat activation â€” it does *not* collapse to a
+   * `aria-busy`, and blocks repeat activation — it does *not* collapse to a
    * disabled control, so the label does not shift and the user can still read it.
    */
   loading?: boolean | undefined;

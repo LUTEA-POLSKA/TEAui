@@ -9,13 +9,13 @@ import { dataSlot, stateAttributes } from "../internal";
 import { Button } from "../inputs/button";
 
 /**
- * TEA UI â€” toasts.
+ * TEA UI — toasts.
  *
  * The audit found a toast implementation that was entirely inert: a
  * `ToastProvider` was mounted, but the `Toast` component rendered a plain `<div>`
  * instead of Radix's root, so nothing ever registered with the provider and
  * nothing was ever announced. Alongside it sat a store with `TOAST_LIMIT = 1`,
- * so a second toast silently replaced the first â€” the user never learned the
+ * so a second toast silently replaced the first — the user never learned the
  * second operation happened.
  *
  * Three decisions fix that class of problem:
@@ -228,7 +228,7 @@ export type ToasterProps = React.ComponentProps<typeof ToastPrimitive.Viewport>;
 
 /**
  * The live region. Mount this ONCE, near the root of the application, and
- * never conditionally â€” a region that is created at the moment it needs to
+ * never conditionally — a region that is created at the moment it needs to
  * announce is a region that is too late.
  */
 export const Toaster = React.forwardRef<HTMLOListElement, ToasterProps>(function Toaster(

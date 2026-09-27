@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/specialized",
   "version": "0.1.0",
-  "description": "TEA UI â€” the Specialized layer: heavy, optionally-loaded UI (charts, virtual list, tree view, diff viewer, code editor, date picker, kanban). Imported explicitly so its cost never lands on a product that does not use it.",
+  "description": "TEA UI — the Specialized layer: heavy, optionally-loaded UI (charts, virtual list, tree view, diff viewer, code editor, date picker, kanban). Imported explicitly so its cost never lands on a product that does not use it.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

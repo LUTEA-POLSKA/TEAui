@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/blueprints",
   "version": "0.1.0",
-  "description": "TEA UI â€” the Blueprints layer: reusable product feature systems (authentication, billing, onboarding, settings, monitoring, integrations, API management, notifications, permissions) composed from components, patterns and templates.",
+  "description": "TEA UI — the Blueprints layer: reusable product feature systems (authentication, billing, onboarding, settings, monitoring, integrations, API management, notifications, permissions) composed from components, patterns and templates.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

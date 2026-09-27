@@ -6,7 +6,7 @@ import { useFieldControlProps } from "./field";
 import { useInputGroupContext } from "./input-group";
 
 /**
- * TEA UI â€” Textarea.
+ * TEA UI — Textarea.
  *
  * A multi-line text field with the same field wiring, the same density tokens
  * and the same iOS-zoom floor as `Input`. It differs in exactly two ways:
@@ -56,7 +56,7 @@ export interface TextareaProps
    * Grow with the content instead of scrolling inside a fixed box.
    *
    * The recalculation sets the height to `scrollHeight`, which means the
-   * element's own scroll position is discarded on every keystroke â€” that is
+   * element's own scroll position is discarded on every keystroke — that is
    * what makes naive auto-resize feel broken. The fix here is to only ever set
    * an explicit height that is at least as large as the content, and to leave
    * `overflow-y` alone, so a box the user has scrolled inside never jumps.

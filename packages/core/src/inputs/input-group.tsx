@@ -4,18 +4,18 @@ import { cn } from "@tea-ui/utils";
 import { dataSlot, stateAttributes } from "../internal";
 
 /**
- * TEA UI â€” InputGroup.
+ * TEA UI — InputGroup.
  *
  * A control with addons welded to it: a search icon, a unit, a clear button, a
  * currency prefix. The audit found three hand-typed search inputs, each with its
- * own idea of how the icon sat in the box and at what height â€” and the second
+ * own idea of how the icon sat in the box and at what height — and the second
  * one had already drifted from the first.
  *
  * The mechanism is a context, not a `Slot`. `Slot` would let the *group* style a
  * child it knows nothing about, which is the wrong direction: what has to change
  * is the control's own chrome, and only the control knows what it is. So the
- * group publishes the classes an inner control must drop â€” border, background,
- * horizontal padding and its own focus ring â€” and `Input` applies them. The
+ * group publishes the classes an inner control must drop — border, background,
+ * horizontal padding and its own focus ring — and `Input` applies them. The
  * group can then wrap `Input`, `Textarea` or a `Select.Trigger`, and the border
  * appears exactly once, on the outside, with the ring on the outside too.
  *
@@ -54,7 +54,7 @@ export interface InputGroupProps extends Omit<React.ComponentProps<"div">, "chil
   children?: React.ReactNode;
   /**
    * Name for the group. Give it one whenever the group is more than decoration
-   * â€” a `role="group"` with no name appears in the structure list and says
+   * — a `role="group"` with no name appears in the structure list and says
    * nothing, which is worse than not being a group at all.
    */
   label?: string | undefined;
@@ -71,7 +71,7 @@ export interface InputGroupProps extends Omit<React.ComponentProps<"div">, "chil
  *   </InputGroupStart>
  *   <Input type="search" />
  *   <InputGroupEnd>
- *     <IconButton label="Suche zurÃ¼cksetzen" size="sm">
+ *     <IconButton label="Suche zurücksetzen" size="sm">
  *       <X aria-hidden />
  *     </IconButton>
  *   </InputGroupEnd>
@@ -145,7 +145,7 @@ const InputGroupAddon = React.forwardRef<HTMLSpanElement, InputGroupAddonProps>(
 export type InputGroupStartProps = React.ComponentProps<"span">;
 
 /**
- * An addon at the start edge â€” a decorative icon, a static prefix, a unit.
+ * An addon at the start edge — a decorative icon, a static prefix, a unit.
  *
  * A `title` attribute is not a label and an `svg` is not one either. If the icon
  * is the only content, either give the *control* a name or mark the icon
@@ -160,7 +160,7 @@ export const InputGroupStart = React.forwardRef<HTMLSpanElement, InputGroupStart
 export type InputGroupEndProps = React.ComponentProps<"span">;
 
 /**
- * An addon at the end edge â€” a clear button, a suffix, a unit.
+ * An addon at the end edge — a clear button, a suffix, a unit.
  *
  * An interactive child needs an accessible name of its own. The audit's five
  * unnamed icon buttons per table row were all of this shape; `IconButton` makes

@@ -7,7 +7,7 @@ import { dataSlot, stateAttributes, useControllableState } from "../internal";
 import { useFieldControlProps } from "./field";
 
 /**
- * TEA UI â€” Checkbox.
+ * TEA UI — Checkbox.
  *
  * A native `role="checkbox"` wrapped in Radix's primitive, which renders a
  * `<button>` plus a hidden native `<input>` so the control still participates in

@@ -4,7 +4,7 @@ import { cn } from "@tea-ui/utils";
 import { dataSlot } from "../internal";
 
 /**
- * TEA UI â€” ButtonGroup.
+ * TEA UI — ButtonGroup.
  *
  * A set of related actions, either spaced apart or welded edge to edge.
  *
@@ -20,7 +20,7 @@ import { dataSlot } from "../internal";
  * inline margin on every child after the first removes the double border, and
  * because TEA geometry has a radius of exactly zero, nothing else is needed to
  * make the seam disappear. (With a radius, every child but the first and last
- * would need its corners flattened â€” which is why the radius is zero.)
+ * would need its corners flattened — which is why the radius is zero.)
  */
 
 interface ButtonGroupContextValue {
@@ -33,8 +33,8 @@ const ButtonGroupContext = React.createContext<ButtonGroupContextValue | null>(n
 /**
  * Read by the TEA UI controls that can join a group. `null` when standalone.
  *
- * A control that does not read this still renders correctly inside a group â€”
- * the group styles its children from the outside â€” so this is an opt-in for
+ * A control that does not read this still renders correctly inside a group —
+ * the group styles its children from the outside — so this is an opt-in for
  * the parts that want to adapt, never a requirement.
  */
 export function useButtonGroupContext(): ButtonGroupContextValue | null {
@@ -44,7 +44,7 @@ export function useButtonGroupContext(): ButtonGroupContextValue | null {
 export interface ButtonGroupProps extends Omit<React.ComponentProps<"div">, "children"> {
   children?: React.ReactNode;
   /**
-   * Name for the group. **Required** â€” a `role="group"` with no name is an
+   * Name for the group. **Required** — a `role="group"` with no name is an
    * entry in the structure list that says nothing, which costs a screen reader
    * user a stop for no information.
    */
@@ -110,7 +110,7 @@ export const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(fu
 export type ButtonGroupSeparatorProps = React.ComponentProps<"span">;
 
 /**
- * A gap inside a `joined` group, for splitting one control into two halves â€”
+ * A gap inside a `joined` group, for splitting one control into two halves —
  * "undo" and "redo", "date from" and "date to". A separator is a `<span>` with
  * `aria-hidden`, because it is a drawing, not content.
  */

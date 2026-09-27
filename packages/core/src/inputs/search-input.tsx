@@ -10,7 +10,7 @@ import { Input, type InputProps } from "./input";
 import { InputGroup, InputGroupEnd, InputGroupStart } from "./input-group";
 
 /**
- * TEA UI â€” SearchInput.
+ * TEA UI — SearchInput.
  *
  * An input, a decorative search icon and a clear button, already wired
  * together. The audit found three of these hand-typed, each with its own
@@ -20,7 +20,7 @@ import { InputGroup, InputGroupEnd, InputGroupStart } from "./input-group";
  * What this component decides once, for everybody:
  *
  *  - **The icon is decorative.** A magnifier is not a name. It is
- *    `aria-hidden`, and the accessible name comes from `label` â€” required, for
+ *    `aria-hidden`, and the accessible name comes from `label` — required, for
  *    the same reason it is on `IconButton`.
  *  - **The clear button has a name, and it only exists when there is something
  *    to clear.** A permanently present, permanently disabled clear button is a
@@ -31,7 +31,7 @@ import { InputGroup, InputGroupEnd, InputGroupStart } from "./input-group";
  */
 export interface SearchInputProps
   extends Omit<InputProps, "value" | "defaultValue" | "onChange" | "type" | "size" | "onSubmit"> {
-  /** The accessible name. **Required** â€” the icon is not a label. */
+  /** The accessible name. **Required** — the icon is not a label. */
   label: string;
   /** Controlled query. */
   value?: string | undefined;

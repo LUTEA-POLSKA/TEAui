@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/patterns",
   "version": "0.1.0",
-  "description": "TEA UI â€” the Patterns layer: configurable, business-logic-free compositions that solve a recurring interaction problem (master/detail, CRUD, wizard, notification centre, filter bar, action bar).",
+  "description": "TEA UI — the Patterns layer: configurable, business-logic-free compositions that solve a recurring interaction problem (master/detail, CRUD, wizard, notification centre, filter bar, action bar).",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

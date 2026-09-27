@@ -6,7 +6,7 @@ import { COPY } from "@tea-ui/ux-standards";
 import { dataSlot, stateAttributes } from "../internal";
 
 /**
- * TEA UI â€” Label.
+ * TEA UI — Label.
  *
  * A label for a control, for the cases where `FieldLabel` is not the right
  * thing: a filter chip row, a settings list, a dialog's field grid that already
@@ -30,7 +30,7 @@ export interface LabelProps extends React.ComponentProps<typeof LabelPrimitive.R
    * visually hidden "Pflichtfeld", because an asterisk is a shape a screen
    * reader cannot report.
    *
-   * The control still needs `aria-required` â€” inside a `Field` that comes from
+   * The control still needs `aria-required` — inside a `Field` that comes from
    * the field, and `FieldLabel` reads it from the same place.
    */
   required?: boolean | undefined;

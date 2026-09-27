@@ -1,5 +1,5 @@
 ﻿/**
- * TEA UI â€” overlays.
+ * TEA UI — overlays.
  *
  * Everything that floats above the page. The universal guarantees across all
  * of them: portal to `document.body`, focus moved in on open and restored to the

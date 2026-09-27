@@ -6,7 +6,7 @@ import { dataSlot, stateAttributes } from "../internal";
 import { useFieldControlProps } from "./field";
 
 /**
- * TEA UI â€” RadioGroup and Radio.
+ * TEA UI — RadioGroup and Radio.
  *
  * One choice out of a small set. The pair is a family for a reason: the
  * grouping *is* the semantics. `role="radiogroup"` is what tells a screen reader
@@ -29,7 +29,7 @@ export interface RadioGroupProps
     React.ComponentProps<typeof RadioGroupPrimitive.Root>,
     "value" | "defaultValue" | "onValueChange" | "orientation" | "dir"
   > {
-  /** Controlled value â€” the `value` of the selected `Radio`. */
+  /** Controlled value — the `value` of the selected `Radio`. */
   value?: string | undefined;
   /** Uncontrolled initial value. */
   defaultValue?: string | undefined;
@@ -41,7 +41,7 @@ export interface RadioGroupProps
    * Name for the group. Give it one whenever the group is not already named by
    * a `FieldGroup` legend: a `role="radiogroup"` with no name is an entry in the
    * structure list that says nothing. A `Field` + `FieldLabel` pair is *not* a
-   * substitute here â€” a label cannot be associated with a `role="radiogroup"`
+   * substitute here — a label cannot be associated with a `role="radiogroup"`
    * container, only with each option.
    */
   label?: string | undefined;

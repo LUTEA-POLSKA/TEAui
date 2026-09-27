@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/core",
   "version": "0.1.0",
-  "description": "TEA UI â€” the Core primitive layer: layout, typography, inputs, feedback, overlays, navigation and accessibility primitives. Product-agnostic, WCAG 2.2 AA, native semantics first.",
+  "description": "TEA UI — the Core primitive layer: layout, typography, inputs, feedback, overlays, navigation and accessibility primitives. Product-agnostic, WCAG 2.2 AA, native semantics first.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

@@ -7,7 +7,7 @@ import { COPY } from "@tea-ui/ux-standards";
 import { dataSlot } from "../internal";
 
 /**
- * TEA UI â€” DropdownMenu and ContextMenu.
+ * TEA UI — DropdownMenu and ContextMenu.
  *
  * Both source projects shipped a fully built `DropdownMenu` and used it in
  * exactly one place, hand-rolling the rest. This is the one implementation, and

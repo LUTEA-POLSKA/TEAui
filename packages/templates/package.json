@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/templates",
   "version": "0.1.0",
-  "description": "TEA UI â€” the Templates layer: complete, business-logic-free page structures assembled from components, patterns, UX Standards and themes.",
+  "description": "TEA UI — the Templates layer: complete, business-logic-free page structures assembled from components, patterns, UX Standards and themes.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

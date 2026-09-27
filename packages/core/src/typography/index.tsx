@@ -7,10 +7,10 @@ import { COPY } from "@tea-ui/ux-standards";
 import { dataSlot } from "../internal";
 
 /**
- * TEA UI â€” typography.
+ * TEA UI — typography.
  *
  * One type scale, used everywhere. The audit found the two source projects
- * between them rendering real UI text at **9px and 10px** â€” sizes that fail
+ * between them rendering real UI text at **9px and 10px** — sizes that fail
  * legibility for anyone with reduced acuity and fail outright for anyone with a
  * low-vision condition. This scale has no step below 11px, and the 11px step is
  * reserved for uppercase micro-labels, where the letterforms are short and the
@@ -18,7 +18,7 @@ import { dataSlot } from "../internal";
  *
  * `Heading` renders a **real heading element** at the level it is given. The
  * audit found a `CardTitle` rendering a `<div>`, which silently flattened the
- * heading structure of every page that used it â€” a screen-reader user navigating
+ * heading structure of every page that used it — a screen-reader user navigating
  * by heading had nothing to navigate by. `level` is therefore required and has
  * no default guess.
  */
@@ -100,7 +100,7 @@ export const Text = React.forwardRef<HTMLParagraphElement, TextProps>(function T
 });
 
 export interface HeadingProps extends Omit<React.ComponentProps<"h1">, "color"> {
-  /** The heading level. Required â€” there is no safe default for a document. */
+  /** The heading level. Required — there is no safe default for a document. */
   level: 1 | 2 | 3 | 4 | 5 | 6;
   tone?: "default" | "muted" | "accent" | undefined;
   weight?: "semibold" | "bold" | undefined;
@@ -293,7 +293,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link
       {external ? (
         <>
           <ArrowRight size={14} aria-hidden="true" className="ms-1 inline-block align-[-2px]" />
-          <span className="sr-only"> (externer Link, Ã¶ffnet in neuem Tab)</span>
+          <span className="sr-only"> (externer Link, öffnet in neuem Tab)</span>
         </>
       ) : null}
     </Component>

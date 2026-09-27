@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/public",
   "version": "0.1.0",
-  "description": "TEA UI â€” the Public UI layer: marketing sections, website chrome, content blocks, conversion forms and public account screens. A first-class system, not Admin UI in different colours.",
+  "description": "TEA UI — the Public UI layer: marketing sections, website chrome, content blocks, conversion forms and public account screens. A first-class system, not Admin UI in different colours.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

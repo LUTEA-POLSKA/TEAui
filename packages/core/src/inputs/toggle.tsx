@@ -6,7 +6,7 @@ import { dataSlot, stateAttributes } from "../internal";
 import { useButtonGroupContext } from "./button-group";
 
 /**
- * TEA UI â€” Toggle and ToggleGroup.
+ * TEA UI — Toggle and ToggleGroup.
  *
  * A button that stays pressed. Two properties separate it from every other
  * control here, and both follow from the fact that it *persists*:

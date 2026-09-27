@@ -7,7 +7,7 @@ import { dataSlot } from "../internal";
 import { DialogOverlay } from "./dialog";
 
 /**
- * TEA UI â€” Drawer and Sheet.
+ * TEA UI — Drawer and Sheet.
  *
  * The one primitive that replaces three copy-pasted "right drawer" overrides in
  * the audit, and the answer to the behaviour *both* source products needed and

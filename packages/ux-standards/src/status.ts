@@ -1,13 +1,13 @@
 ﻿import type { Tone } from "@tea-ui/tokens";
 
 /**
- * TEA UI â€” the status registry.
+ * TEA UI — the status registry.
  *
  * This is the single place a wire value becomes a word and a tone. The audit of
  * the two source projects found, between them, five hand-written
- * status-to-label tables *per project*, none of which agreed â€” including for
+ * status-to-label tables *per project*, none of which agreed — including for
  * the same wire value, where one project said "Online" and the other said
- * "LÃ¤uft" for the same state, and one used "GÃ¼ltig" where the other used
+ * "Läuft" for the same state, and one used "Gültig" where the other used
  * "Online" for a certificate.
  *
  * Here, that decision has been made once. A component asks
@@ -50,12 +50,12 @@ const HEALTH = domain<"online" | "degraded" | "offline" | "unknown" | "maintenan
   online: {
     label: "Online",
     tone: "positive",
-    description: "Der Dienst antwortet normal und erfÃ¼llt seine Aufgabe.",
+    description: "Der Dienst antwortet normal und erfüllt seine Aufgabe.",
   },
   degraded: {
-    label: "EingeschrÃ¤nkt",
+    label: "Eingeschränkt",
     tone: "caution",
-    description: "Der Dienst antwortet, aber einzelne Funktionen sind nicht verfÃ¼gbar.",
+    description: "Der Dienst antwortet, aber einzelne Funktionen sind nicht verfügbar.",
   },
   offline: {
     label: "Offline",
@@ -70,7 +70,7 @@ const HEALTH = domain<"online" | "degraded" | "offline" | "unknown" | "maintenan
   maintenance: {
     label: "Wartung",
     tone: "info",
-    description: "Der Dienst wird geplant bearbeitet und ist mÃ¶glicherweise nicht verfÃ¼gbar.",
+    description: "Der Dienst wird geplant bearbeitet und ist möglicherweise nicht verfügbar.",
   },
 });
 
@@ -78,22 +78,22 @@ const RESOURCE = domain<"normal" | "elevated" | "high" | "critical">({
   normal: {
     label: "Normal",
     tone: "positive",
-    description: "Die Auslastung liegt im Ã¼blichen Bereich.",
+    description: "Die Auslastung liegt im üblichen Bereich.",
   },
   elevated: {
-    label: "ErhÃ¶ht",
+    label: "Erhöht",
     tone: "caution",
-    description: "Die Auslastung nÃ¤hert sich dem Grenzwert.",
+    description: "Die Auslastung nähert sich dem Grenzwert.",
   },
   high: {
     label: "Hoch",
     tone: "caution",
-    description: "Die Auslastung liegt Ã¼ber dem Zielwert und sollte beobachtet werden.",
+    description: "Die Auslastung liegt über dem Zielwert und sollte beobachtet werden.",
   },
   critical: {
     label: "Kritisch",
     tone: "critical",
-    description: "Die Auslastung hat den Grenzwert Ã¼berschritten. Handeln ist erforderlich.",
+    description: "Die Auslastung hat den Grenzwert überschritten. Handeln ist erforderlich.",
   },
 });
 
@@ -101,10 +101,10 @@ const BACKUP = domain<"succeeded" | "running" | "pending" | "failed" | "expired"
   succeeded: {
     label: "Erfolgreich",
     tone: "positive",
-    description: "Die Sicherung wurde vollstÃ¤ndig geschrieben und geprÃ¼ft.",
+    description: "Die Sicherung wurde vollständig geschrieben und geprüft.",
   },
   running: {
-    label: "LÃ¤uft",
+    label: "Läuft",
     tone: "info",
     description: "Die Sicherung wird gerade geschrieben.",
   },
@@ -121,43 +121,43 @@ const BACKUP = domain<"succeeded" | "running" | "pending" | "failed" | "expired"
   expired: {
     label: "Abgelaufen",
     tone: "caution",
-    description: "Die Sicherung ist Ã¤lter als die Aufbewahrungsfrist.",
+    description: "Die Sicherung ist älter als die Aufbewahrungsfrist.",
   },
 });
 
 const CERTIFICATE = domain<"valid" | "expiring" | "expired" | "invalid" | "unknown">({
   valid: {
-    label: "GÃ¼ltig",
+    label: "Gültig",
     tone: "positive",
-    description: "Das Zertifikat ist gÃ¼ltig und wird automatisch erneuert.",
+    description: "Das Zertifikat ist gültig und wird automatisch erneuert.",
   },
   expiring: {
-    label: "LÃ¤uft ab",
+    label: "Läuft ab",
     tone: "caution",
-    description: "Das Zertifikat lÃ¤uft in KÃ¼rze ab und sollte erneuert werden.",
+    description: "Das Zertifikat läuft in Kürze ab und sollte erneuert werden.",
   },
   expired: {
     label: "Abgelaufen",
     tone: "critical",
-    description: "Das Zertifikat ist abgelaufen. Die Verbindung ist nicht mehr vertrauenswÃ¼rdig.",
+    description: "Das Zertifikat ist abgelaufen. Die Verbindung ist nicht mehr vertrauenswürdig.",
   },
   invalid: {
-    label: "UngÃ¼ltig",
+    label: "Ungültig",
     tone: "critical",
-    description: "Das Zertifikat konnte nicht geprÃ¼ft werden.",
+    description: "Das Zertifikat konnte nicht geprüft werden.",
   },
   unknown: {
     label: "Unbekannt",
     tone: "neutral",
-    description: "Es liegt keine aktuelle PrÃ¼fung vor.",
+    description: "Es liegt keine aktuelle Prüfung vor.",
   },
 });
 
 const CONTAINER = domain<"running" | "created" | "paused" | "restarting" | "stopped" | "error">({
   running: {
-    label: "LÃ¤uft",
+    label: "Läuft",
     tone: "positive",
-    description: "Der Container ist gestartet und wird ausgefÃ¼hrt.",
+    description: "Der Container ist gestartet und wird ausgeführt.",
   },
   created: {
     label: "Erstellt",
@@ -182,7 +182,7 @@ const CONTAINER = domain<"running" | "created" | "paused" | "restarting" | "stop
   error: {
     label: "Fehler",
     tone: "critical",
-    description: "Der Container lÃ¤uft nicht, weil ein Fehler aufgetreten ist.",
+    description: "Der Container läuft nicht, weil ein Fehler aufgetreten ist.",
   },
 });
 
@@ -195,10 +195,10 @@ const WEBSITE = domain<"online" | "deploying" | "degraded" | "offline" | "error"
   deploying: {
     label: "Wird ausgerollt",
     tone: "info",
-    description: "Eine neue Version wird gerade verÃ¶ffentlicht.",
+    description: "Eine neue Version wird gerade veröffentlicht.",
   },
   degraded: {
-    label: "EingeschrÃ¤nkt",
+    label: "Eingeschränkt",
     tone: "caution",
     description: "Die Website ist erreichbar, hat aber Performance- oder Zertifikatsprobleme.",
   },
@@ -215,26 +215,26 @@ const WEBSITE = domain<"online" | "deploying" | "degraded" | "offline" | "error"
   unknown: {
     label: "Unbekannt",
     tone: "neutral",
-    description: "Es liegt keine aktuelle PrÃ¼fung vor.",
+    description: "Es liegt keine aktuelle Prüfung vor.",
   },
 });
 
 const DEPENDENCY = domain<"ok" | "warning" | "missing" | "error">({
-  ok: { label: "In Ordnung", tone: "positive", description: "Die AbhÃ¤ngigkeit ist vorhanden und aktuell." },
+  ok: { label: "In Ordnung", tone: "positive", description: "Die Abhängigkeit ist vorhanden und aktuell." },
   warning: {
     label: "Warnung",
     tone: "caution",
-    description: "Die AbhÃ¤ngigkeit ist veraltet oder auffÃ¤llig.",
+    description: "Die Abhängigkeit ist veraltet oder auffällig.",
   },
   missing: {
     label: "Fehlt",
     tone: "critical",
-    description: "Die AbhÃ¤ngigkeit wird benÃ¶tigt, ist aber nicht installiert.",
+    description: "Die Abhängigkeit wird benötigt, ist aber nicht installiert.",
   },
   error: {
     label: "Fehler",
     tone: "critical",
-    description: "Die AbhÃ¤ngigkeit konnte nicht geprÃ¼ft werden.",
+    description: "Die Abhängigkeit konnte nicht geprüft werden.",
   },
 });
 
@@ -270,7 +270,7 @@ const CRM = domain<
   no_website: {
     label: "Ohne Website",
     tone: "neutral",
-    description: "FÃ¼r den Eintrag wurde keine Website gefunden.",
+    description: "Für den Eintrag wurde keine Website gefunden.",
   },
   opportunity: {
     label: "Interesse",
@@ -283,9 +283,9 @@ const CRM = domain<
     description: "Erster Kontakt hergestellt, Antwort steht aus.",
   },
   conversation: {
-    label: "Im GesprÃ¤ch",
+    label: "Im Gespräch",
     tone: "info",
-    description: "Es findet ein aktiver Austausch Ã¼ber das Angebot statt.",
+    description: "Es findet ein aktiver Austausch über das Angebot statt.",
   },
   offer: {
     label: "Angebot",
@@ -321,9 +321,9 @@ const PROJECT = domain<"planning" | "active" | "on_hold" | "review" | "delivered
     description: "Das Projekt ruht und wartet auf eine Entscheidung oder Zuarbeit.",
   },
   review: {
-    label: "In PrÃ¼fung",
+    label: "In Prüfung",
     tone: "caution",
-    description: "Das Ergebnis wird geprÃ¼ft und abgenommen.",
+    description: "Das Ergebnis wird geprüft und abgenommen.",
   },
   delivered: {
     label: "Abgeschlossen",
@@ -368,7 +368,7 @@ export type AnyStatusKey = { [D in StatusDomain]: StatusKey<D> }[StatusDomain];
  * The key is `domain` + `key` rather than a flat string, because a flat string
  * cannot be checked: `statusMeta("healthy")` would compile even if no domain
  * ever produced "healthy". This signature makes a typo a type error, and
- * adding a wire value without a label is a type error too â€” which is exactly
+ * adding a wire value without a label is a type error too — which is exactly
  * the failure mode that produced five disagreeing tables.
  */
 export function statusMeta<D extends StatusDomain>(domain: D, key: StatusKey<D>): StatusMeta {

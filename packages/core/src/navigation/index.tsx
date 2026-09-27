@@ -20,7 +20,7 @@ import { Button } from "../inputs/button";
 
 /**
  * Tabs are for **peer views of the same subject**. If the things being switched
- * between are not peers, they are navigation, and they belong in a sidebar â€”
+ * between are not peers, they are navigation, and they belong in a sidebar —
  * promoting peers into the top level is how information architecture collapses.
  *
  * The active indicator is a weight change as well as a colour change. A tab
@@ -320,7 +320,7 @@ export const BreadcrumbPage = React.forwardRef<HTMLSpanElement, React.ComponentP
   },
 );
 
-/** Decorative by definition â€” the `<ol>` already conveys the hierarchy. */
+/** Decorative by definition — the `<ol>` already conveys the hierarchy. */
 export const BreadcrumbSeparator = React.forwardRef<HTMLLIElement, React.ComponentProps<"li">>(
   function BreadcrumbSeparator({ className, children, ...props }, ref) {
     return (
@@ -374,7 +374,7 @@ export function Pagination({
         {pageWindow(page, pageCount).map((entry, index) =>
           entry === "ellipsis" ? (
             <li key={`gap-${index}`} aria-hidden="true" className="px-1 text-fg-subtle">
-              â€¦
+              …
             </li>
           ) : (
             <li key={entry}>
@@ -402,7 +402,7 @@ function PaginationSummary({
   return (
     <p className="text-micro text-fg-muted">
       {COPY.a11y.page} {page} {COPY.a11y.of} {pageCount}
-      {itemLabel ? ` Â· ${itemLabel}` : null}
+      {itemLabel ? ` · ${itemLabel}` : null}
     </p>
   );
 }

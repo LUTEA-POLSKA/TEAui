@@ -6,7 +6,7 @@ import { useFieldControlProps } from "./field";
 import { useInputGroupContext } from "./input-group";
 
 /**
- * TEA UI â€” Input.
+ * TEA UI — Input.
  *
  * A single-line text field, and the reference for every other TEA UI control:
  * it wires itself to a `Field` through {@link useFieldControlProps} rather than
@@ -18,7 +18,7 @@ import { useInputGroupContext } from "./input-group";
  *
  *  1. **The font goes to 16px on a coarse pointer.** A field rendered below
  *     16px makes iOS Safari zoom the page on focus, and it does not zoom back
- *     out when the user tabs away â€” the page is left magnified. The source
+ *     out when the user tabs away — the page is left magnified. The source
  *     project patched this with `md:text-sm`, which is a viewport-width guess:
  *     it leaves a phone in landscape at 14px and zooms anyway. `pointer-coarse:`
  *     asks the only question that matters, which is whether the input is being
@@ -40,7 +40,7 @@ export const inputVariants = cva(
     "placeholder:text-fg-subtle",
     // Below 16px, iOS Safari zooms the page on focus and never zooms back out.
     "pointer-coarse:text-body",
-    // `focus-visible:` and never `focus:` â€” a ring on every mouse press is
+    // `focus-visible:` and never `focus:` — a ring on every mouse press is
     // noise, and it is the reason the audit's tables looked like this.
     "focus-visible:border-ring-strong focus-visible:ring-2 focus-visible:ring-ring",
     "disabled:cursor-not-allowed disabled:border-line disabled:bg-surface-2 disabled:text-fg-subtle",
@@ -82,7 +82,7 @@ export interface InputProps
  * <Field required invalid={!!error}>
  *   <FieldLabel>E-Mail</FieldLabel>
  *   <Input type="email" autoComplete="email" />
- *   <FieldDescription>Wir senden keine BestÃ¤tigung.</FieldDescription>
+ *   <FieldDescription>Wir senden keine Bestätigung.</FieldDescription>
  *   <FieldError>{error}</FieldError>
  * </Field>
  * ```

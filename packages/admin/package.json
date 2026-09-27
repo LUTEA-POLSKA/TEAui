@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/admin",
   "version": "0.1.0",
-  "description": "TEA UI â€” the Admin UI layer: form systems, data tables, dashboard and application shell, product states, infrastructure status, technical viewers, file management and security controls. Optimised for information density and keyboard-heavy work.",
+  "description": "TEA UI — the Admin UI layer: form systems, data tables, dashboard and application shell, product states, infrastructure status, technical viewers, file management and security controls. Optimised for information density and keyboard-heavy work.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",

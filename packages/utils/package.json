@@ -1,7 +1,7 @@
 {
   "name": "@tea-ui/utils",
   "version": "0.1.0",
-  "description": "TEA UI â€” class merging, variant authoring and framework-free utilities shared by every TEA UI package.",
+  "description": "TEA UI — class merging, variant authoring and framework-free utilities shared by every TEA UI package.",
   "license": "UNLICENSED",
   "private": true,
   "type": "module",
