@@ -13,10 +13,15 @@ import reactHooks from "eslint-plugin-react-hooks";
  */
 export default tseslint.config(
   {
+    // Build output is never linted. `dist-site/` in particular contains bundled
+    // third-party code, and linting it produces thousands of errors in files
+    // nobody wrote and nobody can change.
     ignores: [
       "**/dist/**",
       "**/node_modules/**",
       "**/reports/**",
+      "**/dist-site/**",
+      "**/screenshots/**",
       "docs/audit/**",
       "apps/*/dist/**",
     ],

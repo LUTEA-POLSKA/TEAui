@@ -3,6 +3,22 @@ import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
 
 /**
+ * Deployment base path.
+ *
+ * `base` is what makes the same build work on a domain root, on Vercel, and in
+ * a GitHub Pages project subpath (`https://<user>.github.io/TEAui/`). Without it
+ * the asset URLs are absolute and every route 404s on Pages.
+ *
+ * It is read from `BASE_PATH` so the *source* never changes between targets —
+ * a hard-coded base would be a bug waiting for the next deploy.
+ *
+ * The router is hash-based on purpose. That is the reason a static host needs
+ * no rewrite rules and no `404.html` fallback: every route lives in the
+ * fragment, so the server only ever serves one file.
+ */
+const base = process.env.BASE_PATH ?? "/";
+
+/**
  * The Showcase resolves workspace packages from SOURCE, not from `dist`.
  *
  * That is a deliberate trade. Building eleven packages before every dev-server
@@ -15,12 +31,12 @@ import { resolve } from "node:path";
  * the contract that consumers depend on is still tested — just not on every
  * keystroke.
  */
-const pkg = (name: string): string =>
-  resolve(import.meta.dirname, "../../packages", name, "src/index.ts");
+const pkg = (name: string): string => resolve(import.meta.dirname, "../../packages", name, "src");
 
 const token = (): string => resolve(import.meta.dirname, "../../packages/tokens");
 
-export default defineConfig({
+export default defineConfig(() => ({
+  base,
   plugins: [react()],
   resolve: {
     // Order matters: the stylesheet specifier must be matched before the bare
@@ -57,4 +73,4 @@ export default defineConfig({
   },
   server: { port: 4173, strictPort: false },
   preview: { port: 4173 },
-});
+}));

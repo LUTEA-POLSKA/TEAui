@@ -1,0 +1,111 @@
+name: Deploy static site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # A repository can enable "Run on all pushes" instead, but an explicit path
+  # filter keeps a library-only commit from rebuilding and redeploying a site
+  # that did not change.
+  paths:
+    - "apps/**"
+    - "packages/**/src/**"
+    - "scripts/build-site.mjs"
+    - "scripts/serve.mjs"
+    - ".github/workflows/pages.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/**"
+      - "packages/**/src/**"
+      - "scripts/build-site.mjs"
+
+# GitHub Pages only has room for one deployment at a time. A new push cancels the
+# previous one, so a long queue of commits does not deploy five stale builds in a
+# row — the last one wins, which is what a visitor wants.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # The site is a demonstration of the system, so a system that does not
+      # pass its own gate must not be published. `ci.yml` runs this too, but
+      # workflows cannot depend on each other — and a site that deploys green
+      # from a red library would be the worst possible advertisement for a design
+      # system other teams are told to rely on.
+      - name: Verify the library
+        run: |
+          npm run check:boundaries
+          npm run typecheck
+          npm run lint
+          npm run test
+          npm run build:packages
+          npm run check:exports
+          npm run check:tree
+
+      - name: Build the static site
+        # `BASE_PATH` is the one value that differs from a local build. Without
+        # it every asset URL is absolute and the site 404s under the project
+        # subpath — the most common reason a first Pages deploy looks broken.
+        env:
+          BASE_PATH: ${{ vars.SITE_BASE_PATH || '/TEAui/' }}
+        run: npm run site:build
+
+      - name: Verify the artefact serves from a subpath
+        # The build is checked against a server that behaves like a static host
+        # before it is uploaded. A deploy that only fails in production is a
+        # deploy that fails every time.
+        env:
+          BASE_PATH: ${{ vars.SITE_BASE_PATH || '/TEAui/' }}
+        run: |
+          node scripts/serve.mjs &
+          SERVER_PID=$!
+          for _ in $(seq 1 20); do
+            curl -sf -o /dev/null "http://localhost:4175${BASE_PATH}" && break
+            sleep 0.5
+          done
+          for path in "" "docs/" ".nojekyll"; do
+            url="http://localhost:4175${BASE_PATH}${path}"
+            if curl -sf -o /dev/null "$url"; then
+              echo "OK   $url"
+            else
+              echo "FAIL $url" && kill $SERVER_PID && exit 1
+            fi
+          done
+          kill $SERVER_PID
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-site
+
+  deploy:
+    name: Deploy
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

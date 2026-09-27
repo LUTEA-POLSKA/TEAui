@@ -35,7 +35,10 @@
     "dev": "npm run showcase:dev",
     "release": "changeset publish",
     "version": "changeset version",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "site:build": "node scripts/build-site.mjs",
+    "site:preview": "npx serve dist-site -l 4175",
+    "site:serve": "node scripts/serve.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",

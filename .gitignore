@@ -36,3 +36,6 @@ yarn-error.log*
 
 # generated size reports
 reports/
+
+# static site build output
+dist-site/

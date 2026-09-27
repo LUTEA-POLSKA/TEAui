@@ -20,7 +20,15 @@ const pkg = (name: string): string => resolve(import.meta.dirname, "../../packag
 
 const token = (): string => resolve(import.meta.dirname, "../../packages/tokens");
 
+/**
+ * The documentation is deployed under a subpath (`/docs/`) of the same host as
+ * the Showcase, so `base` is read from `BASE_PATH` exactly as the Showcase reads
+ * it. See the Showcase's config for the reasoning.
+ */
+const base = process.env.BASE_PATH ?? "/";
+
 export default defineConfig({
+  base,
   plugins: [react()],
   resolve: {
     alias: [
