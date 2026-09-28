@@ -36,7 +36,6 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const slug = "landnevermore/TEAui";
 const pages = "https://landnevermore.github.io/TEAui/";
 const docs = "https://landnevermore.github.io/TEAui/docs/";
-const version = "0.1.0";
 
 /** What each package is for, in one line, and the words a searcher would use. */
 const PACKAGES = {
@@ -120,6 +119,32 @@ const names = (await readdir(resolve(root, "packages"), { withFileTypes: true })
   .map((entry) => entry.name)
   .sort();
 
+/**
+ * Which packages are the base, and which are still being built.
+ *
+ * The split is not cosmetic. A `1.0.0` is a promise, and the seven packages below
+ * have been built, measured and imported from the registry; the four above them
+ * are scaffolding that `check-boundaries` still reports as declared but not
+ * implemented. Publishing them at `1.0.0` would make `npm i @tea-ui/blueprints`
+ * claim a finished system and deliver 73 kB of frame. They stay at `0.1.0` and
+ * reach `1.0.0` when they hold something, and a caret range on a `0.x` correctly
+ * refuses to silently absorb a `1.0.0` that might break it.
+ */
+const STABLE = new Set([
+  "utils",
+  "tokens",
+  "ux-standards",
+  "icons",
+  "core",
+  "admin",
+  "public",
+]);
+const STABLE_VERSION = "1.0.0";
+const WIP_VERSION = "0.1.0";
+
+/** The version each package will carry, resolved before any range is written. */
+const versionOf = (name) => (STABLE.has(name) ? STABLE_VERSION : WIP_VERSION);
+
 // Before the per-package copies, not after: the first run has nothing to copy from.
 await writeFile(resolve(root, "LICENSE"), LICENSE, "utf8");
 
@@ -134,7 +159,7 @@ for (const name of names) {
 
   delete manifest.private;
   manifest.license = "MIT";
-  manifest.version = manifest.version ?? version;
+  manifest.version = versionOf(name);
   manifest.description = description;
   manifest.keywords = [...new Set([...keywords, "tea-ui", "design-system"])];
   manifest.author = "landnevermore";
@@ -144,12 +169,26 @@ for (const name of names) {
   manifest.files = ["dist", "README.md", "LICENSE"];
   manifest.publishConfig = { access: "public" };
 
-  // An internal dependency on "*" has no floor. Pin to the version being released.
+  /**
+   * Internal dependency ranges.
+   *
+   * Two things were wrong here. The range was taken from the *depending* package's
+   * own version, so `patterns` at 0.1.0 would have declared `core@^0.1.0` — and
+   * `^0.1.0` does not match `1.0.0`, so the install of a published `patterns`
+   * would have failed against a released `core`. And the condition only rewrote
+   * a range of `"*"`, so once a range was written it was never corrected again.
+   *
+   * So the range always comes from the dependency's own version, and it is
+   * rewritten every time rather than only when it looks untouched.
+   */
   for (const field of ["dependencies", "peerDependencies", "devDependencies"]) {
-    for (const [dependency, range] of Object.entries(manifest[field] ?? {})) {
-      if (dependency.startsWith("@tea-ui/") && range === "*") {
-        manifest[field][dependency] = `^${manifest.version}`;
-      }
+    for (const dependency of Object.keys(manifest[field] ?? {})) {
+      if (!dependency.startsWith("@tea-ui/")) continue;
+      const target = dependency.slice("@tea-ui/".length);
+      if (!names.includes(target)) continue;
+      const range = `^${versionOf(target)}`;
+      if (manifest[field][dependency] !== range) changed.push(`${name} -> ${dependency}@${range}`);
+      manifest[field][dependency] = range;
     }
   }
 
@@ -161,8 +200,12 @@ for (const name of names) {
   await writeFile(path, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
   await writeFile(resolve(directory, "README.md"), readme(name, description), "utf8");
   await copyFile(resolve(root, "LICENSE"), resolve(directory, "LICENSE"));
-  changed.push(name);
 }
 
-console.log(`[tea-ui] prepared ${changed.length} packages: ${changed.join(", ")}`);
-console.log(`[tea-ui] licence MIT, access public, internal ranges pinned to ^${version}`);
+const stable = names.filter((name) => STABLE.has(name));
+const wip = names.filter((name) => !STABLE.has(name));
+
+console.log(`[tea-ui] prepared ${names.length} packages: ${names.join(", ")}`);
+console.log(`[tea-ui] ${STABLE_VERSION} (base rewrite): ${stable.join(", ")}`);
+console.log(`[tea-ui] ${WIP_VERSION} (still being built): ${wip.join(", ")}`);
+for (const line of changed) console.log(`[tea-ui] range ${line}`);

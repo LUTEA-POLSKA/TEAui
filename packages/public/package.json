@@ -1,6 +1,6 @@
 {
   "name": "@tea-ui/public",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "The public layer: marketing sections, hero, pricing, FAQ, conversion forms.",
   "license": "MIT",
   "type": "module",
@@ -29,10 +29,10 @@
     "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
-    "@tea-ui/core": "^0.1.0",
-    "@tea-ui/icons": "^0.1.0",
-    "@tea-ui/ux-standards": "^0.1.0",
-    "@tea-ui/utils": "^0.1.0",
+    "@tea-ui/core": "^1.0.0",
+    "@tea-ui/icons": "^1.0.0",
+    "@tea-ui/ux-standards": "^1.0.0",
+    "@tea-ui/utils": "^1.0.0",
     "radix-ui": "^1.4.3"
   },
   "peerDependencies": {

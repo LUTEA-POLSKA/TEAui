@@ -29,14 +29,14 @@
     "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
-    "@tea-ui/admin": "^0.1.0",
-    "@tea-ui/core": "^0.1.0",
+    "@tea-ui/admin": "^1.0.0",
+    "@tea-ui/core": "^1.0.0",
     "@tea-ui/patterns": "^0.1.0",
-    "@tea-ui/public": "^0.1.0",
+    "@tea-ui/public": "^1.0.0",
     "@tea-ui/templates": "^0.1.0",
-    "@tea-ui/tokens": "^0.1.0",
-    "@tea-ui/ux-standards": "^0.1.0",
-    "@tea-ui/utils": "^0.1.0"
+    "@tea-ui/tokens": "^1.0.0",
+    "@tea-ui/ux-standards": "^1.0.0",
+    "@tea-ui/utils": "^1.0.0"
   },
   "peerDependencies": {
     "react": ">=18.2.0 <20.0.0",

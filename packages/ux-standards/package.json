@@ -1,6 +1,6 @@
 {
   "name": "@tea-ui/ux-standards",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "The written rules components are held to, as data rather than prose.",
   "license": "MIT",
   "type": "module",
@@ -28,7 +28,7 @@
     "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
-    "@tea-ui/tokens": "^0.1.0"
+    "@tea-ui/tokens": "^1.0.0"
   },
   "keywords": [
     "ux",
