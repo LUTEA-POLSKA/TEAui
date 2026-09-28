@@ -41,7 +41,9 @@
     "site:serve": "node scripts/serve.mjs",
     "wiki:publish": "node scripts/publish-wiki.mjs",
     "publish:all": "node scripts/publish-all.mjs",
-    "publish:check": "node scripts/publish-all.mjs --dry-run"
+    "publish:check": "node scripts/publish-all.mjs --dry-run",
+    "skill:install": "node scripts/skill-sync.mjs",
+    "check:skill": "node scripts/skill-sync.mjs --check"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",

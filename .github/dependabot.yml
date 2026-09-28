@@ -1,0 +1,40 @@
+# TEA UI — dependency updates.
+#
+# This is the mechanism behind "someone else has to be told they need to update".
+# A published version is never yanked: consumers keep the one they installed, and
+# a new one appears beside it. So the only way a consumer finds out is a check
+# that fails, or a pull request that lands in *this* repository saying a newer
+# version of a TEA UI dependency exists.
+#
+# Both are configured. Consumers get Dependabot the moment they add a
+# `.github/dependabot.yml`; without it, `npm outdated` is the only signal, and
+# nobody runs that.
+version: 2
+updates:
+  # The published packages, when one of them gains a new version.
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # One pull request for the whole system. A new core means every consumer
+      # needs the same upgrade; seven separate ones would arrive at different
+      # times and land in states nobody tested.
+      tea-ui:
+        patterns:
+          - "@tea-ui/*"
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - dependencies
+
+  # GitHub Actions drift faster than anything else here.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(ci)"
+    labels:
+      - dependencies

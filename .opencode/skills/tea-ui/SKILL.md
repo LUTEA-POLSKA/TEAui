@@ -22,31 +22,50 @@ project. Work through it in order. Do not skip to step 5.
 ## 1. Search before you build
 
 The single most important rule. Before writing any UI code, look for what
-already exists:
+already exists. **Look in `node_modules`, not in a checkout of TEA UI** — this
+skill is used from inside other projects, where the source is not present:
 
 ```bash
-# What is exported?
-rg "export (const|function)" packages/*/src/index.ts* -g '!node_modules'
+# Are the packages installed at all?
+ls node_modules/@tea-ui 2>/dev/null || npm ls @tea-ui/core
 
-# Does a component for this already exist?
-rg "StatusBadge|DataTable|ConfirmDialog|useConfirm" packages/
+# What does a package actually export? Read the built .d.ts, it is the contract.
+rg "^declare|^export" node_modules/@tea-ui/core/dist/index.d.ts | head -60
+
+# Is there already a component for this? Search the package by name.
+rg "StatusBadge|DataTable|ConfirmDialog|useConfirm" node_modules/@tea-ui/
 
 # Has this been decided already?
-rg -i "<dein Konzept>" packages/ux-standards/src docs/
+rg -i "<dein Konzept>" node_modules/@tea-ui/ux-standards/dist/
 ```
+
+If nothing is found under `node_modules/@tea-ui`, the packages are not installed
+in this project. Install them before deciding that a component does not exist:
+
+```bash
+npm i @tea-ui/core @tea-ui/tokens @tea-ui/icons @tea-ui/ux-standards @tea-ui/utils
+```
+
+**Version matters.** `@tea-ui/core` is at `1.0.0` and stable. The four packages
+`patterns`, `templates`, `blueprints` and `specialized` are at `0.1.0` and are
+scaffolding — they export almost nothing. Do not plan around them, and do not
+tell anyone they exist. Check what a package actually exports before relying on
+it.
 
 Then check the packages, in this order:
 
-| Look in | For |
-| --- | --- |
-| `@tea-ui/core` | layout, typography, inputs, feedback, overlays, navigation |
-| `@tea-ui/admin` | application shell, metric tiles, data, product states |
-| `@tea-ui/public` | marketing, website chrome, content, conversion |
-| `@tea-ui/patterns` | master/detail, CRUD, wizard, notification centre |
-| `@tea-ui/templates` | complete page structures |
-| `@tea-ui/blueprints` | authentication, billing, onboarding, settings |
-| `@tea-ui/specialized` | charts, trees, virtual lists, diff viewers |
-| `@tea-ui/ux-standards` | the **rules**: status vocabulary, feedback model, destructive policy, terminology |
+| Look in | For | State |
+| --- | --- | --- |
+| `@tea-ui/core` | layout, typography, inputs, feedback, overlays, navigation | `1.0.0` |
+| `@tea-ui/admin` | application shell, metric tiles, data, product states | `1.0.0` |
+| `@tea-ui/public` | marketing, website chrome, content, conversion | `1.0.0` |
+| `@tea-ui/ux-standards` | the **rules**: status vocabulary, feedback model, destructive policy, terminology | `1.0.0` |
+| `@tea-ui/tokens` | colour, spacing, radii, motion, density, themes | `1.0.0` |
+| `@tea-ui/icons` | the icon set | `1.0.0` |
+| `@tea-ui/patterns` | master/detail, CRUD, wizard, notification centre | `0.1.0` empty |
+| `@tea-ui/templates` | complete page structures | `0.1.0` empty |
+| `@tea-ui/blueprints` | authentication, billing, onboarding, settings | `0.1.0` empty |
+| `@tea-ui/specialized` | charts, trees, virtual lists, diff viewers | `0.1.0` empty |
 
 **If it exists, use it.** If it almost exists, extend it in TEA UI — never fork
 it into the product.
@@ -186,9 +205,11 @@ Themes assign **values to roles**. A component never changes between themes.
 <html data-theme="lutea" data-density="compact">
 ```
 
-To add a theme, copy `packages/tokens/src/themes.css` and change role *values*.
-Do not add a role, do not add a raw colour to a component, do not add a
-`dark:` variant. If a role is missing, that is a TEA UI change.
+To add a theme, that is a **TEA UI** change, not a project change: copy
+`packages/tokens/src/themes.css` in the TEA UI repository and change role
+*values*. Do not add a role, do not add a raw colour to a component, do not add a
+`dark:` variant. If a role is missing, open an issue against TEA UI — a project
+cannot invent one without breaking every other consumer.
 
 ## 9. Before you finish
 
@@ -202,6 +223,19 @@ npm test
 Then add a changeset describing the change and its rationale.
 
 ## Reference
+
+Online, from anywhere:
+
+- **Showcase** — https://landnevermore.github.io/TEAui/
+- **Documentation** — https://landnevermore.github.io/TEAui/docs/
+- **Packages** — https://www.npmjs.com/org/tea-ui
+
+The documentation is the place to look for the contract, the token reference and
+the reason behind a rule. In a consuming project, the built `.d.ts` files under
+`node_modules/@tea-ui/*/dist/` are the exact exported surface — read those rather
+than trusting any list, including this one.
+
+In a checkout of TEA UI itself:
 
 - `docs/architecture/COMPONENT-CONTRACT.md` — the authoring contract every
   component follows

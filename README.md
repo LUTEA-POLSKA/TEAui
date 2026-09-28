@@ -197,6 +197,12 @@ Add a changeset describing the change and its rationale. Public APIs are
 contracts: a breaking change requires a major bump, a migration note and a
 changelog entry — never a silent change.
 
+## Status
+
+The base rewrite is complete and published. [docs/STATUS.md](./docs/STATUS.md)
+records what is at `1.0.0`, what is still scaffolding, and how a consuming
+project finds out that a newer version exists.
+
 ## License
 
 MIT. See [LICENSE](./LICENSE).
