@@ -24,7 +24,7 @@ export const textareaVariants = cva(
   [
     "w-full min-w-0 rounded-none border border-line bg-surface text-fg",
     "px-[length:var(--tea-control-px)] py-2",
-    "transition-[background-color,border-color,color,box-shadow] duration-[120ms] ease-standard",
+    "transition-[background-color,border-color,color,box-shadow] duration-fast ease-standard",
     "outline-none",
     "placeholder:text-fg-subtle",
     "pointer-coarse:text-body",

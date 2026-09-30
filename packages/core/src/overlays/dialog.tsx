@@ -76,15 +76,45 @@ export interface DialogContentProps
   fallbackTitle?: string | undefined;
 }
 
+/**
+ * Whether a `DialogTitle` exists anywhere in the content, not just as a direct
+ * child.
+ *
+ * The previous check was `React.Children.toArray(children).some(child =>
+ * child.type === DialogTitle)`, which sees one level deep. The idiomatic
+ * composition for this component is
+ *
+ *     <DialogContent>
+ *       <DialogHeader>
+ *         <DialogTitle>Delete server</DialogTitle>
+ *       </DialogHeader>
+ *
+ * — the title is a *grandchild*. So the idiomatic usage failed the check, the
+ * visually hidden fallback rendered alongside the real title, and the dialog
+ * carried two headings where a screen reader announces one. The same went wrong
+ * for a title behind any wrapper or a fragment, and both are ordinary things to
+ * write.
+ *
+ * The remaining limit is honest rather than fixed: a `DialogTitle` rendered by
+ * a consumer *component* (`<MyHeader />`) is invisible to static inspection,
+ * because its children are not there to look at. `fallbackTitle` is the escape
+ * hatch for that, and Radix wires `aria-labelledby` to the real title either
+ * way.
+ */
+function containsDialogTitle(node: React.ReactNode): boolean {
+  if (!React.isValidElement(node)) return false;
+  if (node.type === DialogTitle) return true;
+  const nested = (node.props as { children?: React.ReactNode }).children;
+  return React.Children.toArray(nested).some(containsDialogTitle);
+}
+
 export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(function DialogContent(
   { className, size, children, showCloseButton = true, closeLabel, fallbackTitle, ...props },
   ref,
 ) {
   // A title is mandatory for the accessibility tree. A consumer that forgets
   // one gets a visually hidden one rather than an unnamed dialog.
-  const hasTitle = React.Children.toArray(children).some(
-    (child) => React.isValidElement(child) && child.type === DialogTitle,
-  );
+  const hasTitle = containsDialogTitle(children);
 
   return (
     <DialogPrimitive.Portal>

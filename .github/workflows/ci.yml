@@ -35,6 +35,13 @@ jobs:
       - name: Check package boundaries
         run: npm run check:boundaries
 
+      # Audit rule 21. This repository shipped the defect it detects — commit
+      # 0df5138 repaired mojibake in 40 files — and the repair tool that fixed
+      # them runs by hand, once. A check that fails the build is the only version
+      # of this guard that survives.
+      - name: Check text encoding
+        run: npm run check:encoding
+
       - name: Typecheck
         run: npm run typecheck
 

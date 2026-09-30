@@ -23,11 +23,23 @@ export {
 export { SearchInput, type SearchInputProps } from "./search-input";
 export { PasswordInput, type PasswordInputProps } from "./password-input";
 export { NumberInput, type NumberInputProps } from "./number-input";
+export { NumberField, type NumberFieldProps } from "./number-field";
 export { Checkbox, type CheckboxProps } from "./checkbox";
 export { Radio, RadioGroup, type RadioProps, type RadioGroupProps } from "./radio";
 export { Switch, type SwitchProps } from "./switch";
 export { Slider, type SliderProps } from "./slider";
-export { Toggle, ToggleGroup, toggleVariants, type ToggleProps, type ToggleGroupProps } from "./toggle";
+export {
+  Toggle,
+  ToggleGroup,
+  ToggleGroupItem,
+  toggleVariants,
+  type ToggleGroupItemProps,
+  type ToggleGroupProps,
+  type ToggleProps,
+  type ToggleSelection,
+} from "./toggle";
+
+export { ToggleIndicator, type ToggleIndicatorProps } from "./toggle-indicator";
 export { Label, type LabelProps } from "./label";
 export {
   Combobox,

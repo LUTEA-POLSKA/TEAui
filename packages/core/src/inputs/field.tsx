@@ -23,9 +23,9 @@ import { dataSlot, renderElement, stateAttributes } from "../internal";
  *
  * ```tsx
  * <Field invalid={!!error} required>
- *   <FieldLabel>E-Mail</FieldLabel>
+ *   <FieldLabel>E-mail</FieldLabel>
  *   <Input type="email" />
- *   <FieldDescription>Wir senden keine Bestätigung.</FieldDescription>
+ *   <FieldDescription>We send no confirmation.</FieldDescription>
  *   <FieldError>{error}</FieldError>
  * </Field>
  * ```
@@ -322,7 +322,7 @@ export type FieldDescriptionProps = React.ComponentProps<"p">;
  *
  * @example
  * ```tsx
- * <FieldDescription>Nur Großbuchstaben, Zahlen und Bindestriche.</FieldDescription>
+ * <FieldDescription>Uppercase letters, numbers and hyphens only.</FieldDescription>
  * ```
  */
 export const FieldDescription = React.forwardRef<HTMLParagraphElement, FieldDescriptionProps>(

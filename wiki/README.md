@@ -1,3 +1,11 @@
+<!--
+  NOT TEA UI DOCUMENTATION.
+
+  An internal working wiki, in German, about how this library came about. The
+  binding source is the code; this is the reasoning behind it, kept for the
+  people who work on it.
+-->
+
 # TEA UI — Wiki
 
 Dieses Wiki ist der menschliche Teil des Projekts. Der verbindliche Teil ist der

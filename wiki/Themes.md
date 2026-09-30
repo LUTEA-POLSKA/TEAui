@@ -19,26 +19,27 @@ viertes Familienpaket aus, das nirgends verwendet wurde.
 Ein Theme weist **Werte semantischen Rollen** zu. Keine Komponente ändert sich
 zwischen Themes, und keine Komponente enthält eine Farbe.
 
-| | `tea` (Default) | `hsm` | `lutea` |
+| | `tea` (Default) | `pop` | `ton` |
 |---|---|---|---|
-| Leinwand | `#111318` | `#0E1116` | `#121317` |
-| Fläche | `#171A21` | `#161A21` | `#1A1B1F` |
-| Vordergrund | `#E8E6E0` | `#E9EAEE` | `#EDE9E1` |
-| Primär | Gold `#F2C012` | Gold `#F2C012` | Gold `#F2C012` |
-| Marke | Gold | **Rot `#E0332E`** | Gold |
-| Warnton | `#FB923C` | `#FB923C` | `#F2921E` |
-| Standarddichte | `default` | `default` | **`compact`** |
+| Leinwand | `#111318` | `#0b1220` | `#15130f` |
+| Fläche | `#171a21` | `#111c33` | `#1e1b16` |
+| Vordergrund | `#e8e6e0` | `#e8f0ff` | `#efe7d8` |
+| Primär / Marke | Gold `#f2c012` | Blau `#4da6ff` | Orange `#d15600` |
+| Warnton | `#fb923c` | `#ffca28` | `#c79810` |
+| Standarddichte | `default` | `default` | `default` |
 
 Die Unterschiede sind echte Entscheidungen, keine Schattierungen: Farbtemperatur,
-Markenidentität und Standarddichte. `lutea` ist bewusst kompakter, weil die
-Dichte eines Dashboards eine Produktentscheidung ist und nicht eine
-Theme-Eigenschaft — sie *darf* im Theme stehen, weil das Theme die einzige
-Stelle ist, an der die Entscheidung dokumentiert wird.
+Markenidentität und Standarddichte. Die Dichte ist **keine** Theme-Eigenschaft, sondern eine Produktentscheidung:
+`--tea-density` steht in allen drei Referenzthemes auf `default`, und wer ein
+kompaktes Dashboard baut, setzt `data-density="compact"` auf seinen Container.
+Deshalb ist das hier auch die einzige Spalte, in der sich die drei Themas
+nicht unterscheiden — sie unterscheiden sich in Farbtemperatur und Marke, und
+das ist der Unterschied, der eine Entscheidung ist.
 
 ## Nur Dark, und zwar absichtlich
 
-Beide Quellprodukte waren Dark-only und hatten eine konfigurierte, aber nie
-angewendete Light-Strategie. Ein Trap: ein Entwickler liest `darkMode: "class"`
+Die auditierten Quellprodukte waren Dark-only und hatten eine konfigurierte,
+aber nie angewendete Light-Strategie. Ein Trap: ein Entwickler liest `darkMode: "class"`
 und nimmt an, es gäbe ein helles Theme.
 
 Eine zweite, ungetestete Palette ist eine zweite, ungetestete Palette. Die
@@ -48,7 +49,7 @@ Referenztheme mit eigenem Kontrast-Audit, keine Ableitung.
 ## Themes anwenden
 
 ```tsx
-<html data-theme="lutea" data-density="compact">
+<html data-theme="pop" data-density="compact">
 ```
 
 Oder in Code:
@@ -56,7 +57,7 @@ Oder in Code:
 ```ts
 import { applyTheme, applyDensity } from "@tea-ui/tokens";
 
-applyTheme("lutea");
+applyTheme("pop");
 applyDensity("compact");
 ```
 

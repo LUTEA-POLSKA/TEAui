@@ -45,18 +45,12 @@ export interface ComboboxOption {
   readonly disabled?: boolean | undefined;
 }
 
-export interface ComboboxProps
+interface ComboboxSharedProps
   extends Omit<React.ComponentProps<"input">, "value" | "defaultValue" | "onChange" | "onSelect" | "size">,
     Omit<VariantProps<typeof comboboxTriggerVariants>, "size"> {
   /** The accessible name. Required — the search icon is not a label. */
   label: string;
   options: readonly ComboboxOption[];
-  /** The controlled value. */
-  value?: string | undefined;
-  /** The uncontrolled initial value. */
-  defaultValue?: string | undefined;
-  /** Called with the emitted `value` of the chosen option. */
-  onValueChange?: ((value: string) => undefined | void) | undefined;
   /** Called on every keystroke, with the raw query. */
   onQueryChange?: ((query: string) => void) | undefined;
   /**
@@ -65,16 +59,54 @@ export interface ComboboxProps
    * getting it by accident.
    */
   filter?: ((option: ComboboxOption, query: string) => boolean) | undefined;
-  /** Shown when the query matches nothing. */
+  /**
+   * Locale for the default filter. Omit it and matching follows the runtime's
+   * locale, which is what a library that ships to unknown users has to do.
+   */
+  locale?: string | undefined;
+  /**
+   * Shown when the query matches nothing. Defaults to English; a product with
+   * another language passes its own string. See `clearLabel` for why the
+   * defaults are English rather than absent.
+   */
   emptyMessage?: string | undefined;
+  /** Accessible name for the clear button. Defaults to English. */
+  clearLabel?: string | undefined;
   /** A search is running. Shows a spinner and sets `aria-busy`. */
   loading?: boolean | undefined;
   /** Disable the whole control. */
   disabled?: boolean | undefined;
-  /** Allow choosing more than one option. */
-  multiple?: boolean | undefined;
   className?: string | undefined;
 }
+
+/**
+ * One prop type per mode, rather than `value?: string` with a `multiple` flag
+ * beside it.
+ *
+ * The previous shape let a single-select consumer pass an array and said
+ * nothing, and let a multi-select consumer believe it was receiving the
+ * selection when it was receiving one value of it. The internal state was
+ * always an array; the public type was not. A type that disagrees with the
+ * component is a defect that only surfaces in someone else's product, so the
+ * split lives in the type: with `multiple`, `value` is `string[]` and
+ * `onValueChange` reports the whole selection.
+ */
+export type ComboboxProps =
+  | (ComboboxSharedProps & {
+      multiple?: false | undefined;
+      /** The controlled selection: one option's value. */
+      value?: string | undefined;
+      defaultValue?: string | undefined;
+      onValueChange?: ((value: string) => undefined | void) | undefined;
+    })
+  | (ComboboxSharedProps & {
+      multiple: true;
+      /** The controlled selection. */
+      value?: readonly string[] | undefined;
+      defaultValue?: readonly string[] | undefined;
+      /** Called with the complete selection, after every change. */
+      onValueChange?: ((value: string[]) => undefined | void) | undefined;
+    });
 
 export const comboboxTriggerVariants = cva(
   [
@@ -94,11 +126,32 @@ export const comboboxTriggerVariants = cva(
   },
 );
 
-const DEFAULT_FILTER = (option: ComboboxOption, query: string): boolean => {
-  const needle = query.trim().toLocaleLowerCase("de");
-  if (!needle) return true;
-  return option.label.toLocaleLowerCase("de").includes(needle);
-};
+/**
+ * Case- and diacritic-insensitive substring match.
+ *
+ * This was `toLocaleLowerCase("de")` on both sides, which is a library
+ * silently declaring its users' locale. German `ß` does not lowercase to `ss`,
+ * so a search for `ss` missed a label ending in `ß` — and every user of every
+ * other language got German case rules they never asked for, including the
+ * Turkish dotless-i problem, which is a visible bug rather than a subtle one.
+ *
+ * Folding is NFD plus combining-mark removal, so `cafe` finds `Café`, and
+ * lowercasing goes through the runtime's own locale rules. `locale` is
+ * available for the consumer who needs to pin it; the library does not guess a
+ * language on their behalf.
+ *
+ * The known limit: no folding treats `ß` and `ss` as equal, because no
+ * standard case mapping joins them. Callers who need that pass a `filter`.
+ */
+const makeFilter =
+  (locale?: string) =>
+  (option: ComboboxOption, query: string): boolean => {
+    const needle = query.trim();
+    if (!needle) return true;
+    const fold = (text: string): string =>
+      text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase(locale);
+    return fold(option.label).includes(fold(needle));
+  };
 
 /** Stable, id-safe DOM ids for one listbox. */
 export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(function Combobox(
@@ -109,8 +162,10 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
     defaultValue,
     onValueChange,
     onQueryChange,
-    filter = DEFAULT_FILTER,
-    emptyMessage = "Keine Treffer",
+    filter,
+    locale,
+    emptyMessage = "No matches",
+    clearLabel = "Clear search",
     loading = false,
     disabled = false,
     multiple = false,
@@ -122,6 +177,38 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
 ) {
   const field = useFieldControlProps();
 
+  // The union type makes this a narrowing rather than a cast at every use: the
+  // multi branch's `onValueChange` is known to take an array, the single
+  // branch's is known to take a string. The assertions are the honest price of
+  // destructuring a discriminated union.
+  //
+  // Memoised, because `commit` depends on it: a fresh object per render would
+  // give `commit` a new identity per render, and a callback that changes every
+  // render is a callback that re-runs every effect that holds it.
+  const toArray = React.useCallback(
+    (input: string | readonly string[] | undefined): string[] => {
+      if (input === undefined) return [];
+      if (typeof input === "string") return input === "" ? [] : [input];
+      return [...input];
+    },
+    [],
+  );
+  const mode = React.useMemo(
+    () =>
+      multiple
+        ? {
+            emit: (next: readonly string[]) =>
+              (onValueChange as ((v: string[]) => void) | undefined)?.([...next]),
+            toArray,
+          }
+        : {
+            emit: (next: readonly string[]) =>
+              (onValueChange as ((v: string) => void) | undefined)?.(next[next.length - 1] ?? ""),
+            toArray,
+          },
+    [multiple, onValueChange, toArray],
+  );
+
   // `useId` is the only correct source of a DOM id here. A module-level counter
   // breaks under concurrent rendering and across multiple roots, and reading a
   // ref during render is something React 19 explicitly disallows. `useId` gives a
@@ -132,15 +219,13 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
   const [query, setQuery] = React.useState<string>("");
   const [open, setOpen] = React.useState(false);
   const [activeIndex, setActiveIndex] = React.useState(-1);
-  const [selected, setSelected] = React.useState<string[]>(() =>
-    value !== undefined ? [value] : defaultValue !== undefined ? [defaultValue] : [],
-  );
+  const [selected, setSelected] = React.useState<string[]>(() => mode.toArray(value ?? defaultValue));
 
   // A controlled value is synced during render rather than in an effect. An
   // effect would paint one frame with the stale selection — a visible flash
   // after a programmatic change — and comparing before writing is React's
   // documented pattern for exactly this.
-  const controlledSelection = value === undefined ? undefined : value === "" ? [] : [value];
+  const controlledSelection = value === undefined ? undefined : mode.toArray(value);
   if (controlledSelection && !sameSelection(controlledSelection, selected)) {
     setSelected(controlledSelection);
   }
@@ -148,9 +233,10 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
   const isDisabled = field.disabled ?? disabled;
   const isInvalid = field["aria-invalid"] ?? false;
 
+  const matches = React.useMemo(() => filter ?? makeFilter(locale), [filter, locale]);
   const filtered = React.useMemo(
-    () => (query.trim() ? options.filter((option) => filter(option, query)) : options),
-    [options, query, filter],
+    () => (query.trim() ? options.filter((option) => matches(option, query)) : options),
+    [options, query, matches],
   );
 
   const listRef = React.useRef<HTMLUListElement | null>(null);
@@ -164,16 +250,23 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
           ? selected.filter((entry) => entry !== option.value)
           : [...selected, option.value];
         setSelected(next);
-        onValueChange?.(next[next.length - 1] ?? "");
+        // The whole selection, not `next[next.length - 1]`. The old code
+        // reported only the value just toggled, which meant a consumer of a
+        // multi-select could not reconstruct the selection: it never learned
+        // about the other entries, and on a *removal* it was handed a value
+        // that was no longer selected at all. `aria-multiselectable` was on the
+        // listbox the whole time, so the control claimed a capability its own
+        // callback refused to report.
+        mode.emit(next);
       } else {
         setSelected([option.value]);
-        onValueChange?.(option.value);
+        mode.emit([option.value]);
         setQuery("");
         setOpen(false);
       }
       setActiveIndex(-1);
     },
-    [multiple, onValueChange, selected],
+    [mode, multiple, selected],
   );
 
   const moveActive = React.useCallback(
@@ -212,11 +305,6 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
   return (
     <div ref={rootRef} className="relative" {...dataSlot("combobox", "root")}>
       <div
-        role="combobox"
-        aria-expanded={open}
-        aria-controls={listboxId}
-        aria-haspopup="listbox"
-        aria-owns={listboxId}
         className={cn(comboboxTriggerVariants({ variant }), "cursor-text", className)}
         data-open={open || undefined}
         {...stateAttributes({ disabled: isDisabled, loading, invalid: isInvalid })}
@@ -226,16 +314,32 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
         <input
           ref={ref}
           id={field.id}
-          role="searchbox"
+          // The combobox role belongs on the focusable element, which is the
+          // input, not on the box drawn around it. It used to sit on this
+          // wrapper — a `div` with no tabindex, no focus, and no value — while
+          // the input carried `role="searchbox"`. Assistive tech therefore
+          // reported the focusable thing as a search box and the combobox as an
+          // inert container, and every piece of combobox state
+          // (`aria-expanded`, `aria-activedescendant`) lived one element away
+          // from the focus that should own it. WAI-ARIA 1.2 is explicit: for an
+          // editable combobox the input is the combobox.
+          role="combobox"
+          aria-expanded={open}
+          aria-controls={listboxId}
+          aria-haspopup="listbox"
+          aria-autocomplete="list"
+          aria-activedescendant={activeId}
           type="text"
           autoComplete="off"
-          className="min-w-0 flex-1 bg-transparent text-ui text-fg outline-none placeholder:text-fg-subtle"
+          // No `outline-none`: this is a real focusable input, and the token
+          // layer's global `:focus-visible` ring is what tells a keyboard user
+          // where the caret is. The trigger around it carries the border, the
+          // ring carries the focus — two signals, two jobs.
+          className="min-w-0 flex-1 bg-transparent text-ui text-fg placeholder:text-fg-subtle"
           placeholder={displayValue || label}
           value={query}
           disabled={isDisabled}
           aria-label={label}
-          aria-autocomplete="list"
-          aria-activedescendant={activeId}
           aria-describedby={field["aria-describedby"]}
           aria-invalid={isInvalid || undefined}
           aria-busy={loading || undefined}
@@ -298,7 +402,7 @@ export const Combobox = React.forwardRef<HTMLInputElement, ComboboxProps>(functi
         {query ? (
           <button
             type="button"
-            aria-label="Suche leeren"
+            aria-label={clearLabel}
             className="shrink-0 text-fg-muted hover:text-fg"
             onClick={(event) => {
               event.stopPropagation();

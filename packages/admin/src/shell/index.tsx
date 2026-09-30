@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { Menu, X } from "@tea-ui/icons";
 import { cn } from "@tea-ui/utils";
 import { COPY } from "@tea-ui/ux-standards";
@@ -13,7 +13,8 @@ import {
   HStack,
   IconButton,
   SkipLink,
-  stateAttributes,
+  Sidebar,
+  SidebarContent,
 } from "@tea-ui/core";
 
 /**
@@ -33,27 +34,21 @@ import {
  *     the entire navigation on every page.
  *  3. **The main region has a stable id**, because the skip link's target is an
  *     anchor, not a scroll hack.
+ *
+ * The navigation itself is not written here. `Nav` and `NavItem` live in
+ * `@tea-ui/core` because a product that builds a navigation *outside* a shell —
+ * a settings sidebar, a wizard's step list, a second-level panel — needs exactly
+ * the same guarantees, and a copy of this file would be a seventh copy of the
+ * thing the audit found six of.
  */
-export interface NavItem {
-  /** Stable key, matched against `activeId`. */
-  id: string;
-  /** The visible label. Say the thing, not "Home". */
-  label: string;
-  /** A router path, when the item is a link. */
-  href?: string | undefined;
-  onSelect?: (() => void) | undefined;
-  icon?: React.ReactNode | undefined;
-  /** A count or short status, rendered after the label. */
-  meta?: React.ReactNode | undefined;
-  /** Group heading, rendered above this item. */
-  group?: string | undefined;
-  disabled?: boolean | undefined;
-}
+export type { NavItemData as NavItem } from "@tea-ui/core";
+
+import { type NavItemData } from "@tea-ui/core";
 
 export interface AdminShellProps extends React.ComponentProps<"div"> {
   /** Product name, shown in the sidebar header. */
   product: string;
-  nav: readonly NavItem[];
+  nav: readonly NavItemData[];
   /** Id of the current route. */
   activeId: string;
   onNavigate?: ((id: string) => void) | undefined;
@@ -85,26 +80,20 @@ export function AdminShell({
 
   // Navigating from the drawer must close it, or the user lands on the new page
   // still behind an overlay, with focus left behind the scrim.
-  const select = React.useCallback(
-    (item: NavItem) => {
-      item.onSelect?.();
-      onNavigate?.(item.id);
-      setDrawerOpen(false);
-    },
-    [onNavigate],
-  );
+  const closeDrawer = React.useCallback(() => setDrawerOpen(false), []);
 
   return (
     <Box className={cn("min-h-dvh bg-canvas text-fg", className)} {...props}>
       <SkipLink targetId={mainId} />
       <div className="flex min-h-dvh">
-        <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-e border-line bg-surface lg:flex">
-          <SidebarHeader product={product} />
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            <SidebarNav nav={nav} activeId={activeId} onSelect={select} />
-          </div>
-          {sidebarFooter ? <div className="shrink-0 border-t border-line p-3">{sidebarFooter}</div> : null}
-        </aside>
+        <Sidebar
+          label={COPY.navigation.main}
+          items={nav}
+          activeId={activeId}
+          onNavigate={onNavigate}
+          header={<SidebarBrand product={product} />}
+          footer={sidebarFooter}
+        />
 
         <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
           <DrawerContent side="start" showCloseButton={false} className="w-72">
@@ -117,7 +106,15 @@ export function AdminShell({
               </DrawerTitle>
             </DrawerHeader>
             <DrawerBody className="p-0">
-              <SidebarNav nav={nav} activeId={activeId} onSelect={select} />
+              <SidebarContent
+                label={COPY.navigation.main}
+                items={nav}
+                activeId={activeId}
+                onNavigate={(id) => {
+                  onNavigate?.(id);
+                  closeDrawer();
+                }}
+              />
             </DrawerBody>
           </DrawerContent>
         </Drawer>
@@ -148,118 +145,17 @@ export function AdminShell({
   );
 }
 
-function SidebarHeader({ product }: { product: string }): React.ReactElement {
+/**
+ * The brand row. Its `h-14` is the height of the top bar beside it, so the
+ * sidebar's first line and the page header sit on one baseline.
+ */
+function SidebarBrand({ product }: { product: string }): React.ReactElement {
   return (
-    <div className="flex h-14 shrink-0 items-center border-b border-line px-4">
+    <div className="flex h-14 items-center">
       <span className="text-ui font-semibold text-fg">{product}</span>
     </div>
   );
 }
-
-function SidebarNav({
-  nav,
-  activeId,
-  onSelect,
-}: {
-  nav: readonly NavItem[];
-  activeId: string;
-  onSelect: (item: NavItem) => void;
-}): React.ReactElement {
-  const groups = React.useMemo(() => groupNav(nav), [nav]);
-  return (
-    <nav aria-label={COPY.navigation.main} className="flex flex-col gap-4 p-3">
-      {groups.map((group) => (
-        <div key={group.label || "_ungrouped"} className="flex flex-col gap-0.5">
-          {group.label ? (
-            <p className="px-2 pb-1 text-label font-semibold uppercase tracking-widest text-fg-subtle">
-              {group.label}
-            </p>
-          ) : null}
-          {group.items.map((item) => (
-            <NavLink key={item.id} item={item} active={item.id === activeId} onSelect={onSelect} />
-          ))}
-        </div>
-      ))}
-    </nav>
-  );
-}
-
-function NavLink({
-  item,
-  active,
-  onSelect,
-}: {
-  item: NavItem;
-  active: boolean;
-  onSelect: (item: NavItem) => void;
-}): React.ReactElement {
-  const className = cn(
-    "flex w-full items-center gap-2 px-3 py-2 text-start text-ui transition-colors",
-    "disabled:pointer-events-none disabled:opacity-50",
-    active ? "bg-accent-subtle font-medium text-accent" : "text-fg-muted hover:bg-surface-3 hover:text-fg",
-  );
-
-  const content = (
-    <>
-      {item.icon ? (
-        <span aria-hidden="true" className="shrink-0">
-          {item.icon}
-        </span>
-      ) : null}
-      <span className="min-w-0 flex-1 truncate">{item.label}</span>
-      {item.meta ? <span className="shrink-0 text-micro text-fg-subtle">{item.meta}</span> : null}
-    </>
-  );
-
-  // `aria-current` is what makes the position announceable. The background
-  // colour alone is invisible to a screen reader and ambiguous in a greyscale
-  // screenshot — the audit found active items marked by colour alone.
-  const shared = {
-    className,
-    ...(active ? { "aria-current": "page" as const } : {}),
-    ...stateAttributes({ disabled: item.disabled, active }),
-  };
-
-  if (item.href) {
-    return (
-      <a
-        href={item.href}
-        onClick={(event) => {
-          // Let the browser handle a real href unless the consumer supplied
-          // `onSelect`, in which case the router owns the navigation.
-          if (!item.onSelect) return;
-          event.preventDefault();
-          onSelect(item);
-        }}
-        {...shared}
-      >
-        {content}
-      </a>
-    );
-  }
-
-  return (
-    <button type="button" disabled={item.disabled} onClick={() => onSelect(item)} {...shared}>
-      {content}
-    </button>
-  );
-}
-
-/** Consecutive items sharing a `group` become one labelled block, in order. */
-function groupNav(nav: readonly NavItem[]): Array<{ label: string; items: NavItem[] }> {
-  const order: string[] = [];
-  const map = new Map<string, NavItem[]>();
-  for (const item of nav) {
-    const key = item.group ?? "";
-    if (!map.has(key)) {
-      map.set(key, []);
-      order.push(key);
-    }
-    map.get(key)!.push(item);
-  }
-  return order.map((label) => ({ label, items: map.get(label) ?? [] }));
-}
-
 /* -------------------------------------------------------------------------- */
 
 export interface PageHeaderProps extends React.ComponentProps<"header"> {

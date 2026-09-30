@@ -14,7 +14,7 @@
 /* -------------------------------------------------------------------------- */
 
 /** Every theme TEA UI ships. Themes own roles, never raw component styles. */
-export const THEMES = ["tea", "hsm", "lutea"] as const;
+export const THEMES = ["tea", "pop", "ton"] as const;
 
 export type ThemeName = (typeof THEMES)[number];
 

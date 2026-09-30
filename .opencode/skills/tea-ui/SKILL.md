@@ -1,6 +1,6 @@
 ---
 name: tea-ui
-description: Build any TEA product UI with TEA UI, the shared design system of the TEA ecosystem (HomeServerManager, LUTEA, TEAflow, TEAhost and future products). Use when creating, reviewing or changing any user interface in a TEA project — pages, forms, tables, dialogs, dashboards, navigation, status displays, loading and error states, theming, or accessibility. Also use when a task mentions TEA UI, design tokens, UX standards, or a design-system decision.
+description: Build any TEA product UI with TEA UI, a reusable React design system published to npm. Use when creating, reviewing or changing any user interface — pages, forms, tables, dialogs, dashboards, navigation, status displays, loading and error states, theming, or accessibility. Also use when a task mentions TEA UI, design tokens, UX standards, or a design-system decision.
 ---
 
 # TEA UI
@@ -69,6 +69,24 @@ Then check the packages, in this order:
 
 **If it exists, use it.** If it almost exists, extend it in TEA UI — never fork
 it into the product.
+
+### Components that are easy to miss
+
+These exist and are not obvious from their name. Reaching for the wrong one
+costs a round trip:
+
+| Component | For |
+| --- | --- |
+| `NumberField` | numeric entry with unit, stepper, range clamping **on blur** |
+| `ToggleGroup` / `ToggleGroupItem` | a segmented control. `selection="primary\|secondary\|outline"` picks the pressed-state emphasis, `indicator` slides a surface behind the selected item |
+| `PanelHeader` | a titled section header with actions, renders a real heading at the level you give it |
+| `Sidebar` / `SidebarContent` | app navigation, a named `complementary` landmark |
+| `useTableSort` | the sort state machine for any table — cycle, `aria-sort`, column ids |
+| `useUnsavedChanges` | the guard before navigating away from dirty state |
+
+`outline` in `ToggleGroup` selection means the **Secondary** button's neutral
+surface. It is not a hue. TEA has five closed tones; never introduce a sixth by
+reaching for a colour a Button variant does not already have.
 
 ## 2. If nothing fits: generalize, do not add
 
@@ -197,13 +215,46 @@ Before declaring UI work done, confirm:
 - [ ] it respects `prefers-reduced-motion`
 - [ ] it works at `data-density="compact"` and below 1024px
 
+### Announce a pattern only if you implement it
+
+A role is a promise. `role="radiogroup"` promises that arrow keys move focus
+**and** selection together — a screen-reader user navigates by hearing the
+selection, not by seeing the focus ring. Half the pattern is worse than a
+different role: the user is told they are on "pop" while the group still says
+"tea", and nothing in the interface contradicts them.
+
+This has bitten `ToggleGroup` twice, in two different ways, and both are
+recorded in the code. Check the behaviour, not the markup:
+
+- Radix's `ToggleGroup` announces `radiogroup` and implements *button* semantics.
+  `Space`/`Enter` select, arrows only move focus. TEA UI adds select-on-arrow on
+  top. If you wrap one yourself, verify that the arrows change the value — a
+  `role` assertion passes on the broken version too.
+- Never derive a keyboard destination from `document.activeElement` after the
+  fact. Whether focus has already moved is another component's internal
+  ordering, and it differs between a browser and jsdom. Derive it from state.
+
+If a control does not implement its role, change the role. Do not add an opt-out
+prop: a guarantee nobody can find is a guarantee nobody uses.
+
 ## 8. Theming
 
 Themes assign **values to roles**. A component never changes between themes.
 
 ```tsx
-<html data-theme="lutea" data-density="compact">
+<html data-theme="tea" data-density="compact">
 ```
+
+There are exactly three: **`tea`** (default, the TEA gold), **`pop`**, **`ton`**.
+`tea` is also the name of the *brand role*, not a theme alias. The earlier
+`hsm`/`lutea` themes shipped one palette under three names and were removed for
+it — read `themes.css` instead of assuming a name exists.
+
+`contrast.test.ts` enforces the role pairs per theme, so a new theme cannot ship
+with an unreadable combination. Roles that are genuinely the same colour in one
+theme are fine — `tea` has one gold for brand, primary, accent and ring — but
+`primary` and `info` must stay distinguishable in **every** theme, which is what
+`pop` got wrong once.
 
 To add a theme, that is a **TEA UI** change, not a project change: copy
 `packages/tokens/src/themes.css` in the TEA UI repository and change role
@@ -214,11 +265,12 @@ cannot invent one without breaking every other consumer.
 ## 9. Before you finish
 
 ```bash
-npm run check:boundaries   # dependency direction
-npm run typecheck
-npm run lint
-npm test
+npm run verify   # boundaries, encoding, typecheck, lint, tests, build, exports
 ```
+
+That is the whole gate. Running the steps by hand skips the export and
+tree-shaking contracts, which are the only checks that catch a package that
+compiles but no longer shakes.
 
 Then add a changeset describing the change and its rationale.
 

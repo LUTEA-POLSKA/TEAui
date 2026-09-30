@@ -17,7 +17,7 @@ import { extendTailwindMerge } from "tailwind-merge";
  *
  * Both source projects had a `cn`, but they were not the same function: one
  * was a compiled `clsx + tailwind-merge` replacement, the other an explicit
- * composition, and HomeServerManager even had a second import path that
+ * composition, and one codebase even had a second import path that
  * bypassed its own barrel. A component copied between projects therefore
  * changed behaviour silently. There is exactly one now, and there is exactly
  * one import path.

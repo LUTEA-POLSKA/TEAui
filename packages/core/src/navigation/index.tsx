@@ -500,8 +500,8 @@ export function SkipLink({ targetId, className, children, ...props }: SkipLinkPr
     <a
       href={`#${targetId}`}
       className={cn(
-        "sr-only z-max focus:not-sr-only",
-        "focus:fixed focus:start-3 focus:top-3 focus:border focus:border-primary focus:bg-primary focus:px-3 focus:py-2 focus:text-ui focus:font-medium focus:text-primary-fg",
+        "sr-only z-max focus-visible:not-sr-only",
+        "focus-visible:fixed focus-visible:start-3 focus-visible:top-3 focus-visible:border focus-visible:border-primary focus-visible:bg-primary focus-visible:px-3 focus-visible:py-2 focus-visible:text-ui focus-visible:font-medium focus-visible:text-primary-fg",
         className,
       )}
       {...dataSlot("skip-link")}
@@ -689,7 +689,11 @@ export const NavigationMenuLink = React.forwardRef<
       className={cn(
         "block select-none rounded-none p-2 text-ui text-fg no-underline outline-none transition-colors",
         "data-[active]:bg-accent-subtle data-[active]:text-fg",
-        "focus-visible:bg-accent-subtle",
+        // The background is the hover/active signal. It is not enough on its own
+        // for focus: a filled accent surface with no ring has no offset and no
+        // shape, and it collides with `data-[active]`. The inset ring keeps the
+        // two distinguishable without moving the layout.
+        "focus-visible:bg-accent-subtle focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring",
         className,
       )}
       {...dataSlot("navigation-menu", "link")}
@@ -712,3 +716,22 @@ function NavigationMenuViewport(): React.ReactElement {
 
 /** A controlled-state helper exposed for products building their own nav. */
 export { useControllableState };
+
+/* -- Nav: the application navigation list ----------------------------------- */
+export {
+  MAIN_NAV_LABEL,
+  Nav,
+  NavItem,
+  type NavItemData,
+  type NavItemProps,
+  type NavProps,
+} from "./nav";
+
+/* -- Sidebar: the frame the nav lives in ----------------------------------- */
+export {
+  Sidebar,
+  SidebarContent,
+  type SidebarBreakpoint,
+  type SidebarContentProps,
+  type SidebarProps,
+} from "./sidebar";

@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import { resolve } from "node:path";
 
 /**
@@ -27,30 +28,45 @@ const token = (): string => resolve(import.meta.dirname, "../../packages/tokens"
  */
 const base = process.env.BASE_PATH ?? "/";
 
-export default defineConfig({
-  base,
-  plugins: [react()],
-  resolve: {
-    alias: [
-      { find: "@tea-ui/tokens/styles.css", replacement: resolve(token(), "dist/styles.css") },
-      { find: "@tea-ui/tokens/fonts.css", replacement: resolve(token(), "dist/fonts.css") },
-      { find: "@tea-ui/utils", replacement: pkg("utils") },
-      { find: "@tea-ui/tokens", replacement: pkg("tokens") },
-      { find: "@tea-ui/ux-standards", replacement: pkg("ux-standards") },
-      { find: "@tea-ui/icons", replacement: pkg("icons") },
-      { find: "@tea-ui/core", replacement: pkg("core") },
-      { find: "@tea-ui/admin", replacement: pkg("admin") },
-      { find: "@tea-ui/public", replacement: pkg("public") },
-    ],
-  },
-  build: {
-    outDir: "dist",
-    sourcemap: true,
-    target: "es2022",
-    rollupOptions: {
-      output: { manualChunks: { radix: ["radix-ui"], icons: ["lucide-react"] } },
+export default defineConfig(({ command }) => {
+  /**
+   * Dev compiles the tokens from source; the production build keeps reading the
+   * built stylesheet. The reasoning is in the Showcase's config — the short
+   * version is that `tsup` cleans `dist` on every build, so a dev server reading
+   * `dist/styles.css` serves a *missing* stylesheet for the length of that
+   * window and the page renders unstyled with no error to be found.
+   */
+  const isDev = command === "serve";
+  const stylesheet = isDev ? resolve(token(), "src/index.css") : resolve(token(), "dist/styles.css");
+  // `fonts.css` is generated into `dist` by `scripts/build-fonts.mjs` and has no
+  // source form, so it stays a `dist` read in both modes.
+  const fonts = resolve(token(), "dist/fonts.css");
+
+  return {
+    base,
+    plugins: isDev ? [react(), tailwindcss()] : [react()],
+    resolve: {
+      alias: [
+        { find: "@tea-ui/tokens/styles.css", replacement: stylesheet },
+        { find: "@tea-ui/tokens/fonts.css", replacement: fonts },
+        { find: "@tea-ui/utils", replacement: pkg("utils") },
+        { find: "@tea-ui/tokens", replacement: pkg("tokens") },
+        { find: "@tea-ui/ux-standards", replacement: pkg("ux-standards") },
+        { find: "@tea-ui/icons", replacement: pkg("icons") },
+        { find: "@tea-ui/core", replacement: pkg("core") },
+        { find: "@tea-ui/admin", replacement: pkg("admin") },
+        { find: "@tea-ui/public", replacement: pkg("public") },
+      ],
     },
-  },
-  server: { port: 4174, strictPort: false },
-  preview: { port: 4174 },
+    build: {
+      outDir: "dist",
+      sourcemap: true,
+      target: "es2022",
+      rollupOptions: {
+        output: { manualChunks: { radix: ["radix-ui"], icons: ["lucide-react"] } },
+      },
+    },
+    server: { port: 4174, strictPort: false },
+    preview: { port: 4174 },
+  };
 });

@@ -5,11 +5,28 @@
  * never introduces a new role. If a role is missing here, it belongs in
  * index.css as a shared default instead.
  *
- * Three reference themes ship today — `tea`, `hsm`, `lutea`. All three are
- * dark-family. That is deliberate: the audit of HomeServerManager and LUTEA
- * Design evidences no light-theme requirement, and a second untested theme is a
- * second untested palette. The architecture is colour-scheme ready, so adding
- * one is a new theme with its own contrast audit — not a derived variant.
+ * Three reference themes ship today: `tea` (the default), `web20` and
+ * `earth07`. All three are dark-family. That is deliberate: the audit of
+ * Audits of the codebases this system came out of found no light-theme
+ * second untested theme is a second untested palette. The architecture is
+ * colour-scheme ready, so adding one is a new theme with its own contrast audit
+ * — not a derived variant.
+ *
+ * `tea` is the default and the one products get. The other two exist to make a
+ * single claim checkable: that a theme is a *palette* and nothing else. Swap
+ * every hue in the system while leaving the radius, the hard shadows and the
+ * density steps untouched, and the thing being demonstrated is precisely which
+ * decisions a theme owns.
+ *
+ * That is also why the previous set was replaced rather than extended. It held
+ * three themes with a single palette: `primary`, `accent`, `ring` and every
+ * `-subtle`/`-border` companion were byte-identical across all three, three of
+ * the five status tones were identical, and the neutrals differed by one to
+ * four units per channel. The only genuinely distinct value was HomeServer-
+ * Manager's brand red — on `brand`, a token no component reads, while `primary`
+ * stayed gold in every theme. Three names, one palette, and the Showcase never
+ * applied `data-theme` to its theme cards, so the section rendered three
+ * pixel-identical cards under three different headings.
  *
  * Every colour below is contrast-checked by `tokens/src/__tests__/contrast.ts`
  * against WCAG 2.2 AA. Do not hand-edit a value without running it.
@@ -107,64 +124,101 @@
   --tea-shadow-inset: inset 0 1px 0 0 rgb(255 255 255 / 0.04);
 }
 
-/* HomeServerManager reference theme.
- * Cooler and darker than `tea`, brand red exposed as an identity token. */
-[data-theme="hsm"] {
+/* `pop` — the palette of early 2007.
+ *
+ * The year had two colour stories, not one, and the second one only makes sense
+ * once you know the first. This is the first: the Web 2.0 peak, in the colours
+ * that were actually published that spring.
+ *
+ *   primary  #4DA6FF  "Sky Blue"     the saturated blue of the peak
+ *   accent   #FF0084  "Flickr Pink"  the loudest colour of the period
+ *   info     #5284D0  a steel blue, pushed away from the primary on purpose
+ *   positive #66BB6A  "Fresh Green"
+ *   caution  #FFCA28  "Amber"        deliberately far from the primary blue
+ *   critical #FF7043  "Coral"
+ *
+ * The name is the argument, not the decoration. Swapping every hue in the
+ * system while leaving the radius, the hard shadows and the density steps alone
+ * shows exactly which decisions a theme owns — and the only ones it should.
+ *
+ * `info` is not one of the period's own hexes, and the reason is worth keeping.
+ * "Flock Blue" (#4096EE) is the authentic 2007 link blue, and it sits 17
+ * channels from the primary #4DA6FF — inside the 20 the contrast test requires
+ * of `caution` versus `primary`. A blue action and a blue information are as
+ * indistinguishable as a gold action and an amber warning, which is the exact
+ * confusion the five-tone rule exists to prevent. So the authentic value is
+ * steel-blue and a full 47 channels from the primary. A period-accurate colour
+ * that cannot be told apart from the button next to it is not fidelity, it is a
+ * screenshot.
+ *
+ * What this theme deliberately does NOT do is reproduce the gloss. The signature
+ * of 2007 was gradients, specular highlights and rounded corners, and none of
+ * those are colours: they are the shape language, which TEA UI fixes in
+ * `index.css` and which a theme has no business touching. A 2007 palette on
+ * squared, shadow-hard TEA chrome is a theme. The same palette under a gloss is
+ * a different design system wearing TEA's name. */
+[data-theme="pop"] {
   color-scheme: dark;
 
-  --tea-canvas: #0e1116;
-  --tea-surface: #161a21;
-  --tea-surface-2: #1c212a;
-  --tea-surface-3: #232935;
-  --tea-overlay: rgb(0 0 0 / 0.8);
+  /* --- surfaces ---------------------------------------------------------- */
+  --tea-canvas: #0b1220;
+  --tea-surface: #111c33;
+  --tea-surface-2: #18263f;
+  --tea-surface-3: #1f2f4d;
+  --tea-overlay: rgb(6 12 26 / 0.8);
 
-  --tea-fg: #e9eaee;
-  --tea-fg-muted: #a1a8b4;
-  --tea-fg-subtle: #808894;
-  --tea-fg-inverse: #0e1116;
+  /* --- foreground -------------------------------------------------------- */
+  --tea-fg: #e8f0ff;
+  --tea-fg-muted: #a8bcd8;
+  --tea-fg-subtle: #7e93b3;
+  --tea-fg-inverse: #0b1220;
 
-  --tea-line: #2f3743;
-  --tea-line-strong: #49525f;
+  /* --- lines ------------------------------------------------------------- */
+  --tea-line: #2b3c5c;
+  --tea-line-strong: #42597f;
 
-  --tea-brand: #e0332e;
+  /* --- brand ------------------------------------------------------------- */
+  --tea-brand: #4da6ff;
 
-  --tea-primary: #f2c012;
-  --tea-primary-fg: #0e1116;
-  --tea-primary-hover: #f7c72e;
-  --tea-primary-subtle: rgb(242 192 18 / 0.12);
-  --tea-primary-border: rgb(242 192 18 / 0.4);
+  /* --- action ------------------------------------------------------------ */
+  --tea-primary: #4da6ff;
+  --tea-primary-fg: #06121f;
+  --tea-primary-hover: #6cb6ff;
+  --tea-primary-subtle: rgb(77 166 255 / 0.12);
+  --tea-primary-border: rgb(77 166 255 / 0.4);
 
-  --tea-accent: #f2c012;
-  --tea-accent-fg: #0e1116;
-  --tea-accent-subtle: rgb(242 192 18 / 0.1);
+  --tea-accent: #ff0084;
+  --tea-accent-fg: #24001a;
+  --tea-accent-subtle: rgb(255 0 132 / 0.1);
 
-  --tea-ring: #f2c012;
-  --tea-ring-strong: #ffd84d;
+  --tea-ring: #4da6ff;
+  --tea-ring-strong: #8cc8ff;
 
-  --tea-positive: #4ade80;
-  --tea-positive-fg: #0b1f14;
-  --tea-positive-subtle: rgb(74 222 128 / 0.12);
-  --tea-positive-border: rgb(74 222 128 / 0.4);
+  /* --- the five tones ---------------------------------------------------- */
+  --tea-positive: #66bb6a;
+  --tea-positive-fg: #05140a;
+  --tea-positive-subtle: rgb(102 187 106 / 0.12);
+  --tea-positive-border: rgb(102 187 106 / 0.4);
 
-  --tea-info: #60a5fa;
-  --tea-info-fg: #0a1729;
-  --tea-info-subtle: rgb(96 165 250 / 0.12);
-  --tea-info-border: rgb(96 165 250 / 0.4);
+  --tea-info: #5284d0;
+  --tea-info-fg: #071426;
+  --tea-info-subtle: rgb(82 132 208 / 0.12);
+  --tea-info-border: rgb(82 132 208 / 0.4);
 
-  --tea-caution: #fb923c;
-  --tea-caution-fg: #241104;
-  --tea-caution-subtle: rgb(251 146 60 / 0.12);
-  --tea-caution-border: rgb(251 146 60 / 0.4);
+  --tea-caution: #ffca28;
+  --tea-caution-fg: #1a1400;
+  --tea-caution-subtle: rgb(255 202 40 / 0.12);
+  --tea-caution-border: rgb(255 202 40 / 0.4);
 
-  --tea-critical: #f87171;
-  --tea-critical-fg: #240705;
-  --tea-critical-subtle: rgb(248 113 113 / 0.12);
-  --tea-critical-border: rgb(248 113 113 / 0.4);
+  --tea-critical: #ff7043;
+  --tea-critical-fg: #1e0700;
+  --tea-critical-subtle: rgb(255 112 67 / 0.12);
+  --tea-critical-border: rgb(255 112 67 / 0.4);
 
-  --tea-neutral: #a1a8b4;
-  --tea-neutral-fg: #0e1116;
-  --tea-neutral-subtle: rgb(161 168 180 / 0.12);
-  --tea-neutral-border: rgb(161 168 180 / 0.4);
+  --tea-neutral: #a8bcd8;
+  --tea-neutral-fg: #0b1220;
+  --tea-neutral-subtle: rgb(168 188 216 / 0.12);
+  --tea-neutral-border: rgb(168 188 216 / 0.4);
 
   --tea-destructive: var(--tea-critical);
   --tea-destructive-fg: var(--tea-critical-fg);
@@ -180,81 +234,109 @@
   --tea-shadow-raised: 0 1px 3px rgb(0 0 0 / 0.35);
   --tea-shadow-overlay: 6px 6px 0 0 rgb(0 0 0 / 0.55);
   --tea-shadow-modal: 8px 8px 0 0 rgb(0 0 0 / 0.55);
-  --tea-shadow-inset: inset 0 1px 0 0 rgb(255 255 255 / 0.04);
+  --tea-shadow-inset: inset 0 1px 0 0 rgb(255 255 255 / 0.06);
 }
 
-/* LUTEA Design reference theme.
- * Warmer surfaces, LUTEA's amber caution, and the compact dashboard density. */
-[data-theme="lutea"] {
+/* `ton` — the palette of late 2007.
+ *
+ * By December the consensus had already turned against the peak. The trade
+ * press was writing about "richer colours, rougher textures and fewer rounded
+ * corners", the neon had been dialled back to earthy hues, and darker reds,
+ * burgundies and browns were being paired with the dark grey that had become
+ * the default page background.
+ *
+ *   primary  #D15600  "Etsy Vermillion"
+ *   accent   #B02B2C  "Ruby on Rails Red"
+ *   info     #4C87C4  Digg Blue, lifted in value only
+ *   positive #6BBA70  "Basecamp Green"
+ *   caution  #C79810  "43 Things Gold"
+ *   critical #E54E66  Last.fm Crimson, lifted in value only
+ *
+ * The name does double duty on purpose: `Ton` is both the German word for clay
+ * and for tone, and this theme is the one that moves the tone rather than the
+ * volume.
+ *
+ * Two hexes are not the published ones, and that is deliberate. Digg Blue
+ * (#356AA0) and Last.fm Crimson (#D01F3C) cannot reach 4.5:1 against a surface
+ * this dark, so their value was raised and their hue left untouched. A
+ * period-accurate colour that fails WCAG AA is not a reference, it is a
+ * screenshot. */
+[data-theme="ton"] {
   color-scheme: dark;
 
-  --tea-canvas: #121317;
-  --tea-surface: #1a1b1f;
-  --tea-surface-2: #212329;
-  --tea-surface-3: #2a2c33;
-  --tea-overlay: rgb(0 0 0 / 0.78);
+  /* --- surfaces ---------------------------------------------------------- */
+  --tea-canvas: #15130f;
+  --tea-surface: #1e1b16;
+  --tea-surface-2: #262219;
+  --tea-surface-3: #2f2a1f;
+  --tea-overlay: rgb(12 10 6 / 0.8);
 
-  --tea-fg: #ede9e1;
-  --tea-fg-muted: #aba69b;
-  --tea-fg-subtle: #8a857b;
-  --tea-fg-inverse: #121317;
+  /* --- foreground -------------------------------------------------------- */
+  --tea-fg: #efe7d8;
+  --tea-fg-muted: #b8ab93;
+  --tea-fg-subtle: #8f836c;
+  --tea-fg-inverse: #15130f;
 
-  --tea-line: #383b44;
-  --tea-line-strong: #525663;
+  /* --- lines ------------------------------------------------------------- */
+  --tea-line: #3b352a;
+  --tea-line-strong: #5a5142;
 
-  --tea-brand: #f2c012;
+  /* --- brand ------------------------------------------------------------- */
+  --tea-brand: #d15600;
 
-  --tea-primary: #f2c012;
-  --tea-primary-fg: #121317;
-  --tea-primary-hover: #f7c72e;
-  --tea-primary-subtle: rgb(242 192 18 / 0.12);
-  --tea-primary-border: rgb(242 192 18 / 0.4);
+  /* --- action ------------------------------------------------------------ */
+  --tea-primary: #d15600;
+  --tea-primary-fg: #1a0a00;
+  --tea-primary-hover: #dd6a17;
+  --tea-primary-subtle: rgb(209 86 0 / 0.12);
+  --tea-primary-border: rgb(209 86 0 / 0.4);
 
-  --tea-accent: #f2c012;
-  --tea-accent-fg: #121317;
-  --tea-accent-subtle: rgb(242 192 18 / 0.1);
+  --tea-accent: #b02b2c;
+  --tea-accent-fg: #fbeeee;
+  --tea-accent-subtle: rgb(176 43 44 / 0.1);
 
-  --tea-ring: #f2c012;
-  --tea-ring-strong: #ffd84d;
+  --tea-ring: #d15600;
+  --tea-ring-strong: #f08a3c;
 
-  --tea-positive: #4fc97e;
-  --tea-positive-fg: #0a1f13;
-  --tea-positive-subtle: rgb(79 201 126 / 0.12);
-  --tea-positive-border: rgb(79 201 126 / 0.4);
+  /* --- the five tones ---------------------------------------------------- */
+  --tea-positive: #6bba70;
+  --tea-positive-fg: #06140a;
+  --tea-positive-subtle: rgb(107 186 112 / 0.12);
+  --tea-positive-border: rgb(107 186 112 / 0.4);
 
-  --tea-info: #5b8def;
-  --tea-info-fg: #08142b;
-  --tea-info-subtle: rgb(91 141 239 / 0.12);
-  --tea-info-border: rgb(91 141 239 / 0.4);
+  --tea-info: #4c87c4;
+  --tea-info-fg: #0b1520;
+  --tea-info-subtle: rgb(76 135 196 / 0.12);
+  --tea-info-border: rgb(76 135 196 / 0.4);
 
-  --tea-caution: #f2921e;
-  --tea-caution-fg: #1f1204;
-  --tea-caution-subtle: rgb(242 146 30 / 0.12);
-  --tea-caution-border: rgb(242 146 30 / 0.4);
+  --tea-caution: #c79810;
+  --tea-caution-fg: #161000;
+  --tea-caution-subtle: rgb(199 152 16 / 0.12);
+  --tea-caution-border: rgb(199 152 16 / 0.4);
 
-  --tea-critical: #f0726a;
-  --tea-critical-fg: #230604;
-  --tea-critical-subtle: rgb(240 114 106 / 0.12);
-  --tea-critical-border: rgb(240 114 106 / 0.4);
+  --tea-critical: #e54e66;
+  --tea-critical-fg: #24060a;
+  --tea-critical-subtle: rgb(229 78 102 / 0.12);
+  --tea-critical-border: rgb(229 78 102 / 0.4);
 
-  --tea-neutral: #aba69b;
-  --tea-neutral-fg: #121317;
-  --tea-neutral-subtle: rgb(171 166 155 / 0.12);
-  --tea-neutral-border: rgb(171 166 155 / 0.4);
+  --tea-neutral: #b8ab93;
+  --tea-neutral-fg: #15130f;
+  --tea-neutral-subtle: rgb(184 171 147 / 0.12);
+  --tea-neutral-border: rgb(184 171 147 / 0.4);
 
   --tea-destructive: var(--tea-critical);
   --tea-destructive-fg: var(--tea-critical-fg);
   --tea-destructive-subtle: var(--tea-critical-subtle);
   --tea-destructive-border: var(--tea-critical-border);
 
-  --tea-density: compact;
+  --tea-density: default;
 
   --tea-font-sans: "Jost Variable", "Jost", "Futura", ui-sans-serif, system-ui, sans-serif;
   --tea-font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
   --tea-font-display: "Lilita One", "Jost Variable", ui-sans-serif, system-ui, sans-serif;
 
-  --tea-shadow-raised: 0 1px 3px rgb(0 0 0 / 0.28);
-  --tea-shadow-overlay: 6px 6px 0 0 rgb(0 0 0 / 0.5);
-  --tea-shadow-modal: 8px 8px 0 0 rgb(0 0 0 / 0.5);
+  --tea-shadow-raised: 0 1px 3px rgb(0 0 0 / 0.32);
+  --tea-shadow-overlay: 6px 6px 0 0 rgb(0 0 0 / 0.52);
+  --tea-shadow-modal: 8px 8px 0 0 rgb(0 0 0 / 0.52);
   --tea-shadow-inset: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
 }

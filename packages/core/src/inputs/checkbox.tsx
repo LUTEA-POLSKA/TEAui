@@ -99,7 +99,7 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(funct
         // geometry: a checkbox is a control marker, not a surface.
         "size-4 shrink-0 rounded-pill border border-line-strong bg-surface",
         "inline-flex items-center justify-center p-0 text-primary-fg",
-        "transition-[background-color,border-color,box-shadow] duration-[120ms] ease-standard",
+        "transition-[background-color,border-color,box-shadow] duration-fast ease-standard",
         "outline-none",
         "focus-visible:border-ring-strong focus-visible:ring-2 focus-visible:ring-ring",
         "data-[state=checked]:border-primary data-[state=checked]:bg-primary",

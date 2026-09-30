@@ -13,22 +13,27 @@
  * else in the app touches typography.
  */
 
-html,
-body,
-#root {
-  height: 100%;
-}
-
 body {
   margin: 0;
 }
 
-/* The Showcase is a document that scrolls, not a fixed-viewport application.
-   Admin products use the fixed shell from @tea-ui/admin instead. */
-.showcase-scroll {
-  height: 100%;
-  overflow-y: auto;
-}
+/*
+ * The Showcase is a document that scrolls, not a fixed-viewport application —
+ * admin products use the fixed shell from @tea-ui/admin instead. So there is
+ * deliberately no height chain here and no nested scroller: `html`, `body` and
+ * `#root` stay at their natural height and the root is the one and only
+ * scroller.
+ *
+ * The first version of this file did the opposite. `html`, `body` and `#root`
+ * each got `height: 100%` and the app lived in a child with
+ * `overflow-y: auto`, which looks equivalent and is not: the root element
+ * propagates its overflow to the viewport while its own box stays clamped to
+ * one viewport height, so the root kept a scrollable overflow region of 1210px
+ * with no content in it. The page therefore showed two vertical scrollbars,
+ * and scrolling the outer one moved the document past its own end into blank
+ * space. A sticky header and a footer in normal flow are all that a scrolling
+ * document needs, so the whole chain is gone rather than tuned.
+ */
 
 /* A subtle technical grid, borrowed from the design language of both reference
    products. Purely decorative, and it never sits under text that matters. */

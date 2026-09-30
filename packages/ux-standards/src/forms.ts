@@ -117,11 +117,20 @@ export const AUTOCOMPLETE = {
  * it is a TEA UI pattern, not something each product re-implements.
  */
 export const UNSAVED_CHANGES = {
-  /** Wording of the guard. `du` register, per the content standard. */
-  title: "Ungespeicherte Änderungen",
-  detail: "Deine Änderungen wurden noch nicht gespeichert. Wenn du die Seite verlässt, gehen sie verloren.",
-  confirmLabel: "Verwerfen und verlassen",
-  cancelLabel: "Weiter bearbeiten",
+  /**
+   * Wording of the guard.
+   *
+   * These are the values a consumer gets by default, so they are English — the
+   * language this package documents itself in. `UNSAVED_CHANGES` is `as const`,
+   * not frozen against override: spread it and set `title`/`detail`/
+   * `confirmLabel`/`cancelLabel` at the entry point, which is the intended way
+   * to localise a whole dialog. The button order (`preferSave`) is the part that
+   * matters for usability, and that is what the tests assert.
+   */
+  title: "Unsaved changes",
+  detail: "Your changes have not been saved. If you leave this page, they will be lost.",
+  confirmLabel: "Discard and leave",
+  cancelLabel: "Keep editing",
   /** Saving before navigating is the better path, so it is offered first. */
   preferSave: true,
 } as const;

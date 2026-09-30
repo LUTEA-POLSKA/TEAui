@@ -1,3 +1,17 @@
+<!--
+  NOT TEA UI DOCUMENTATION.
+
+  This directory holds the audits of two *other* codebases and the
+  consolidation of their findings. It is provenance, kept because the reasoning
+  behind several decisions is only verifiable against what was found — and the
+  counts in it are the reason components like `Card`, `Field`, `LoadingState`
+  and `StatusBadge` exist rather than being re-typed per product.
+
+  None of it defines TEA UI. What TEA UI is, is in `README.md`,
+  `docs/architecture/` and the code. These documents are not part of the public
+  contract, they are not exported, and nothing in the library imports them.
+-->
+
 # HSM Frontend UI/UX / Design-System Audit
 
 **Repo:** `E:\HSM` @ `79bfb92` (uncommitted changes are Rust-only: `src/crates/hsm-core/src/lib.rs`, `module.rs`, untracked `event_bus.rs` — frontend is clean)

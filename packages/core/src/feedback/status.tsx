@@ -15,7 +15,7 @@ import { dataSlot, stateAttributes } from "../internal";
  *
  * That constraint is the fix. The audit found, across two products, five
  * hand-written status-to-label tables that did not agree — one said "Online"
- * where another said "Läuft" for the same wire value, and one used "Gültig"
+ * where another said "Running" for the same wire value, and one used "Valid"
  * for a certificate where another used "Online". Keying on the wire value makes
  * that class of divergence a type error instead of a review comment.
  *

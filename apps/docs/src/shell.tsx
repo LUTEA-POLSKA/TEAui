@@ -87,7 +87,7 @@ export function DocsShell({
 
       <header className="sticky top-0 z-header border-b border-line bg-canvas">
         <Container size="full" className="flex h-14 items-center gap-4">
-          <IconButton label="Navigation öffnen" variant="ghost" size="sm" className="lg:hidden" onClick={() => setNavOpen(true)}>
+          <IconButton label="Open navigation" variant="ghost" size="sm" className="lg:hidden" onClick={() => setNavOpen(true)}>
             <span aria-hidden="true">☰</span>
           </IconButton>
           <Link href="#/getting-started" className="flex items-center gap-2 text-ui font-semibold text-fg no-underline hover:no-underline">
@@ -278,10 +278,10 @@ function SearchDialog({
             if (target) onSelect(target.id);
           }}
         />
-        <ul role="listbox" aria-label="Suchergebnisse" className="max-h-80 overflow-y-auto">
+        <ul role="listbox" aria-label="Search results" className="max-h-80 overflow-y-auto">
           {results.length === 0 ? (
             <li role="presentation" className="px-2 py-4 text-center text-ui text-fg-muted">
-              Nichts gefunden für „{query}“.
+              Nothing found for “{query}”.
             </li>
           ) : null}
           {results.map((page, index) => (

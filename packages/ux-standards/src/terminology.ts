@@ -1,132 +1,155 @@
 /**
  * TEA UI — the terminology deck.
  *
- * One language across the whole ecosystem. The audit found two orthographies
- * (one project transliterating every umlaut), two registers of address, and
- * several different German words for the same state — including "Online" and
- * "Läuft" used interchangeably for the same wire value. Copy is treated here
- * as a token: a component imports the word rather than typing it, so a change
- * of vocabulary is one edit and not a search across eleven packages.
+ * One language across the whole library. Copy is treated here as a token: a
+ * component imports the word rather than typing it, so a change of vocabulary
+ * is one edit and not a search across every package.
  *
- * Decisions encoded below:
- *  - Register: **du**. TEA's internal products address the operator directly.
- *    Public marketing pages may use a neutral voice, but never a third one.
- *  - Orthography: **real umlauts**. The transliteration pipeline that produced
- *    "Gespraech" also produced Chinese and Portuguese inside German sentences,
- *    which is evidence of a broken pipeline rather than a style.
- *  - Buttons name the *action*, not the object. "Server starten", not "Start".
+ * ## The defaults are English
+ *
+ * The values below used to be German, and every component that imported a word
+ * from this deck shipped German interface text to every consumer of the npm
+ * packages. That is a library deciding its users' language. A public package
+ * cannot know whether it is being rendered for an operator in Hamburg or a
+ * screen-reader user in São Paulo, so the default has to be the language its
+ * own documentation is written in, and the *rules* have to be separable from
+ * the *words*.
+ *
+ * The rules are the part worth keeping, and they hold in any language:
+ *
+ *  - **Buttons name the action, not the object.** "Start server", not "Start".
+ *    A bare verb is ambiguous the moment two actions share a row.
+ *  - **No politeness filler.** "Please" hides the action and lengthens the label.
+ *  - **No "OK".** A button labelled OK is a button nobody can find by reading.
+ *    Name the outcome, or leave the button out.
+ *  - **A status code is not an error message.** It belongs in the log, not in
+ *    the sentence shown to the person who hit the problem.
+ *  - **Real orthography, always.** A pipeline that transliterates "Gespräch"
+ *    to "Gespraech" is a broken pipeline, not a style.
+ *
+ * ## Supplying another language
+ *
+ * There is deliberately no runtime deck-switching mechanism here. Threading a
+ * deck through every component would put a locale provider in the middle of a
+ * token layer for a decision most products make once, at their own entry point.
+ * Instead, components that render text accept it as a prop (`closeLabel`,
+ * `fallbackTitle`, `emptyMessage`, `clearLabel`), and a product that needs a
+ * different language sets it at the call site. A product that wants the whole
+ * deck translated should keep its own copy of this file rather than a fork of
+ * the components — the deck is a single module for exactly that reason.
  */
 
 export const COPY = {
-  /* --- actions: verb-first, concrete, no "Bitte" ------------------------- */
+  /* --- actions: verb-first, concrete, no filler ---------------------------- */
   actions: {
-    save: "Speichern",
-    cancel: "Abbrechen",
-    close: "Schließen",
-    confirm: "Bestätigen",
-    delete: "Löschen",
-    remove: "Entfernen",
-    create: "Erstellen",
-    add: "Hinzufügen",
-    edit: "Bearbeiten",
-    duplicate: "Duplizieren",
-    rename: "Umbenennen",
-    move: "Verschieben",
-    copy: "Kopieren",
-    copied: "Kopiert",
-    download: "Herunterladen",
-    upload: "Hochladen",
-    import: "Importieren",
-    export: "Exportieren",
-    refresh: "Aktualisieren",
-    retry: "Erneut versuchen",
-    search: "Suchen",
-    filter: "Filtern",
-    reset: "Zurücksetzen",
-    apply: "Anwenden",
-    back: "Zurück",
-    next: "Weiter",
-    finish: "Fertigstellen",
-    start: "Starten",
-    stop: "Stoppen",
-    restart: "Neu starten",
-    pause: "Pausieren",
-    resume: "Fortsetzen",
-    open: "Öffnen",
-    preview: "Vorschau",
+    save: "Save",
+    cancel: "Cancel",
+    close: "Close",
+    dismissAll: "Dismiss all",
+    confirm: "Confirm",
+    delete: "Delete",
+    remove: "Remove",
+    create: "Create",
+    add: "Add",
+    edit: "Edit",
+    duplicate: "Duplicate",
+    rename: "Rename",
+    move: "Move",
+    copy: "Copy",
+    copied: "Copied",
+    download: "Download",
+    upload: "Upload",
+    import: "Import",
+    export: "Export",
+    refresh: "Refresh",
+    retry: "Try again",
+    search: "Search",
+    filter: "Filter",
+    reset: "Reset",
+    apply: "Apply",
+    back: "Back",
+    next: "Next",
+    finish: "Finish",
+    start: "Start",
+    stop: "Stop",
+    restart: "Restart",
+    pause: "Pause",
+    resume: "Resume",
+    open: "Open",
+    preview: "Preview",
     details: "Details",
-    settings: "Einstellungen",
-    signIn: "Anmelden",
-    signOut: "Abmelden",
-    undo: "Rückgängig",
-    redo: "Wiederholen",
+    settings: "Settings",
+    signIn: "Sign in",
+    signOut: "Sign out",
+    undo: "Undo",
+    redo: "Redo",
   },
 
-  /* --- states ------------------------------------------------------------ */
+  /* --- states -------------------------------------------------------------- */
   states: {
-    loading: "Wird geladen",
-    refreshing: "Wird aktualisiert",
-    processing: "Wird verarbeitet",
-    saving: "Wird gespeichert",
-    empty: "Keine Einträge",
-    error: "Fehler",
-    success: "Erfolgreich",
+    loading: "Loading",
+    refreshing: "Refreshing",
+    processing: "Processing",
+    saving: "Saving",
+    empty: "No entries",
+    error: "Error",
+    success: "Success",
     offline: "Offline",
-    stale: "Veraltete Daten",
-    readOnly: "Nur lesbar",
-    required: "Pflichtfeld",
+    stale: "Out of date",
+    readOnly: "Read-only",
+    required: "Required",
     optional: "Optional",
   },
 
-  /* --- navigation -------------------------------------------------------- */
+  /* --- navigation ---------------------------------------------------------- */
   navigation: {
-    main: "Hauptnavigation",
-    breadcrumb: "Brotkrümelnavigation",
-    pagination: "Seitennavigation",
-    toolbar: "Werkzeugleiste",
-    skipToContent: "Zum Inhalt springen",
-    openMenu: "Menü öffnen",
-    closeMenu: "Menü schließen",
-    toggleSidebar: "Navigation ein-/ausblenden",
-    commandPalette: "Befehlspalette",
-    search: "Suche",
+    main: "Main navigation",
+    breadcrumb: "Breadcrumb",
+    pagination: "Pagination",
+    toolbar: "Toolbar",
+    skipToContent: "Skip to content",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    toggleSidebar: "Toggle navigation",
+    commandPalette: "Command palette",
+    search: "Search",
   },
 
-  /* --- destructive ------------------------------------------------------- */
+  /* --- destructive --------------------------------------------------------- */
   destructive: {
-    undoTitle: "Rückgängig gemacht",
-    confirmTitle: "Wirklich fortfahren?",
-    typeToConfirm: "Zum Bestätigen {name} eingeben",
-    irreversibleNote: "Das kann nicht rückgängig gemacht werden.",
+    undoTitle: "Undone",
+    confirmTitle: "Continue anyway?",
+    typeToConfirm: "Type {name} to confirm",
+    irreversibleNote: "This cannot be undone.",
   },
 
-  /* --- a11y -------------------------------------------------------------- */
+  /* --- a11y ---------------------------------------------------------------- */
   a11y: {
-    close: "Schließen",
-    open: "Öffnen",
-    loading: "Wird geladen",
-    requiredField: "Pflichtfeld",
-    invalidField: "Eingabe ungültig",
-    more: "Mehr",
-    less: "Weniger",
-    selected: "Ausgewählt",
-    expand: "Ausklappen",
-    collapse: "Einklappen",
-    page: "Seite",
-    of: "von",
-    rowsPerPage: "Zeilen pro Seite",
-    selectedRows: "{count} ausgewählt",
+    close: "Close",
+    open: "Open",
+    loading: "Loading",
+    requiredField: "Required",
+    invalidField: "Invalid entry",
+    more: "More",
+    less: "Less",
+    selected: "Selected",
+    expand: "Expand",
+    collapse: "Collapse",
+    page: "Page",
+    of: "of",
+    rowsPerPage: "Rows per page",
+    selectedRows: "{count} selected",
   },
 
-  /* --- formatting -------------------------------------------------------- */
+  /* --- formatting ---------------------------------------------------------- */
   formatting: {
-    lastUpdated: "Zuletzt aktualisiert",
-    never: "Nie",
-    justNow: "Gerade eben",
-    minutesAgo: "Vor {n} Min.",
-    hoursAgo: "Vor {n} Std.",
-    daysAgo: "Vor {n} Tg.",
-    andMore: "und {n} weitere",
+    lastUpdated: "Last updated",
+    never: "Never",
+    justNow: "Just now",
+    minutesAgo: "{n} min ago",
+    hoursAgo: "{n} h ago",
+    daysAgo: "{n} d ago",
+    andMore: "and {n} more",
   },
 } as const;
 
@@ -138,14 +161,19 @@ export function fill(template: string, values: Record<string, string | number>):
 }
 
 /**
- * Words TEA UI does not use, and what it uses instead. A short list, because a
- * deck nobody reads is a deck nobody follows.
+ * Words that are hard to defend, and what to use instead. A short list, because
+ * a deck nobody reads is a deck nobody follows.
+ *
+ * `avoid` holds words from more than one language on purpose. The rules are
+ * language-independent; the examples are the two languages this library is used
+ * in, and a product writing a third will recognise the shape faster than the
+ * string.
  */
 export const FORBIDDEN_COPY: ReadonlyArray<{ avoid: string; use: string; why: string }> = [
   {
-    avoid: "Bitte",
+    avoid: "Bitte / Please",
     use: "the verb, directly",
-    why: "Polite filler that hides the action and lengthens every label.",
+    why: "Politeness filler that hides the action and lengthens every label.",
   },
   {
     avoid: "Okay / OK",
@@ -153,38 +181,43 @@ export const FORBIDDEN_COPY: ReadonlyArray<{ avoid: string; use: string; why: st
     why: "A button labelled OK is a button nobody can find by reading.",
   },
   {
-    avoid: "Etwas ist schiefgelaufen",
+    avoid: "Etwas ist schiefgelaufen / Something went wrong",
     use: "the error title plus the reason",
     why: "States that nothing, and asks the user to do the diagnosis.",
   },
   {
-    avoid: "Fehler 500",
-    use: "Serverfehler plus a next step",
+    avoid: "Fehler 500 / Error 500",
+    use: "a plain title plus a next step",
     why: "A status code is for logs, not for the person who hit the problem.",
   },
   {
-    avoid: "Klicken Sie hier",
-    use: "a named control: „Speichern“",
+    avoid: "Klicken Sie hier / Click here",
+    use: "a named control: “Save”",
     why: "Describes a mouse gesture instead of the outcome.",
   },
   {
     avoid: "Start / Stop as a bare label",
-    use: "Server starten / Server stoppen",
+    use: "Start server / Stop server",
     why: "A bare verb is ambiguous when several actions share a row.",
   },
   {
-    avoid: "IP-Adresse (text as label)",
-    use: "IPv4-Adresse",
+    avoid: "IP-Adresse (used as a field label)",
+    use: "IPv4 address",
     why: "Confusing two protocols under one name.",
   },
 ];
 
 /**
- * Interpersonal register. Public marketing may use this, and it is the only
- * alternative permitted; the informal form is the product default.
+ * Register of address.
+ *
+ * The default is `neutral`, because picking between an informal and a formal
+ * register is a decision about the *product's* users and the library cannot
+ * make it. Products that address the operator directly may declare `informal`
+ * (German "du"), and a public marketing surface may declare `formal` (German
+ * "Sie") — but that choice is theirs, and it is made once, in their own code.
  */
 export const REGISTER = {
-  product: "du",
+  product: "neutral",
   publicNeutral: "neutral",
 } as const;
 

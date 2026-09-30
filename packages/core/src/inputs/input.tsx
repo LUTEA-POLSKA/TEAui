@@ -35,7 +35,7 @@ export const inputVariants = cva(
   [
     "w-full min-w-0 rounded-none border border-line bg-surface text-fg",
     "px-[length:var(--tea-control-px)]",
-    "transition-[background-color,border-color,color,box-shadow] duration-[120ms] ease-standard",
+    "transition-[background-color,border-color,color,box-shadow] duration-fast ease-standard",
     "outline-none",
     "placeholder:text-fg-subtle",
     // Below 16px, iOS Safari zooms the page on focus and never zooms back out.
@@ -80,9 +80,9 @@ export interface InputProps
  * @example
  * ```tsx
  * <Field required invalid={!!error}>
- *   <FieldLabel>E-Mail</FieldLabel>
+ *   <FieldLabel>E-mail</FieldLabel>
  *   <Input type="email" autoComplete="email" />
- *   <FieldDescription>Wir senden keine Bestätigung.</FieldDescription>
+ *   <FieldDescription>We send no confirmation.</FieldDescription>
  *   <FieldError>{error}</FieldError>
  * </Field>
  * ```

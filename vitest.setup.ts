@@ -50,3 +50,19 @@ if (!("ResizeObserver" in globalThis)) {
 if (typeof Element !== "undefined" && !Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = function scrollIntoView() {};
 }
+
+/**
+ * The pointer-capture API. The toast viewport is swipe-dismissible, so a click
+ * anywhere inside a toast reaches a handler that calls `hasPointerCapture`.
+ * jsdom has no implementation, and the resulting `TypeError` surfaces as an
+ * unhandled error that fails the run while the assertions themselves pass — a
+ * failure with no cause to read. Capture is never actually held in jsdom, so
+ * `hasPointerCapture` reporting `false` is the honest answer.
+ */
+if (typeof Element !== "undefined" && !Element.prototype.hasPointerCapture) {
+  Element.prototype.hasPointerCapture = function hasPointerCapture() {
+    return false;
+  };
+  Element.prototype.setPointerCapture = function setPointerCapture() {};
+  Element.prototype.releasePointerCapture = function releasePointerCapture() {};
+}

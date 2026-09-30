@@ -1,4 +1,4 @@
-﻿/**
+/**
  * TEA UI — Core.
  *
  * The product-agnostic layer. Nothing here knows what a server, a backup or a
@@ -78,6 +78,8 @@ export {
   type PanelProps,
 } from "./card";
 
+export { PanelHeader, type PanelHeaderProps } from "./panel-header";
+
 /* -- inputs ---------------------------------------------------------------- */
 export * from "./inputs";
 
@@ -101,6 +103,9 @@ export {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
+  MAIN_NAV_LABEL,
+  Nav,
+  NavItem,
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
@@ -109,6 +114,8 @@ export {
   NavigationMenuTrigger,
   Pagination,
   SkipLink,
+  Sidebar,
+  SidebarContent,
   Step,
   StepIndicator,
   StepSeparator,
@@ -123,12 +130,21 @@ export {
   type AccordionProps,
   type BreadcrumbLinkProps,
   type CollapsibleProps,
+  type NavItemData,
+  type NavItemProps,
+  type NavProps,
   type PaginationProps,
+  type SidebarBreakpoint,
+  type SidebarContentProps,
+  type SidebarProps,
   type SkipLinkProps,
   type StepProps,
   type StepperProps,
   type TabsProps,
 } from "./navigation";
+
+/* -- data ------------------------------------------------------------------ */
+export * from "./data";
 
 /* -- the shared attribute vocabulary --------------------------------------- */
 export { dataSlot, stateAttributes, type StateAttributes } from "./internal";

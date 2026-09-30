@@ -70,7 +70,7 @@
 }
 
 [data-density="compact"] {
-  --tea-control-h: 1.75rem; /* 28px — LUTEA dashboard density              */
+  --tea-control-h: 1.75rem; /* 28px — a dense dashboard              */
   --tea-control-px: 0.625rem;
   --tea-control-icon: 0.875rem;
   --tea-row-h: 2rem;
@@ -99,6 +99,39 @@
   --tea-text-ui: 0.9375rem; /* 15px                                        */
   --tea-text-label: 0.75rem;
   --tea-touch-min: 2.75rem;
+}
+
+/* ============================================================================
+ * 3b. Motion
+ * The one scale with no density steps: a compact row and a comfortable row do
+ * not move at different speeds.
+ *
+ * These are the values. The utilities are declared further down, and the split
+ * exists for a reason that cost a real bug: `--duration-*` is **not** a Tailwind
+ * v4 theme namespace. Declaring it in `@theme` produced nothing, so
+ * `duration-fast` was silently absent from the built stylesheet for every
+ * component that already asked for it — `Button`, `Select` and `Combobox` were
+ * all writing a class that did not exist. `--ease-*` *is* a namespace, so those
+ * are mapped in section 4 like every other role.
+ *
+ * `--default-transition-duration` and `-timing-function` also pointed at
+ * `--tea-ease-standard`, which was never defined. They resolve now.
+ *
+ * The numbers must stay equal to `MOTION.duration` in `tokens/index.ts`. Nothing
+ * links the two files, so `motion.test.ts` compares them and fails the build if
+ * they drift.
+ * ========================================================================== */
+
+:root {
+  --tea-duration-instant: 0ms;
+  --tea-duration-fast: 120ms;
+  --tea-duration-normal: 180ms;
+  --tea-duration-slow: 280ms;
+
+  --tea-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --tea-ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --tea-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --tea-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* ============================================================================
@@ -257,13 +290,16 @@
   --shadow-modal: var(--tea-shadow-modal);
   --shadow-inset: var(--tea-shadow-inset);
 
-  /* --- motion ------------------------------------------------------------ */
-  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
-  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
-  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  /* --- motion: namespace mapping ----------------------------------------- */
+  /* `--ease-*` is a real Tailwind v4 namespace, so `ease-standard` generates as
+     a utility. `--duration-*` is not, and the duration utilities are declared as
+     real `@utility` blocks further down instead — see section 3b. */
+  --ease-standard: var(--tea-ease-standard);
+  --ease-entrance: var(--tea-ease-entrance);
+  --ease-exit: var(--tea-ease-exit);
+  --ease-emphasized: var(--tea-ease-emphasized);
 
-  --default-transition-duration: 180ms;
+  --default-transition-duration: var(--tea-duration-normal);
   --default-transition-timing-function: var(--tea-ease-standard);
 
   /* --- breakpoints are documented here and mirrored in tokens/index.ts ----- */
@@ -281,8 +317,25 @@
  * for the same overlay band; this scale ends that.
  * ========================================================================== */
 
-@utility z-base {
-  z-index: 0;
+/* The four durations, as real utilities. `--duration-*` is not a Tailwind v4
+ * theme namespace, so these cannot come from `@theme` — and their absence is
+ * why `duration-fast` was missing from every build until now. `duration-[120ms]`
+ * kept working, which is exactly how a broken abstraction stays invisible: the
+ * workaround compiles, so nothing reports the class that does not. */
+@utility duration-instant {
+  transition-duration: var(--tea-duration-instant);
+}
+@utility duration-fast {
+  transition-duration: var(--tea-duration-fast);
+}
+@utility duration-normal {
+  transition-duration: var(--tea-duration-normal);
+}
+@utility duration-slow {
+  transition-duration: var(--tea-duration-slow);
+}
+
+@utility z-base {  z-index: 0;
 }
 @utility z-raised {
   z-index: 10;

@@ -2,7 +2,7 @@ import * as React from "react";
 import type { Tone } from "@tea-ui/tokens";
 import { cn, cva, type VariantProps } from "@tea-ui/utils";
 
-import { Card, stateAttributes } from "@tea-ui/core";
+import { Card, Meter, stateAttributes } from "@tea-ui/core";
 
 /**
  * TEA UI Admin — the metric tile.
@@ -51,7 +51,7 @@ export interface StatTileProps
   trend?: Trend | undefined;
   /** The change itself, e.g. "+4 %". Required when `trend` is given. */
   trendValue?: string | undefined;
-  /** Accessible description of the trend, e.g. "steigend gegenüber letzter Woche". */
+  /** Accessible description of the trend, e.g. "up compared to last week". */
   trendDescription?: string | undefined;
   /** Icon before the label. Decorative. */
   icon?: React.ReactNode | undefined;
@@ -66,7 +66,7 @@ const TONE_TEXT: Record<Tone, string> = {
 };
 
 const TREND_GLYPH: Record<Trend, string> = { up: "\u2191", down: "\u2193", flat: "\u2192" };
-const TREND_WORD: Record<Trend, string> = { up: "steigend", down: "fallend", flat: "gleichbleibend" };
+const TREND_WORD: Record<Trend, string> = { up: "rising", down: "falling", flat: "unchanged" };
 
 export const StatTile = React.forwardRef<HTMLDivElement, StatTileProps>(function StatTile(
   {
@@ -105,7 +105,7 @@ export const StatTile = React.forwardRef<HTMLDivElement, StatTileProps>(function
                 meaning when the colour and the shape are unavailable. */}
             <span className="sr-only">
               {" "}
-              ({trendDescription ?? `${TREND_WORD[trend]} gegenüber dem Vergleichszeitraum`})
+              ({trendDescription ?? `${TREND_WORD[trend]} compared to the previous period`})
             </span>
           </span>
         ) : null}
@@ -123,30 +123,23 @@ export interface MetricCardProps extends StatTileProps {
 
 /**
  * A stat tile with a bounded resource under it. The meter is the third signal
- * beside the number and the tone, so a value of 87% does not depend on being
+ * beside the number and the tone, so a value of 87 % does not depend on being
  * read as amber.
+ *
+ * The bar used to be hand-rolled here — a `role="meter"` div with an inline
+ * width — which is exactly what the audit's three unnamed meters in the source
+ * product looked like. It is `Meter` now, so the role, `aria-valuenow` and the
+ * `valueText` live in one place.
  */
 export const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(function MetricCard(
-  { percent, tone = "neutral", ...props },
+  { percent, tone = "neutral", label, ...props },
   ref,
 ) {
   return (
     <Card className="flex flex-col gap-2 p-4" ref={ref}>
-      <StatTile {...props} tone={tone} />
+      <StatTile {...props} label={label} tone={tone} />
       {typeof percent === "number" ? (
-        <div
-          role="meter"
-          aria-valuenow={Math.round(percent)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={props.label}
-          className="h-1.5 w-full overflow-hidden rounded-pill bg-surface-3"
-        >
-          <div
-            className={cn("h-full", TONE_TEXT[tone] !== "text-fg" ? "bg-current" : "bg-fg-muted")}
-            style={{ width: `${Math.min(100, Math.max(0, percent))}%` }}
-          />
-        </div>
+        <Meter value={percent} label={label} tone={tone} />
       ) : null}
     </Card>
   );

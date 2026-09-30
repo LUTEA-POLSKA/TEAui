@@ -8,7 +8,10 @@ import { describe, expect, it } from "vitest";
  * Accessibility is a platform requirement, so the theme is tested like code
  * rather than reviewed like one. The three reference themes are parsed out of
  * `themes.css` and every documented foreground/background pair is measured
- * against WCAG 2.2.
+ * against WCAG 2.2 — which is the only reason the two period palettes are
+ * defensible. Digg Blue and Last.fm Crimson are the published 2007 hexes and
+ * both fail 4.5:1 on a surface that dark; they ship lifted in value, hue
+ * untouched, because a period-accurate colour that fails AA is a screenshot.
  *
  * This test exists because the audit found the palettes were never measured. The
  * source projects used `text-muted-foreground: #9A968C` on `#171A21` for small
@@ -56,9 +59,23 @@ const TONE_ON_SURFACE: Array<[role: string, minRatio: number]> = [
   ["brand", 3],
 ];
 
+/**
+ * Tones that must not be mistaken for the primary action.
+ *
+ * `critical` and `positive` are excluded on purpose: in every reference theme
+ * they are the far end of the wheel from the action colour, and a palette where
+ * "destroy" sits next to "confirm" in the same hue is a different problem that
+ * this rule would not catch.
+ */
+const SEPARABLE_TONES: readonly string[] = ["info", "caution"];
+
 function parseThemes(): Record<string, Record<string, string>> {
   const themes: Record<string, Record<string, string>> = {};
-  const blockPattern = /(:root,\s*\[data-theme="tea"\]|\[data-theme="([a-z]+)"\])\s*\{([^}]*)\}/g;
+  // The name pattern accepts digits and dashes. It used to be `[a-z]+`, which
+  // silently parsed only the alphabetic theme and reported "one theme" rather
+  // than failing — a test that cannot see a theme cannot fail about it, so the
+  // count assertion below is the part that does the work.
+  const blockPattern = /(:root,\s*\[data-theme="tea"\]|\[data-theme="([a-z0-9-]+)"\])\s*\{([^}]*)\}/g;
   let match: RegExpExecArray | null;
 
   while ((match = blockPattern.exec(css)) !== null) {
@@ -123,7 +140,7 @@ function contrast(a: string, b: string): number {
 
 describe("reference themes", () => {
   it("parses all three themes", () => {
-    expect(Object.keys(THEMES).sort()).toEqual(["hsm", "lutea", "tea"]);
+    expect(Object.keys(THEMES).sort()).toEqual(["pop", "tea", "ton"]);
   });
 
   for (const [name, values] of Object.entries(THEMES)) {
@@ -150,17 +167,26 @@ describe("reference themes", () => {
         expect(ratio).toBeGreaterThanOrEqual(min);
       });
 
-      it("gives caution a hue that is distinguishable from the primary action", () => {
+      it.each(SEPARABLE_TONES)("gives %s a hue distinguishable from the primary action", (role) => {
         // The audit's finding: both source products use a gold primary, so an
         // amber "warning" would be indistinguishable from the accent at small
         // sizes. Orange is the deliberate resolution.
+        //
+        // `info` was left out of this check for a long time, and that is how the
+        // `pop` theme shipped a Flock Blue `#4096EE` sitting 17 channels from
+        // its own Sky Blue primary — inside the threshold this very test applies
+        // to `caution`. A blue action and a blue information are as
+        // indistinguishable as a gold action and an amber warning, so the rule
+        // is now written once and applied to every tone that can be confused
+        // with a primary.
         const primary = toRgb(values.primary!);
-        const caution = toRgb(values.caution!);
+        const tone = toRgb(values[role]!);
         const distance = Math.max(
-          Math.abs(primary[0] - caution[0]),
-          Math.abs(primary[1] - caution[1]),
-          Math.abs(primary[2] - caution[2]),
+          Math.abs(primary[0] - tone[0]),
+          Math.abs(primary[1] - tone[1]),
+          Math.abs(primary[2] - tone[2]),
         );
+        expect(`${role}=${values[role]} vs primary=${values.primary} → ${distance}`).toBeTruthy();
         expect(distance).toBeGreaterThan(20);
       });
 

@@ -39,7 +39,24 @@ export function useInputGroupContext(): InputGroupContextValue | null {
 
 const CONTROL_CLASS_NAME = cn(
   // The group owns the border and the background.
-  "h-full flex-1 rounded-none border-0 bg-transparent",
+  //
+  // `h-auto`, not `h-full` and not a `min-h`. Two things were wrong:
+  //
+  //  - `h-full` is `height: 100%`, and a percentage resolves only against a
+  //    *definite* parent height. The group's `min-height` gives it a used
+  //    height but not a specified one, so `h-full` fell back to `auto` and the
+  //    control collapsed to the intrinsic height of a bare input: 20px, flat
+  //    across all three densities, silently overriding the `control-h` that
+  //    `inputVariants` had already applied.
+  //  - a `min-h` on the control stacks on the group's own 1px border, so a
+  //    grouped field came out 2px taller than a standalone one.
+  //
+  // So the floor lives on the group and the control carries no height at all:
+  // `h-auto` hands the cross axis back to the group's `items-stretch`, and the
+  // control fills the content box. A grouped field and a standalone field then
+  // measure the same, and the group can still grow past the control height for
+  // content that needs it.
+  "h-auto flex-1 rounded-none border-0 bg-transparent",
   // The addons own the horizontal space, so the control needs none. Without
   // this the text collides with the icon at every density.
   "px-0",
@@ -71,7 +88,7 @@ export interface InputGroupProps extends Omit<React.ComponentProps<"div">, "chil
  *   </InputGroupStart>
  *   <Input type="search" />
  *   <InputGroupEnd>
- *     <IconButton label="Suche zurücksetzen" size="sm">
+ *     <IconButton label="Reset search" size="sm">
  *       <X aria-hidden />
  *     </IconButton>
  *   </InputGroupEnd>
@@ -95,7 +112,17 @@ export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(func
         aria-label={label}
         data-tea-touch
         className={cn(
-          "flex min-w-0 items-stretch rounded-none border border-line bg-surface",
+          // `min-h`, not `h`: the floor is the control height, so a group that
+          // only contains an input is never shorter than the Toggle item beside
+          // it. A fixed height would cap a group holding something taller — a
+          // textarea, a two-line control — and `min-h` does not.
+          //
+          // This also is what makes the input's own `h-full` work. Without a
+          // height here, the group was sized by its content, so `h-full`
+          // resolved against an auto parent and the input collapsed to its
+          // intrinsic 20px instead of the control height — flat across all three
+          // densities, because the token it overrode never got a chance to apply.
+          "flex min-h-[length:var(--tea-control-h)] min-w-0 items-stretch rounded-none border border-line bg-surface",
           "focus-within:border-ring-strong focus-within:ring-2 focus-within:ring-ring",
           "disabled:opacity-50",
           className,

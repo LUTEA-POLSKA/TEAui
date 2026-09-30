@@ -40,9 +40,9 @@ export interface SwitchProps
  * @example
  * ```tsx
  * <Field>
- *   <FieldLabel>Wartungsmodus</FieldLabel>
+ *   <FieldLabel>Maintenance mode</FieldLabel>
  *   <Switch defaultChecked />
- *   <FieldDescription>Neue Aufträge werden zurückgestellt.</FieldDescription>
+ *   <FieldDescription>New jobs are queued.</FieldDescription>
  * </Field>
  * ```
  */
@@ -79,7 +79,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(function 
         // marker, and a square switch reads as a checkbox.
         "relative inline-flex h-4 w-7 shrink-0 items-center rounded-pill border border-line-strong",
         "bg-surface-2 p-0.5",
-        "transition-[background-color,border-color] duration-[120ms] ease-standard",
+        "transition-[background-color,border-color] duration-fast ease-standard",
         "outline-none",
         "focus-visible:border-ring-strong focus-visible:ring-2 focus-visible:ring-ring",
         "data-[state=checked]:border-primary data-[state=checked]:bg-primary",
@@ -95,7 +95,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(function 
         // The thumb's position is the second signal: the switch is readable
         // with no colour perception at all.
         className={cn(
-          "pointer-events-none block size-3 rounded-pill bg-fg transition-transform duration-[120ms] ease-standard",
+          "pointer-events-none block size-3 rounded-pill bg-fg transition-transform duration-fast ease-standard",
           "data-[state=checked]:translate-x-3 data-[state=unchecked]:translate-x-0",
           "data-[state=checked]:bg-primary-fg",
         )}

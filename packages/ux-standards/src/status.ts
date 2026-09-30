@@ -1,4 +1,4 @@
-﻿import type { Tone } from "@tea-ui/tokens";
+import type { Tone } from "@tea-ui/tokens";
 
 /**
  * TEA UI — the status registry.
@@ -7,7 +7,7 @@
  * the two source projects found, between them, five hand-written
  * status-to-label tables *per project*, none of which agreed — including for
  * the same wire value, where one project said "Online" and the other said
- * "Läuft" for the same state, and one used "Gültig" where the other used
+ * "Running" for the same state, and one used "Valid" where the other used
  * "Online" for a certificate.
  *
  * Here, that decision has been made once. A component asks
@@ -50,27 +50,27 @@ const HEALTH = domain<"online" | "degraded" | "offline" | "unknown" | "maintenan
   online: {
     label: "Online",
     tone: "positive",
-    description: "Der Dienst antwortet normal und erfüllt seine Aufgabe.",
+    description: "The service responds normally and is doing its job.",
   },
   degraded: {
-    label: "Eingeschränkt",
+    label: "Degraded",
     tone: "caution",
-    description: "Der Dienst antwortet, aber einzelne Funktionen sind nicht verfügbar.",
+    description: "The service responds, but some functions are unavailable.",
   },
   offline: {
     label: "Offline",
     tone: "critical",
-    description: "Der Dienst ist nicht erreichbar.",
+    description: "The service is unreachable.",
   },
   unknown: {
     label: "Unbekannt",
     tone: "neutral",
-    description: "Es liegt keine aktuelle Messung vor.",
+    description: "There is no current measurement.",
   },
   maintenance: {
-    label: "Wartung",
+    label: "Maintenance",
     tone: "info",
-    description: "Der Dienst wird geplant bearbeitet und ist möglicherweise nicht verfügbar.",
+    description: "The service is being worked on and may be unavailable.",
   },
 });
 
@@ -78,22 +78,22 @@ const RESOURCE = domain<"normal" | "elevated" | "high" | "critical">({
   normal: {
     label: "Normal",
     tone: "positive",
-    description: "Die Auslastung liegt im üblichen Bereich.",
+    description: "Utilisation is within the usual range.",
   },
   elevated: {
-    label: "Erhöht",
+    label: "Elevated",
     tone: "caution",
-    description: "Die Auslastung nähert sich dem Grenzwert.",
+    description: "Utilisation is approaching the limit.",
   },
   high: {
     label: "Hoch",
     tone: "caution",
-    description: "Die Auslastung liegt über dem Zielwert und sollte beobachtet werden.",
+    description: "Utilisation is above the target and should be watched.",
   },
   critical: {
-    label: "Kritisch",
+    label: "Critical",
     tone: "critical",
-    description: "Die Auslastung hat den Grenzwert überschritten. Handeln ist erforderlich.",
+    description: "Utilisation has exceeded the limit. Action is required.",
   },
 });
 
@@ -101,88 +101,88 @@ const BACKUP = domain<"succeeded" | "running" | "pending" | "failed" | "expired"
   succeeded: {
     label: "Erfolgreich",
     tone: "positive",
-    description: "Die Sicherung wurde vollständig geschrieben und geprüft.",
+    description: "The backup was written completely and verified.",
   },
   running: {
-    label: "Läuft",
+    label: "Running",
     tone: "info",
-    description: "Die Sicherung wird gerade geschrieben.",
+    description: "The backup is being written.",
   },
   pending: {
     label: "Ausstehend",
     tone: "neutral",
-    description: "Die Sicherung ist geplant, aber noch nicht gestartet.",
+    description: "The backup is scheduled but has not started yet.",
   },
   failed: {
-    label: "Fehlgeschlagen",
+    label: "Failed",
     tone: "critical",
-    description: "Die Sicherung wurde abgebrochen und ist nicht verwendbar.",
+    description: "The backup was aborted and is not usable.",
   },
   expired: {
     label: "Abgelaufen",
     tone: "caution",
-    description: "Die Sicherung ist älter als die Aufbewahrungsfrist.",
+    description: "The backup is older than the retention period.",
   },
 });
 
 const CERTIFICATE = domain<"valid" | "expiring" | "expired" | "invalid" | "unknown">({
   valid: {
-    label: "Gültig",
+    label: "Valid",
     tone: "positive",
-    description: "Das Zertifikat ist gültig und wird automatisch erneuert.",
+    description: "The certificate is valid and is renewed automatically.",
   },
   expiring: {
-    label: "Läuft ab",
+    label: "Expiring",
     tone: "caution",
-    description: "Das Zertifikat läuft in Kürze ab und sollte erneuert werden.",
+    description: "The certificate expires soon and should be renewed.",
   },
   expired: {
     label: "Abgelaufen",
     tone: "critical",
-    description: "Das Zertifikat ist abgelaufen. Die Verbindung ist nicht mehr vertrauenswürdig.",
+    description: "The certificate has expired. The connection is no longer trustworthy.",
   },
   invalid: {
-    label: "Ungültig",
+    label: "Invalid",
     tone: "critical",
-    description: "Das Zertifikat konnte nicht geprüft werden.",
+    description: "The certificate could not be verified.",
   },
   unknown: {
     label: "Unbekannt",
     tone: "neutral",
-    description: "Es liegt keine aktuelle Prüfung vor.",
+    description: "There is no current measurement.",
   },
 });
 
 const CONTAINER = domain<"running" | "created" | "paused" | "restarting" | "stopped" | "error">({
   running: {
-    label: "Läuft",
+    label: "Running",
     tone: "positive",
-    description: "Der Container ist gestartet und wird ausgeführt.",
+    description: "The container is started and running.",
   },
   created: {
     label: "Erstellt",
     tone: "neutral",
-    description: "Der Container ist angelegt, aber nicht gestartet.",
+    description: "The container is created but not started.",
   },
   paused: {
     label: "Pausiert",
     tone: "info",
-    description: "Der Container ist angehalten und speichert seinen Zustand.",
+    description: "The container is paused and keeps its state.",
   },
   restarting: {
     label: "Startet neu",
     tone: "info",
-    description: "Der Container wird gerade neu gestartet.",
+    description: "The container is being restarted.",
   },
   stopped: {
     label: "Gestoppt",
     tone: "neutral",
-    description: "Der Container ist gestoppt.",
+    description: "The container is stopped.",
   },
   error: {
-    label: "Fehler",
+    label: "Error",
     tone: "critical",
-    description: "Der Container läuft nicht, weil ein Fehler aufgetreten ist.",
+    description: "The container is not running because an error occurred.",
   },
 });
 
@@ -190,65 +190,65 @@ const WEBSITE = domain<"online" | "deploying" | "degraded" | "offline" | "error"
   online: {
     label: "Online",
     tone: "positive",
-    description: "Die Website ist erreichbar und wird ausgeliefert.",
+    description: "The website is reachable and is being served.",
   },
   deploying: {
     label: "Wird ausgerollt",
     tone: "info",
-    description: "Eine neue Version wird gerade veröffentlicht.",
+    description: "A new version is being rolled out.",
   },
   degraded: {
-    label: "Eingeschränkt",
+    label: "Degraded",
     tone: "caution",
-    description: "Die Website ist erreichbar, hat aber Performance- oder Zertifikatsprobleme.",
+    description: "The website is reachable but has performance or certificate problems.",
   },
   offline: {
     label: "Offline",
     tone: "critical",
-    description: "Die Website ist nicht erreichbar.",
+    description: "The website is not reachable.",
   },
   error: {
-    label: "Fehler",
+    label: "Error",
     tone: "critical",
-    description: "Beim Ausliefern der Website ist ein Fehler aufgetreten.",
+    description: "An error occurred while delivering the website.",
   },
   unknown: {
     label: "Unbekannt",
     tone: "neutral",
-    description: "Es liegt keine aktuelle Prüfung vor.",
+    description: "There is no current measurement.",
   },
 });
 
 const DEPENDENCY = domain<"ok" | "warning" | "missing" | "error">({
-  ok: { label: "In Ordnung", tone: "positive", description: "Die Abhängigkeit ist vorhanden und aktuell." },
+  ok: { label: "OK", tone: "positive", description: "The dependency is present and current." },
   warning: {
-    label: "Warnung",
+    label: "Warning",
     tone: "caution",
-    description: "Die Abhängigkeit ist veraltet oder auffällig.",
+    description: "The dependency is outdated or worth a look.",
   },
   missing: {
     label: "Fehlt",
     tone: "critical",
-    description: "Die Abhängigkeit wird benötigt, ist aber nicht installiert.",
+    description: "The dependency is required but is not installed.",
   },
   error: {
-    label: "Fehler",
+    label: "Error",
     tone: "critical",
-    description: "Die Abhängigkeit konnte nicht geprüft werden.",
+    description: "The dependency could not be verified.",
   },
 });
 
 const SECURITY = domain<"ok" | "warning" | "critical">({
-  ok: { label: "In Ordnung", tone: "positive", description: "Es wurde kein Problem gefunden." },
+  ok: { label: "OK", tone: "positive", description: "No problem was found." },
   warning: {
-    label: "Warnung",
+    label: "Warning",
     tone: "caution",
-    description: "Es wurde ein Problem mit geringer Risiko gefunden.",
+    description: "A problem with low severity was found.",
   },
   critical: {
-    label: "Kritisch",
+    label: "Critical",
     tone: "critical",
-    description: "Es wurde ein Problem mit hohem Risiko gefunden, das sofort behoben werden sollte.",
+    description: "A problem with high severity was found and should be fixed immediately.",
   },
 });
 
@@ -265,17 +265,17 @@ const CRM = domain<
   unprocessed: {
     label: "Unbearbeitet",
     tone: "neutral",
-    description: "Der Eintrag wurde erfasst, aber noch nicht bewertet.",
+    description: "The entry was recorded but has not been assessed yet.",
   },
   no_website: {
-    label: "Ohne Website",
+    label: "No website",
     tone: "neutral",
-    description: "Für den Eintrag wurde keine Website gefunden.",
+    description: "No website was found for the entry.",
   },
   opportunity: {
     label: "Interesse",
     tone: "info",
-    description: "Es gibt einen Hinweis auf Interesse, aber noch keinen Kontakt.",
+    description: "There is a sign of interest, but no contact yet.",
   },
   contacted: {
     label: "Kontaktiert",
@@ -283,57 +283,57 @@ const CRM = domain<
     description: "Erster Kontakt hergestellt, Antwort steht aus.",
   },
   conversation: {
-    label: "Im Gespräch",
+    label: "In conversation",
     tone: "info",
-    description: "Es findet ein aktiver Austausch über das Angebot statt.",
+    description: "There is an active exchange about the offer.",
   },
   offer: {
-    label: "Angebot",
+    label: "Offer",
     tone: "caution",
-    description: "Ein Angebot wurde erstellt und wartet auf eine Entscheidung.",
+    description: "An offer was created and is waiting for a decision.",
   },
   customer: {
     label: "Kunde",
     tone: "positive",
-    description: "Der Einstieg ist abgeschlossen.",
+    description: "The onboarding is complete.",
   },
   archived: {
     label: "Archiviert",
     tone: "neutral",
-    description: "Der Eintrag ist abgeschlossen und wird nicht weiter bearbeitet.",
+    description: "The entry is closed and is not worked on further.",
   },
 });
 
 const PROJECT = domain<"planning" | "active" | "on_hold" | "review" | "delivered" | "cancelled">({
   planning: {
-    label: "In Planung",
+    label: "Planning",
     tone: "neutral",
-    description: "Das Projekt ist eingeplant, aber noch nicht gestartet.",
+    description: "The project is planned but has not started yet.",
   },
   active: {
     label: "In Arbeit",
     tone: "info",
-    description: "Das Projekt wird gerade umgesetzt.",
+    description: "The project is being worked on.",
   },
   on_hold: {
     label: "Pausiert",
     tone: "caution",
-    description: "Das Projekt ruht und wartet auf eine Entscheidung oder Zuarbeit.",
+    description: "The project is on hold and waits for a decision or a contribution.",
   },
   review: {
-    label: "In Prüfung",
+    label: "In review",
     tone: "caution",
-    description: "Das Ergebnis wird geprüft und abgenommen.",
+    description: "The result is being reviewed and accepted.",
   },
   delivered: {
     label: "Abgeschlossen",
     tone: "positive",
-    description: "Das Projekt ist abgenommen.",
+    description: "The project has been accepted.",
   },
   cancelled: {
-    label: "Abgebrochen",
+    label: "Cancelled",
     tone: "neutral",
-    description: "Das Projekt wurde abgebrochen und wird nicht weiterverfolgt.",
+    description: "The project was cancelled and is not pursued further.",
   },
 });
 

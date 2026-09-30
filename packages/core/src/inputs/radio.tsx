@@ -140,7 +140,7 @@ export const Radio = React.forwardRef<HTMLButtonElement, RadioProps>(function Ra
           // `rounded-pill` is a documented exception: a radio control is a
           // marker, and a square one reads as a checkbox.
           "flex size-4 shrink-0 items-center justify-center rounded-pill border border-line-strong bg-surface",
-          "transition-[background-color,border-color,box-shadow] duration-[120ms] ease-standard",
+          "transition-[background-color,border-color,box-shadow] duration-fast ease-standard",
           "group-data-[state=checked]:border-primary group-data-[state=checked]:bg-primary",
           "group-focus-visible:ring-2 group-focus-visible:ring-ring",
         )}
@@ -149,7 +149,7 @@ export const Radio = React.forwardRef<HTMLButtonElement, RadioProps>(function Ra
           className={cn(
             "size-2 rounded-pill bg-primary-fg",
             // The dot *is* the state, in shape as well as colour.
-            "scale-0 transition-transform duration-[120ms] ease-standard",
+            "scale-0 transition-transform duration-fast ease-standard",
             "group-data-[state=checked]:scale-100",
           )}
         />

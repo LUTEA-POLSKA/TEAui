@@ -14,6 +14,7 @@ export {
   type SkeletonTextProps,
 } from "./skeleton";
 export { Progress, type ProgressProps } from "./progress";
+export { METER_BANDS, Meter, type MeterBand, type MeterProps, type MeterThreshold } from "./meter";
 export { Badge, badgeVariants, type BadgeProps } from "./badge";
 export {
   StatusDot,

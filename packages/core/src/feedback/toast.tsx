@@ -11,22 +11,18 @@ import { Button } from "../inputs/button";
 /**
  * TEA UI — toasts.
  *
- * The audit found a toast implementation that was entirely inert: a
- * `ToastProvider` was mounted, but the `Toast` component rendered a plain `<div>`
- * instead of Radix's root, so nothing ever registered with the provider and
- * nothing was ever announced. Alongside it sat a store with `TOAST_LIMIT = 1`,
- * so a second toast silently replaced the first — the user never learned the
- * second operation happened.
- *
- * Three decisions fix that class of problem:
- *  - The store is a `useSyncExternalStore` store with an immutable snapshot. The
- *    audit's version was a module-level mutable object with a hand-managed
- *    listener array and a side effect inside the reducer.
- *  - The limit is three, and the overflow is **counted and shown** rather than
- *    swallowed. A user who triggered four operations is told that three are
- *    running and one is queued.
- *  - The live region belongs to a permanently mounted `Toaster`, which is the
- *    only way a region that is added and removed on every toast can work.
+ * Three decisions shape this module:
+ *  - The store is a `useSyncExternalStore` store with an immutable snapshot, so
+ *    the list cannot be mutated behind React's back and every consumer sees the
+ *    same value for the same notification.
+ *  - The limit is three. Past three, the oldest entry is dropped: a stack that
+ *    grows without bound stops being readable, which is the whole purpose of a
+ *    toast. The drop is silent — nothing in this surface claims to report a
+ *    queue, so nothing reports one.
+ *  - Announcing is the primitive's job. `ToastPrimitive.Root` registers with the
+ *    provider and keeps its own `aria-live` region, so this module deliberately
+ *    renders no region of its own. A second region can only ever announce
+ *    nothing, and a dead region is a live region that lies.
  */
 
 export interface TeaToast {
@@ -236,14 +232,13 @@ export const Toaster = React.forwardRef<HTMLOListElement, ToasterProps>(function
   ref,
 ) {
   const { toasts: entries, dismiss, clear } = useToast();
-  const overflow = 0;
 
   return (
     <ToastPrimitive.Provider swipeDirection="right" duration={DEFAULT_DURATION}>
       {entries.length > 0 ? (
         <div className="flex justify-end gap-2 p-3">
           <Button variant="ghost" size="sm" onClick={clear}>
-            {COPY.actions.reset}
+            {COPY.actions.dismissAll}
           </Button>
         </div>
       ) : null}
@@ -279,13 +274,17 @@ export const Toaster = React.forwardRef<HTMLOListElement, ToasterProps>(function
         ref={ref}
         className={cn(
           "fixed end-0 top-0 z-toast flex w-full max-w-sm flex-col gap-2 p-3",
-          "outline-none",
+          // Radix makes the viewport focusable so a toast can be reached and
+          // dismissed from the keyboard. A focusable region with no indicator is
+          // the one thing a keyboard user cannot recover from, so the ring is
+          // kept — the viewport is the thing that is focused, so the viewport is
+          // the thing that has to look focused.
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
           className,
         )}
         {...dataSlot("toast", "viewport")}
         {...props}
       />
-      <span className="sr-only" aria-live="polite" data-toast-count={overflow} />
     </ToastPrimitive.Provider>
   );
 });

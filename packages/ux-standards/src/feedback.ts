@@ -59,7 +59,7 @@ export interface FeedbackMeta {
   readonly blocking: boolean;
   /** Whether a live region should announce a change into this state. */
   readonly announce: boolean;
-  /** Default German noun phrase for a progress line, e.g. "Wird geladen". */
+  /** Default German noun phrase for a progress line, e.g. "Loading". */
   readonly label: string;
 }
 
@@ -76,21 +76,21 @@ export const FEEDBACK: Readonly<Record<FeedbackState, FeedbackMeta>> = {
     tone: "neutral",
     blocking: true,
     announce: true,
-    label: "Wird geladen",
+    label: "Loading",
   },
   refreshing: {
     kind: "background",
     tone: "neutral",
     blocking: false,
     announce: true,
-    label: "Wird aktualisiert",
+    label: "Refreshing",
   },
   processing: {
     kind: "blocking",
     tone: "info",
     blocking: true,
     announce: true,
-    label: "Wird verarbeitet",
+    label: "Processing",
   },
   success: {
     kind: "background",
@@ -104,28 +104,28 @@ export const FEEDBACK: Readonly<Record<FeedbackState, FeedbackMeta>> = {
     tone: "caution",
     blocking: false,
     announce: true,
-    label: "Hinweis",
+    label: "Note",
   },
   error: {
     kind: "background",
     tone: "critical",
     blocking: false,
     announce: true,
-    label: "Fehler",
+    label: "Error",
   },
   empty: {
     kind: "initial",
     tone: "neutral",
     blocking: false,
     announce: true,
-    label: "Keine Einträge",
+    label: "No entries",
   },
   disabled: {
     kind: "background",
     tone: "neutral",
     blocking: false,
     announce: false,
-    label: "Nicht verfügbar",
+    label: "Unavailable",
   },
   offline: {
     kind: "background",
@@ -139,21 +139,21 @@ export const FEEDBACK: Readonly<Record<FeedbackState, FeedbackMeta>> = {
     tone: "caution",
     blocking: true,
     announce: true,
-    label: "Nicht angemeldet",
+    label: "Not signed in",
   },
   forbidden: {
     kind: "background",
     tone: "caution",
     blocking: true,
     announce: true,
-    label: "Keine Berechtigung",
+    label: "No permission",
   },
   notFound: {
     kind: "background",
     tone: "neutral",
     blocking: false,
     announce: true,
-    label: "Nicht gefunden",
+    label: "Not found",
   },
   maintenance: {
     kind: "background",
@@ -174,7 +174,7 @@ export const FEEDBACK: Readonly<Record<FeedbackState, FeedbackMeta>> = {
     tone: "info",
     blocking: false,
     announce: true,
-    label: "Wird synchronisiert",
+    label: "Syncing",
   },
   retrying: {
     kind: "background",

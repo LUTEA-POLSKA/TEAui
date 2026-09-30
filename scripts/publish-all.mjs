@@ -39,6 +39,29 @@ for (const name of names) {
   manifests.set(name, JSON.parse(await readFile(resolve(root, "packages", name, "package.json"), "utf8")));
 }
 
+/**
+ * Packages this run must not touch.
+ *
+ * `patterns`, `templates`, `blueprints` and `specialized` are declared in the
+ * architecture and checked by the boundary test, but they export nothing. They are
+ * marked `private: true`, which is the declaration, and npm would refuse them —
+ * so without an explicit skip the run would publish every real package and *then*
+ * die on the first empty one, exiting non-zero with a version already spent and
+ * four packages unpublished for a reason that has nothing to do with them.
+ *
+ * Skipping them here means the decision is visible in the order the run prints,
+ * rather than inferred from where it stopped.
+ */
+const skipped = names.filter((name) => manifests.get(name).private === true);
+const publishable = names.filter((name) => manifests.get(name).private !== true);
+
+if (skipped.length > 0) {
+  console.log(
+    `[tea-ui] skipping ${skipped.length} private package(s): ${skipped.map((n) => `@tea-ui/${n}`).join(", ")}`,
+  );
+  console.log(`[tea-ui] these are declared but ship nothing; they carry a deprecation notice on npm.`);
+}
+
 const ordered = [];
 const seen = new Set();
 const visiting = new Set();
@@ -57,7 +80,7 @@ function visit(name) {
   ordered.push(name);
 }
 
-for (const name of names) visit(name);
+for (const name of publishable) visit(name);
 
 /* -------------------------------------------------------------------------- */
 

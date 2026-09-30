@@ -80,7 +80,7 @@ verrottet still, und ein verworrener Skill liest sich weiterhin als verbindlich.
 ## Noch offen
 
 - Die vier Gerüst-Pakete sind der nächste Arbeitsstand.
-- `HSM` und `LUTEA` sind auditiert, aber nicht umgestellt. Die Audits liegen unter
+- Zwei Quell-Codebasen wurden auditiert; die Audits liegen unter
   `docs/audit/`.
 - Trusted Publishing (OIDC) würde das Veröffentlichen ohne Token möglich machen;
   heute läuft es über einen granularen Token mit 2FA-Bypass.

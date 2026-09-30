@@ -293,7 +293,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link
       {external ? (
         <>
           <ArrowRight size={14} aria-hidden="true" className="ms-1 inline-block align-[-2px]" />
-          <span className="sr-only"> (externer Link, öffnet in neuem Tab)</span>
+          <span className="sr-only"> (external link, opens in a new tab)</span>
         </>
       ) : null}
     </Component>

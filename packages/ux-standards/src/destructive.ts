@@ -69,26 +69,26 @@ export function destructivePolicy(level: ConsequenceLevel): DestructivePolicy {
 /** The verb pair an alert dialog uses, per the content standard (§22). */
 export const DESTRUCTIVE_VERBS = {
   confirm: {
-    reversible: "Ausführen",
-    recoverable: "Trotzdem fortfahren",
-    irreversible: "Endgültig löschen",
+    reversible: "Undo",
+    recoverable: "Continue anyway",
+    irreversible: "Delete permanently",
   },
-  cancel: "Abbrechen",
+  cancel: "Cancel",
 } as const;
 
 /**
  * The consequence sentence a dialog body must contain. Written as a function
  * rather than a template so the noun stays in one place — a dialog that says
- * "wird gelöscht" next to a button that says "Wiederherstellen" is worse than
+ * "is being deleted" next to a button that says "Restore" is worse than
  * no dialog.
  */
 export function consequenceSentence(what: string, level: ConsequenceLevel): string {
   switch (level) {
     case "reversible":
-      return `${what} wird kurz zurückgenommen werden können.`;
+      return `${what} can be undone for a short time.`;
     case "recoverable":
-      return `${what} wird endgültig entfernt. Eine Wiederherstellung ist nur aus einer Sicherung möglich.`;
+      return `${what} is removed permanently. Restoring it is only possible from a backup.`;
     case "irreversible":
-      return `${what} wird endgültig entfernt. Dieser Schritt kann nicht rückgängig gemacht werden.`;
+      return `${what} is removed permanently. This step cannot be undone.`;
   }
 }

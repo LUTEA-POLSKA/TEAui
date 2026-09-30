@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { Eye, EyeOff } from "@tea-ui/icons";
 import { cn } from "@tea-ui/utils";
 
@@ -59,14 +59,14 @@ export interface PasswordInputProps
 }
 
 /** No German string for these exists in `COPY`, so they are typed here. */
-const DEFAULT_SHOW_LABEL = "Passwort anzeigen";
-const DEFAULT_HIDE_LABEL = "Passwort verbergen";
+const DEFAULT_SHOW_LABEL = "Show password";
+const DEFAULT_HIDE_LABEL = "Hide password";
 
 /**
  * @example
  * ```tsx
  * <Field>
- *   <FieldLabel>Passwort</FieldLabel>
+ *   <FieldLabel>Password</FieldLabel>
  *   <PasswordInput autoComplete="new-password" />
  * </Field>
  * ```

@@ -3,6 +3,8 @@ import { TeaMark } from "@tea-ui/icons";
 import { COPY } from "@tea-ui/ux-standards";
 import { Button, Container, Heading, HStack, Link, Stack, Text } from "@tea-ui/core";
 
+import { ThemeControls } from "./display";
+
 /* -------------------------------------------------------------------------- */
 /* Hash routing                                                                */
 /* -------------------------------------------------------------------------- */
@@ -47,14 +49,14 @@ export interface ShowcaseNavItem {
 }
 
 export const SHOWCASE_NAV: readonly ShowcaseNavItem[] = [
-  { id: "home", label: "Start", description: "Wofür TEA UI existiert" },
-  { id: "components", label: "Components", description: "Der Core-Layer, live" },
-  { id: "themes", label: "Themes", description: "Drei Identitäten, eine API" },
-  { id: "admin", label: "Admin UI", description: "Shell, Metriken, Zustände" },
-  { id: "ux", label: "UX Standards", description: "Die Regeln, nicht die-theory" },
-  { id: "accessibility", label: "Accessibility", description: "WCAG 2.2 AA, überprüfbar" },
-  { id: "playground", label: "Playground", description: "Zustände und Ereignisse" },
-  { id: "architecture", label: "Architektur", description: "Pakete, Grenzen, Bündel" },
+  { id: "home", label: "Home", description: "Why TEA UI exists" },
+  { id: "gallery", label: "Gallery", description: "Every element, three columns" },
+  { id: "themes", label: "Themes", description: "Three identities, one API" },
+  { id: "admin", label: "Admin UI", description: "Shell, metrics, states" },
+  { id: "ux", label: "UX Standards", description: "The rules, not the theory" },
+  { id: "accessibility", label: "Accessibility", description: "WCAG 2.2 AA, verifiable" },
+  { id: "playground", label: "Playground", description: "States and events" },
+  { id: "architecture", label: "Architecture", description: "Packages, boundaries, bundles" },
 ];
 
 export function ShowcaseHeader({
@@ -71,7 +73,7 @@ export function ShowcaseHeader({
         <Link
           href="#/home"
           className="flex items-center gap-2 no-underline hover:no-underline"
-          aria-label="TEA UI, zur Startseite"
+          aria-label="TEA UI, to the home page"
         >
           <TeaMark title="TEA UI" className="size-5" />
           <span className="text-ui font-semibold tracking-tight text-fg">TEA UI</span>
@@ -96,9 +98,16 @@ export function ShowcaseHeader({
         </nav>
 
         <HStack gap="ui" className="ms-auto">
+          {/* The switcher, not a screenshot of one. Clicking `pop` sets one
+              attribute on <html> and the entire system re-renders in a different
+              palette without a single component knowing a theme exists. */}
+          <ThemeControls />
+          {/* `text-ui`, not `text-micro`: the switcher next to it is 14px, and a
+              12px link beside a 14px control is a second, quieter thing to read
+              in a row that otherwise has one type size. */}
           <a
             href="https://github.com/landnevermore/TEAui"
-            className="text-micro text-fg-muted transition-colors hover:text-fg"
+            className="text-ui text-fg-muted transition-colors hover:text-fg"
           >
             GitHub
           </a>
@@ -108,7 +117,7 @@ export function ShowcaseHeader({
       {/* On small screens the nav becomes a horizontal scroller rather than a
           drawer: a Showcase is a document, and a document's navigation is a
           strip, not a panel. */}
-      <nav aria-label="Abschnitte" className="scroll-area flex gap-1 overflow-x-auto border-t border-line px-4 py-2 md:hidden">
+      <nav aria-label="Sections" className="scroll-area flex gap-1 overflow-x-auto border-t border-line px-4 py-2 md:hidden">
         {SHOWCASE_NAV.map((entry) => (
           <a
             key={entry.id}
@@ -142,13 +151,27 @@ export function ShowcaseFooter(): React.ReactElement {
             Build once. Generalize properly. Reuse everywhere.
           </Text>
         </div>
-        <Stack gap="ui" className="min-w-56">
-          {SHOWCASE_NAV.slice(0, 4).map((entry) => (
-            <a key={entry.id} href={`#/${entry.id}`} className="text-micro text-fg-muted hover:text-fg">
-              {entry.label}
-            </a>
-          ))}
-        </Stack>
+        {/*
+          No `.slice()` here. The footer used to take the first four entries of
+          the nav, so adding a page silently dropped the rest — the header showed
+          nine routes and the footer four, and nothing reported the difference.
+          The nav splits in half instead, so a seventh or eighth entry changes
+          the column count rather than disappearing.
+        */}
+        {([0, 1] as const).map((column) => {
+          const half = Math.ceil(SHOWCASE_NAV.length / 2);
+          const entries = column === 0 ? SHOWCASE_NAV.slice(0, half) : SHOWCASE_NAV.slice(half);
+          if (entries.length === 0) return null;
+          return (
+            <Stack key={column} gap="ui" className="min-w-56">
+              {entries.map((entry) => (
+                <a key={entry.id} href={`#/${entry.id}`} className="text-micro text-fg-muted hover:text-fg">
+                  {entry.label}
+                </a>
+              ))}
+            </Stack>
+          );
+        })}
         <Stack gap="ui" className="min-w-56">
           <a
             href="https://github.com/landnevermore/TEAui"
@@ -157,7 +180,7 @@ export function ShowcaseFooter(): React.ReactElement {
             Repository
           </a>
           <Text size="micro" tone="subtle">
-            Privat. Nur für die TEA-Welt.
+            Private. For the TEA world only.
           </Text>
         </Stack>
       </Container>

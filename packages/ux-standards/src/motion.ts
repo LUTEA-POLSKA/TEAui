@@ -115,11 +115,11 @@ export const DATA_VIZ: DataVizRules = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Every meaningful empty state answers three questions. "Keine Einträge." on
+ * Every meaningful empty state answers three questions. "No entries." on
  * its own answers none of them, and the audit found ten of them.
  */
 export interface EmptyStateAnatomy {
-  /** What is empty, named specifically. "Keine Server", not "Keine Einträge". */
+  /** What is empty, named specifically. "No servers", not "No entries". */
   readonly what: string;
   /** Why it is empty, when the reason is not obvious. */
   readonly why?: string;
@@ -129,12 +129,19 @@ export interface EmptyStateAnatomy {
   readonly secondaryAction?: string;
 }
 
+/**
+ * Titles for the five empty states.
+ *
+ * English, like every other default in this package. A product renders these to
+ * whoever is looking at an empty list, which is not a reader who necessarily
+ * wants German.
+ */
 export const EMPTY_STATE_TITLES = {
-  neverCreated: "Noch nichts vorhanden",
-  noResults: "Keine Treffer",
-  filtered: "Alles ausgefiltert",
-  noAccess: "Kein Zugriff",
-  error: "Nicht geladen",
+  neverCreated: "Nothing here yet",
+  noResults: "No matches",
+  filtered: "Everything is filtered out",
+  noAccess: "No access",
+  error: "Not loaded",
 } as const;
 
 export type EmptyStateTitle = (typeof EMPTY_STATE_TITLES)[keyof typeof EMPTY_STATE_TITLES];

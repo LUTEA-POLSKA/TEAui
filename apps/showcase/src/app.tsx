@@ -4,11 +4,11 @@ import { COPY } from "@tea-ui/ux-standards";
 
 import { ShowcaseFooter, ShowcaseHeader, useHashRoute } from "./chrome";
 import { DisplayProvider, ThemeControls } from "./display";
+import { GallerySection } from "./gallery";
 import {
   AccessibilitySection,
   AdminSection,
   ArchitectureSection,
-  ComponentsSection,
   HomeSection,
   PlaygroundSection,
   ThemesSection,
@@ -33,11 +33,11 @@ function Showcase(): React.ReactElement {
   }, []);
 
   return (
-    <div className="showcase-scroll bg-canvas text-fg">
+    <div className="bg-canvas text-fg">
       <ShowcaseHeader route={route} onNavigate={go} />
 
       <main id="tea-showcase-main" tabIndex={-1} className="focus-visible:outline-none">
-        {route === "components" ? <ComponentsSection /> : null}
+        {route === "gallery" ? <GallerySection /> : null}
         {route === "themes" ? <ThemesSection /> : null}
         {route === "admin" ? <AdminSection /> : null}
         {route === "ux" ? <UxSection /> : null}
@@ -49,13 +49,10 @@ function Showcase(): React.ReactElement {
 
       <ShowcaseFooter />
 
-      {/* The toast layer and the tooltip provider are mounted once, at the root.
-          Both are application responsibilities, not component responsibilities —
-          a library that rendered its own overlay host could not be mounted twice. */}
+      {/* The toast layer is mounted once, at the root. It is an application
+          responsibility, not a component responsibility — a library that
+          rendered its own overlay host could not be mounted twice. */}
       <Toaster />
-      <TooltipProvider delayDuration={300}>
-        <span className="sr-only">{COPY.navigation.main}</span>
-      </TooltipProvider>
     </div>
   );
 }
@@ -63,7 +60,15 @@ function Showcase(): React.ReactElement {
 export function App(): React.ReactElement {
   return (
     <DisplayProvider>
-      <Showcase />
+      {/* The provider has to be *above* the content, not beside it. It used to
+          sit at the end of the tree wrapping a single `sr-only` span, which
+          left every `Tooltip` in the Showcase outside its context — the page
+          rendered, then threw on the first tooltip. Wrapping the whole app is
+          what "mounted once, at the root" has to mean. */}
+      <TooltipProvider delayDuration={300}>
+        <span className="sr-only">{COPY.navigation.main}</span>
+        <Showcase />
+      </TooltipProvider>
     </DisplayProvider>
   );
 }

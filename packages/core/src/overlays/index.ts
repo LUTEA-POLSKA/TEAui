@@ -26,6 +26,9 @@ export {
 
 export {
   AlertDialog,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeading,
   AlertDialogOverlay,
   AlertDialogPortal,
   AlertDialogTrigger,
@@ -35,6 +38,12 @@ export {
   type ConfirmFn,
   type ConfirmOptions,
 } from "./alert-dialog";
+
+export {
+  useUnsavedChanges,
+  type UnsavedChanges,
+  type UnsavedChangesOptions,
+} from "./unsaved-changes";
 
 export {
   Drawer,

@@ -11,7 +11,7 @@ import { Spinner } from "../feedback/spinner";
  * Read this file before writing another component. It encodes the house style:
  *
  *  1. `cva` for the variant surface, always with `className` passed *into* the
- *     call so a consumer's class merges correctly. (HomeServerManager's Button
+ *     call so a consumer's class merges correctly. (the source Button
  *     did this and its Badge did not — which is how the two drifted.)
  *  2. `variant` and `size` are the only styling axes. There is no `color` prop
  *     and no `className` escape hatch that replaces a variant.
@@ -52,12 +52,21 @@ export const buttonVariants = cva(
         sm: "h-[calc(var(--tea-control-h)-0.25rem)] px-[calc(var(--tea-control-px)-0.25rem)] text-micro",
         md: "control-h px-[length:var(--tea-control-px)] text-ui",
         lg: "h-[calc(var(--tea-control-h)+0.25rem)] px-[calc(var(--tea-control-px)+0.25rem)] text-ui",
-        "icon-sm":
-          "size-[calc(var(--tea-control-h)-0.25rem)] p-0 [--tea-control-icon:0.875rem] has-[svg]:size-[length:var(--tea-control-icon)]",
-        "icon-md":
-          "size-[length:var(--tea-control-h)] p-0 [--tea-control-icon:1rem] has-[svg]:size-[length:var(--tea-control-icon)]",
-        "icon-lg":
-          "size-[calc(var(--tea-control-h)+0.5rem)] p-0 [--tea-control-icon:1.25rem] has-[svg]:size-[length:var(--tea-control-icon)]",
+        /*
+         * The icon sizes set the *button* box from the control height. They used
+         * to end in `has-[svg]:size-[length:var(--tea-control-icon)]`, which was
+         * always wrong: an IconButton contains an SVG by definition, so that rule
+         * matched every time and replaced the box with the icon's own size. The
+         * three variants therefore measured 14 / 16 / 20px instead of
+         * 28 / 32 / 36px, in every density, which is a WCAG 2.5.5 target-size
+         * failure and made the `size` prop do nothing at all.
+         *
+         * `--tea-control-icon` stays declared per density, because it is the
+         * icon size a control passes down, not a size for the button.
+         */
+        "icon-sm": "size-[calc(var(--tea-control-h)-0.25rem)] p-0 [--tea-control-icon:0.875rem]",
+        "icon-md": "size-[length:var(--tea-control-h)] p-0 [--tea-control-icon:1rem]",
+        "icon-lg": "size-[calc(var(--tea-control-h)+0.5rem)] p-0 [--tea-control-icon:1.25rem]",
       },
     },
     defaultVariants: {

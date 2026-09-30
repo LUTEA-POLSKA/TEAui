@@ -38,7 +38,7 @@ export interface ErrorAnatomy {
   readonly detail: string;
   /** What the user can do next. Empty only when `recovery` is `automatic`. */
   readonly action?: string;
-  /** Label for `action`, e.g. "Erneut versuchen". */
+  /** Label for `action`, e.g. "Try again". */
   readonly actionLabel?: string;
   /** Whether the system can recover without the user. */
   readonly recovery: ErrorRecovery;
@@ -49,16 +49,16 @@ export interface ErrorAnatomy {
 }
 
 export const ERROR_TITLES = {
-  network: "Verbindung fehlgeschlagen",
-  timeout: "Zeitüberschreitung",
-  unauthorized: "Nicht angemeldet",
-  forbidden: "Keine Berechtigung",
-  notFound: "Nicht gefunden",
-  validation: "Eingabe prüfen",
-  conflict: "Konflikt",
-  rateLimit: "Zu viele Anfragen",
-  server: "Serverfehler",
-  unknown: "Unerwarteter Fehler",
+  network: "Connection failed",
+  timeout: "Timed out",
+  unauthorized: "Not signed in",
+  forbidden: "No permission",
+  notFound: "Not found",
+  validation: "Check the entry",
+  conflict: "Conflict",
+  rateLimit: "Too many requests",
+  server: "Server error",
+  unknown: "Unexpected error",
 } as const;
 
 export type ErrorKind = keyof typeof ERROR_TITLES;
@@ -99,10 +99,10 @@ export function toErrorAnatomy(cause: unknown, fallback: Partial<ErrorAnatomy> =
   if (cause instanceof Error) {
     return {
       title: ERROR_TITLES.unknown,
-      detail: cause.message || "Der Vorgang konnte nicht abgeschlossen werden.",
+      detail: cause.message || "The operation could not be completed.",
       recovery: "action",
-      action: "Der Vorgang kann wiederholt werden.",
-      actionLabel: "Erneut versuchen",
+      action: "This can be retried.",
+      actionLabel: "Try again",
       // The stack is disclosure material, not a headline. It is attached here so
       // an error surface can offer it without the product having to remember.
       ...(isDevelopment() && cause.stack ? { technical: cause.stack } : {}),
@@ -112,10 +112,10 @@ export function toErrorAnatomy(cause: unknown, fallback: Partial<ErrorAnatomy> =
 
   return {
     title: ERROR_TITLES.unknown,
-    detail: "Der Vorgang konnte nicht abgeschlossen werden.",
+    detail: "The operation could not be completed.",
     recovery: "action",
-    action: "Der Vorgang kann wiederholt werden.",
-    actionLabel: "Erneut versuchen",
+    action: "This can be retried.",
+    actionLabel: "Try again",
     ...fallback,
   };
 }

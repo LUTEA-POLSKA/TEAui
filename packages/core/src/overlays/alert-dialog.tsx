@@ -32,7 +32,7 @@ import { Field, FieldLabel } from "../inputs/field";
  *     the DOM order. A user who presses Enter reflexively must not destroy
  *     anything.
  *  2. **The consequence is stated, not implied.** `consequenceSentence()` builds
- *     it, so a dialog that says "wird gelöscht" can never sit next to a button
+ *     it, so a dialog that says "is being deleted" can never sit next to a button
  *     that says "Wiederherstellen".
  *
  * For `irreversible`, `confirmWord` must be typed before the action enables.
@@ -79,6 +79,89 @@ export interface ConfirmDialogProps {
   onConfirm: () => void | Promise<void>;
 }
 
+/* -------------------------------------------------------------------------- */
+/* The parts                                                                   */
+/* -------------------------------------------------------------------------- */
+/**
+ * The alert-dialog shell, as parts.
+ *
+ * Extracted because a second dialog now needs the same frame — the unsaved-changes
+ * guard has three actions where `ConfirmDialog` has two — and copying the class
+ * strings into it would be the exact defect the audit counted forty of. The
+ * frame is a decision, so it has one address.
+ */
+export const AlertDialogContent = React.forwardRef<
+  React.ComponentRef<typeof AlertDialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
+>(function AlertDialogContent({ className, ...props }, ref) {
+  return (
+    <AlertDialogPrimitive.Content
+      ref={ref}
+      className={cn(
+        "fixed start-1/2 top-1/2 z-modal w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2",
+        "border border-critical-border bg-surface p-4 shadow-modal",
+        "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+        "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+        className,
+      )}
+      {...dataSlot("alert-dialog", "content")}
+      {...props}
+    />
+  );
+});
+
+/** Icon, title and description as one block. `tone` picks the icon's meaning. */
+export function AlertDialogHeading({
+  icon,
+  title,
+  description,
+  tone = "critical",
+}: {
+  icon?: React.ReactNode | undefined;
+  title: string;
+  description: React.ReactNode;
+  tone?: "critical" | "caution" | undefined;
+}): React.ReactElement {
+  return (
+    <div className="flex items-start gap-3">
+      <span aria-hidden="true" className="mt-0.5 shrink-0">
+        {icon ?? <OctagonAlert size={20} className={tone === "caution" ? "text-caution" : "text-critical"} />}
+      </span>
+      <div className="min-w-0 flex-1">
+        <AlertDialogPrimitive.Title className="text-title font-semibold text-fg">
+          {title}
+        </AlertDialogPrimitive.Title>
+        <AlertDialogPrimitive.Description className="mt-1 text-ui text-fg-muted">
+          {description}
+        </AlertDialogPrimitive.Description>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The action row.
+ *
+ * `flex-col-reverse` is deliberate and is the reason the destructive action goes
+ * **first in the DOM**: on a phone the stack is read from the bottom up, so the
+ * primary action must be the last child to be the bottom-most — and the one
+ * furthest from the discard button.
+ */
+export const AlertDialogFooter = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(function AlertDialogFooter({ className, ...props }, ref) {
+  return (
+    <div
+      ref={ref}
+      className={cn("mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
+      {...dataSlot("alert-dialog", "footer")}
+      {...props}
+    />
+  );
+});
+
+
 export function ConfirmDialog({
   open,
   onOpenChange,
@@ -107,27 +190,16 @@ export function ConfirmDialog({
     <AlertDialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialogPrimitive.Portal>
         <AlertDialogOverlay />
-        <AlertDialogPrimitive.Content
-          className={cn(
-            "fixed start-1/2 top-1/2 z-modal w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2",
-            "border border-critical-border bg-surface p-4 shadow-modal",
-            "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
-            "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-          )}
-          {...dataSlot("confirm-dialog", "content")}
-        >
-          <div className="flex items-start gap-3">
-            <OctagonAlert size={20} aria-hidden="true" className="mt-0.5 shrink-0 text-critical" />
-            <div className="min-w-0 flex-1">
-              <AlertDialogPrimitive.Title className="text-title font-semibold text-fg">
-                {title ?? COPY.destructive.confirmTitle}
-              </AlertDialogPrimitive.Title>
-              <AlertDialogPrimitive.Description className="mt-1 text-ui text-fg-muted">
+        <AlertDialogContent>
+          <AlertDialogHeading
+            title={title ?? COPY.destructive.confirmTitle}
+            description={
+              <>
                 {consequenceSentence(what, level)}
                 {description ? ` ${description}` : null}
-              </AlertDialogPrimitive.Description>
-            </div>
-          </div>
+              </>
+            }
+          />
 
           {needsWord ? (
             <Field className="mt-4" id="tea-confirm-word">
@@ -143,7 +215,7 @@ export function ConfirmDialog({
             </Field>
           ) : null}
 
-          <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <AlertDialogFooter>
             <AlertDialogPrimitive.Cancel asChild>
               <Button variant="secondary" disabled={busy}>
                 {cancelLabel ?? DESTRUCTIVE_VERBS.cancel}
@@ -175,8 +247,8 @@ export function ConfirmDialog({
                 {confirmLabel ?? DESTRUCTIVE_VERBS.confirm[level]}
               </Button>
             </AlertDialogPrimitive.Action>
-          </div>
-        </AlertDialogPrimitive.Content>
+          </AlertDialogFooter>
+        </AlertDialogContent>
       </AlertDialogPrimitive.Portal>
     </AlertDialogPrimitive.Root>
   );
@@ -196,10 +268,10 @@ export type ConfirmFn = (options: ConfirmOptions) => Promise<boolean>;
  * ```tsx
  * const [confirm, ask] = useConfirm();
  * const onDelete = async () => {
- *   const ok = await ask({ level: "irreversible", what: "Der Server", confirmWord: "srv-1" });
+ *   const ok = await ask({ level: "irreversible", what: "The server", confirmWord: "srv-1" });
  *   if (ok) await remove();
  * };
- * return <>{confirm}<Button onClick={onDelete}>Löschen</Button></>;
+ * return <>{confirm}<Button onClick={onDelete}>Delete</Button></>;
  * ```
  *
  * The pending promise is tracked in a ref and resolved in an effect, so an

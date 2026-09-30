@@ -160,6 +160,11 @@ export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         className={cn(
           "relative flex cursor-default select-none flex-col gap-0.5 py-2 pe-8 ps-3 text-ui text-fg outline-none",
           "data-[highlighted]:bg-accent-subtle data-[highlighted]:text-fg",
+          // A Radix select item is focused programmatically while the user walks
+          // the list with the arrow keys, so the highlight *is* the focus state
+          // here. It needs a ring as well as a fill, for the same reason a filled
+          // button needs one: a fill alone has no offset and no shape.
+          "data-[highlighted]:outline-2 data-[highlighted]:-outline-offset-2 data-[highlighted]:outline-ring",
           "data-[state=checked]:text-primary",
           "data-disabled:pointer-events-none data-disabled:opacity-50",
           className,

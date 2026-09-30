@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import {
   CircleAlert,
   CloudOff,
@@ -8,7 +8,7 @@ import {
   ServerCrash,
   Wrench,
 } from "@tea-ui/icons";
-import { EMPTY_STATE_TITLES, ERROR_TITLES, type ErrorAnatomy, type ErrorRecovery } from "@tea-ui/ux-standards";
+import { EMPTY_STATE_TITLES, ERROR_TITLES, MIN_SKELETON_MS, type ErrorAnatomy, type ErrorRecovery } from "@tea-ui/ux-standards";
 import { cn } from "@tea-ui/utils";
 
 import { Button, Skeleton, stateAttributes } from "@tea-ui/core";
@@ -32,7 +32,7 @@ import { Button, Skeleton, stateAttributes } from "@tea-ui/core";
 /* -------------------------------------------------------------------------- */
 
 export interface EmptyStateProps extends React.ComponentProps<"div"> {
-  /** What is empty, named specifically. "Keine Server", not "Keine Einträge". */
+  /** What is empty, named specifically. "No servers", not "No entries". */
   title: string;
   /** Why it is empty, when the reason is not obvious. */
   description?: string | undefined;
@@ -86,7 +86,7 @@ export const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(func
 /** "Nothing has been created yet" — distinct from "your filter matched nothing". */
 export const EmptyStateNew = React.forwardRef<HTMLDivElement, Omit<EmptyStateProps, "title"> & { noun: string }>(
   function EmptyStateNew({ noun, ...props }, ref) {
-    return <EmptyState ref={ref} title={`Noch keine ${noun}`} {...props} />;
+    return <EmptyState ref={ref} title={`No ${noun} yet`} {...props} />;
   },
 );
 
@@ -99,7 +99,7 @@ export const EmptyStateFiltered = React.forwardRef<
     <EmptyState
       ref={ref}
       title={EMPTY_STATE_TITLES.filtered}
-      description={`Keine ${noun} passen zu den aktuellen Filtern.`}
+      description={`No ${noun} match the current filters.`}
       icon={<SearchX size={20} aria-hidden="true" />}
       {...props}
     />
@@ -118,13 +118,26 @@ export interface LoadingStateProps extends React.ComponentProps<"div"> {
    * because it reserves the space, so nothing reflows when the data lands.
    */
   rows?: number | undefined;
+  /**
+   * How long the wait already has been running. Anything under
+   * `MIN_SKELETON_MS` renders **nothing**.
+   *
+   * This is the rule that makes the other loading rules survivable. A fetch that
+   * answers in 120 ms is the common case, and a skeleton that appears and
+   * disappears inside a fifth of a second reads as a rendering glitch — it draws
+   * the user's eye to a change, announces itself to a screen reader, and then
+   * takes it back. Below the floor the correct affordance is no affordance.
+   */
+  elapsedMs?: number | undefined;
   className?: string | undefined;
 }
 
 export const LoadingState = React.forwardRef<HTMLDivElement, LoadingStateProps>(function LoadingState(
-  { label, rows = 3, className, ...props },
+  { label, rows = 3, elapsedMs = 0, className, ...props },
   ref,
 ) {
+  if (elapsedMs < MIN_SKELETON_MS) return null;
+
   return (
     <div
       ref={ref}
@@ -152,7 +165,7 @@ export const LoadingState = React.forwardRef<HTMLDivElement, LoadingStateProps>(
 export const RefreshingIndicator = React.forwardRef<
   HTMLSpanElement,
   React.ComponentProps<"span"> & { label?: string | undefined }
->(function RefreshingIndicator({ label = "Wird aktualisiert", className, ...props }, ref) {
+>(function RefreshingIndicator({ label = "Refreshing", className, ...props }, ref) {
   return (
     <span
       ref={ref}
@@ -182,11 +195,18 @@ export interface ErrorStateProps extends React.ComponentProps<"div"> {
   className?: string | undefined;
 }
 
+/**
+ * Default label for the recovery action, per recovery kind.
+ *
+ * English, because these are the strings an unconfigured `@tea-ui/admin` renders
+ * to every consumer. `ErrorState` takes `retryLabel`; a product that needs
+ * another language sets it at the call site.
+ */
 const RETRY_LABEL: Record<ErrorRecovery, string> = {
-  automatic: "Erneut versuchen",
-  action: "Erneut versuchen",
-  choice: "Auswählen",
-  none: "Zurück",
+  automatic: "Try again",
+  action: "Try again",
+  choice: "Choose",
+  none: "Go back",
 };
 
 /**
@@ -283,14 +303,14 @@ function StateMessage({
 }
 
 export const OfflineState = React.forwardRef<HTMLDivElement, StateMessageProps>(function OfflineState(
-  { title = "Offline", description = "Es gibt keine Verbindung zum Server. Änderungen werden nicht gespeichert.", ...props },
+  { title = "Offline", description = "There is no connection to the server. Changes will not be saved.", ...props },
   ref,
 ) {
   return <StateMessage ref={ref} tone="caution" title={title} description={description} icon={<CloudOff size={20} aria-hidden="true" />} data-tea-state="offline" {...props} />;
 });
 
 export const MaintenanceState = React.forwardRef<HTMLDivElement, StateMessageProps>(function MaintenanceState(
-  { title = "Wartungsmodus", description = "Die Anwendung wird gerade gewartet und ist möglicherweise nicht verfügbar.", ...props },
+  { title = "Maintenance", description = "The application is currently being maintained and may be unavailable.", ...props },
   ref,
 ) {
   return <StateMessage ref={ref} title={title} description={description} icon={<Wrench size={20} aria-hidden="true" />} data-tea-state="maintenance" {...props} />;
@@ -300,7 +320,7 @@ export const PermissionDeniedState = React.forwardRef<HTMLDivElement, StateMessa
   function PermissionDeniedState(
     {
       title = ERROR_TITLES.forbidden,
-      description = "Für diesen Bereich fehlt dir die nötige Berechtigung. Bitte wende dich an eine Administration.",
+      description = "You do not have permission for this area. Contact an administrator.",
       ...props
     },
     ref,
@@ -310,14 +330,14 @@ export const PermissionDeniedState = React.forwardRef<HTMLDivElement, StateMessa
 );
 
 export const NotFoundState = React.forwardRef<HTMLDivElement, StateMessageProps>(function NotFoundState(
-  { title = ERROR_TITLES.notFound, description = "Diese Seite oder dieser Eintrag existiert nicht.", ...props },
+  { title = ERROR_TITLES.notFound, description = "This page or this entry does not exist.", ...props },
   ref,
 ) {
   return <StateMessage ref={ref} title={title} description={description} icon={<SearchX size={20} aria-hidden="true" />} data-tea-state="notFound" {...props} />;
 });
 
 export const ServerErrorState = React.forwardRef<HTMLDivElement, StateMessageProps>(function ServerErrorState(
-  { title = ERROR_TITLES.server, description = "Der Server konnte die Anfrage nicht verarbeiten.", ...props },
+  { title = ERROR_TITLES.server, description = "The server could not process the request.", ...props },
   ref,
 ) {
   return <StateMessage ref={ref} tone="caution" title={title} description={description} icon={<ServerCrash size={20} aria-hidden="true" />} data-tea-state="error" {...props} />;

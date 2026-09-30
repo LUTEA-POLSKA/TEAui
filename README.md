@@ -1,51 +1,40 @@
 # TEA UI
 
-**Build once. Generalize properly. Reuse everywhere.**
-
-TEA UI is the shared UI, UX and product platform of the TEA ecosystem. It is the
-foundation for HomeServerManager, LUTEA, TEAflow, TEAhost and every TEA product
-that comes after them — so that a UI decision is made once, in one place, and
-every product inherits it.
+A React component library and design system: semantic design tokens, a primitive
+component layer, and the UX rules those components follow — written down as
+code rather than as a convention people have to remember.
 
 ```text
-Components → Patterns → Templates → Blueprints → Product UX → Design System → Docs → Workflow
+Components → Patterns → Templates → Blueprints → UX Standards → Documentation
 ```
-
-It is more than a component library. It is the UI foundation, the UX foundation,
-the design system, the product patterns, the accessibility system and the
-developer workflow, shared.
-
----
 
 ## Status
 
 | Area | State |
 | --- | --- |
-| Audit (HSM + LUTEA, read-only) | done — `docs/audit/` |
-| Tokens, themes, density, motion, fonts | done |
-| UX Standards as code | done |
-| Icons | done — 90 curated icons |
-| Core (layout, typography, inputs, feedback, overlays, navigation, formatting) | done |
-| Admin (shell, metric tiles, product states) | done — Shell, Metriken, Zustände, Seitenkopf |
-| Public (marketing, website, content, conversion) | done — Sections, Hero, Features, Nav, Footer, Preise, FAQ, Formulare |
-| Patterns, Templates, Blueprints, Specialized | scope registries published; React layer pending |
-| Docs site, Showcase, CI, Changesets, Skill | done |
+| Tokens, themes, density, motion, fonts | implemented |
+| UX Standards as code | implemented |
+| Icons | implemented — 90 curated icons |
+| Core (layout, typography, inputs, feedback, overlays, navigation, formatting) | implemented |
+| Admin (shell, metric tiles, product states) | implemented |
+| Public (marketing, website chrome, content, conversion) | implemented |
+| Patterns, Templates, Blueprints, Specialized | **scope registries only — no React layer yet** |
+| Docs site, Showcase, CI, Changesets, OpenCode skill | implemented |
 
-The gap is printed on every run of `npm run check:boundaries`, so it stays
-visible rather than quietly accepted.
+The last row is published because the boundaries are useful to reason about, not
+because there is anything to import. `npm run check:boundaries` prints that gap
+on every run, so it stays visible rather than quietly accepted.
 
 ### Measured, not claimed
 
 ```text
-@tea-ui/core          12.8 kB gzip for one imported component   (13.2 % of the package)
-@tea-ui/core          97.1  kB gzip if you import all of it
-@tea-ui/styles.css    9.7   kB gzip, one stylesheet for the whole system
-74 tests, incl. a WCAG 2.2 contrast audit of all three themes
+@tea-ui/core    12.6 kB gzip for one imported component   (12.3 % of the package)
+@tea-ui/core   101.9 kB gzip if you import all of it
+tokens/styles.css   11.3 kB gzip — one stylesheet for the whole system
+256 tests
 ```
 
-Run `npm run verify` to reproduce every number.
-
----
+Run `npm run verify` to reproduce every number. None of them are estimates.
 
 ## Getting started
 
@@ -67,15 +56,15 @@ import { Button, Field, FieldError, FieldLabel, Input } from "@tea-ui/core";
 import "@tea-ui/tokens/fonts.css";
 import "@tea-ui/tokens/styles.css";
 
-export function LoginForm() {
+export function LoginForm({ error, onSubmit }) {
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <Field required invalid={!!error}>
-        <FieldLabel>E-Mail</FieldLabel>
+        <FieldLabel>Email</FieldLabel>
         <Input type="email" autoComplete="email" />
         <FieldError>{error}</FieldError>
       </Field>
-      <Button type="submit">Anmelden</Button>
+      <Button type="submit">Sign in</Button>
     </form>
   );
 }
@@ -84,18 +73,23 @@ export function LoginForm() {
 Two stylesheet imports, one per concern: the faces, and the system. There is no
 third import to remember.
 
----
+**The interface language is yours.** TEA UI ships English defaults, because a
+public package cannot know whether it is being rendered for an operator in
+Hamburg or a screen-reader user in São Paulo. Every component that renders text
+takes it as a prop — `closeLabel`, `emptyMessage`, `clearLabel`, `fallbackTitle` —
+and the copy deck in `@tea-ui/ux-standards` is a single module a product can
+mirror rather than fork.
 
 ## Architecture
 
 Dependencies point **down**, and that is checked in CI:
 
-```
-utils ──▶ tokens ──▶ ux-standards
-                 │           │
-                 ▼           ▼
-              icons ──▶  core  ──▶  admin ──▶ patterns ──▶ templates ──▶ blueprints
-                             └────▶ public ──┘        specialized (opt-in, heavy)
+```text
+utils → tokens → ux-standards
+                 ↘        ↙
+              icons → core → admin → patterns → templates → blueprints
+                         ↘
+                       public          specialized (opt-in, heavy)
 ```
 
 | Package | Role |
@@ -107,44 +101,51 @@ utils ──▶ tokens ──▶ ux-standards
 | `@tea-ui/core` | the product-agnostic primitive layer |
 | `@tea-ui/admin` | information-dense UI: shell, tiles, product states |
 | `@tea-ui/public` | marketing, website chrome, content, conversion |
-| `@tea-ui/patterns` | interaction contracts for master/detail, CRUD, wizard, filter bar *(compositions pending)* |
-| `@tea-ui/templates` | page contracts: what a dashboard, settings or resource page contains *(compositions pending)* |
-| `@tea-ui/blueprints` | feature systems: auth, billing, onboarding, monitoring, permissions *(compositions pending)* |
-| `@tea-ui/specialized` | scope registry for charts, trees, virtual lists, diff *(components pending)* |
+| `@tea-ui/patterns` | interaction contracts for master/detail, CRUD, wizard, filter bar *(no React layer yet)* |
+| `@tea-ui/templates` | page contracts: what a dashboard, settings or resource page contains *(no React layer yet)* |
+| `@tea-ui/blueprints` | feature systems: auth, billing, onboarding, monitoring, permissions *(no React layer yet)* |
+| `@tea-ui/specialized` | scope registry for charts, trees, virtual lists, diff *(no components yet)* |
 
----
+A component that belongs to no consumer is not ready to publish. `@tea-ui/core`
+stays free of heavy dependencies on purpose: chart and virtual-list code belongs
+in `@tea-ui/specialized`, and the boundary checker fails the build if it drifts.
 
 ## The design, in one page
 
 **Roles, not colours.** A theme assigns values to semantic roles. A component
 never contains a colour. The default Tailwind colour, type-size, radius and
 shadow namespaces are **reset out of the build**, so `text-red-300`,
-`text-[9px]` and `rounded-md` do not compile. The anti-patterns the audit found
-dozens of are no longer expressible.
+`text-[9px]` and `rounded-md` do not compile — the anti-patterns are no longer
+expressible rather than merely discouraged.
 
 **Angular by default, circular where it means something.** Surfaces are square.
 A pill is a semantic signal — avatar, status dot, switch, radio, media control,
 loader, progress — and is reserved for exactly those.
 
-**Dark, deliberately.** Both source products were dark-only while advertising a
-light strategy they never used. A second untested palette is a second untested
-palette. The token architecture is colour-scheme ready; a light theme is a new
-reference with its own contrast audit.
+**Dark by default, honestly.** There is one theme family, not two, and the second
+palette is not stubbed in and called ready. The token architecture is
+colour-scheme ready; a light theme is a new reference with its own contrast audit,
+because a second untested palette is a second untested palette.
 
 **Density is an attribute, not a prop.** `data-density="compact|default|comfortable"`
 retunes every control inside it through custom properties, so a compact table can
 sit inside a comfortable page and neither container knows about the other.
 
-**One stylesheet.** 9.7 kB gzip for the whole system. Every package re-exports
+**One stylesheet.** 11.3 kB gzip for the whole system. Every package re-exports
 it as `<pkg>/styles.css`, so a consumer imports it once and no component can
 ship CSS that drifts from the system.
 
----
+**Announce a pattern only if you implement it.** A role is a promise.
+`role="radiogroup"` promises that arrow keys move focus *and* selection together.
+Half a pattern is worse than a different role, because the user is told something
+the control is not doing. Where the underlying library announces a pattern it
+does not implement, TEA UI implements it — and there are tests, because a role
+assertion passes on the broken version too.
 
 ## Commands
 
 ```bash
-npm run verify            # the whole gate: boundaries, types, lint, tests, build, bundle
+npm run verify            # the whole gate: boundaries, encoding, types, lint, tests, build, exports, bundle
 npm run check:boundaries  # dependency direction + declared-but-unused dependencies
 npm run check:exports     # the public API contract, with per-package cost
 npm run check:tree        # measure tree-shaking, do not assume it
@@ -152,27 +153,20 @@ npm run build:css         # compile tokens + fonts
 npm run build:packages    # build the library
 npm run showcase:dev      # the Showcase
 npm run docs:dev          # the documentation
-npm test                  # unit, component, keyboard, a11y, contrast
+npm test                  # unit, component, keyboard, a11y, contrast, language
 npm run release           # publish
 ```
 
 ## Repository layout
 
 ```text
-packages/       the library, one package per boundary
-apps/           showcase/ and docs/
-skills/tea-ui/  the OpenCode skill that makes TEA UI the default for UI work
-docs/audit/     the HSM and LUTEA audits, and their consolidation
-docs/architecture/COMPONENT-CONTRACT.md   how a TEA UI component is written
-scripts/        the verification scripts CI runs
+packages/            the library, one package per boundary
+apps/                showcase/ and docs/
+.opencode/skills/    the OpenCode skill that makes TEA UI the default for UI work
+docs/architecture/   how a component is written, and the rules behind it
+docs/audit/          audits of two other codebases; internal provenance, not public documentation
+scripts/             the verification scripts CI runs
 ```
-
-## Why it looks like this
-
-Every decision above answers a specific finding in the audit of HomeServerManager
-and LUTEA Design. The three documents in `docs/audit/` are in the repository,
-including the consolidation that resolved the seven architectural decisions the
-audits left open. Read that before proposing a change to the architecture.
 
 ## Contributing
 
@@ -180,7 +174,7 @@ Before adding a component:
 
 - Does it already exist? Can an existing one solve it with a prop?
 - Is it composition, or is it a new component?
-- Would a second TEA product need it?
+- Would another product need it, or is it scaffolding for one?
 - Which layer does it belong in?
 
 Before adding a dependency:
@@ -191,18 +185,19 @@ Before adding a dependency:
 Before adding a UX behaviour:
 
 - Does a UX Standard already decide this?
-- Would another TEA product behave differently? Is there a documented reason?
+- Would a second product behave differently? Is there a documented reason?
+
+Before adding user-facing text:
+
+- English, because that is what the library documents itself in. A component
+  takes its own text as a prop. `language.test.ts` fails the build on new
+  hardcoded strings in the shipped packages.
 
 Add a changeset describing the change and its rationale. Public APIs are
 contracts: a breaking change requires a major bump, a migration note and a
 changelog entry — never a silent change.
 
-## Status
-
-The base rewrite is complete and published. [docs/STATUS.md](./docs/STATUS.md)
-records what is at `1.0.0`, what is still scaffolding, and how a consuming
-project finds out that a newer version exists.
-
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+MIT. See [LICENSE](./LICENSE). Third-party work is listed in
+[CREDITS.md](./CREDITS.md).
