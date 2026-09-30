@@ -55,12 +55,23 @@ for (const name of names) {
 const skipped = names.filter((name) => manifests.get(name).private === true);
 const publishable = names.filter((name) => manifests.get(name).private !== true);
 
-if (skipped.length > 0) {
-  console.log(
-    `[tea-ui] skipping ${skipped.length} private package(s): ${skipped.map((n) => `@tea-ui/${n}`).join(", ")}`,
-  );
-  console.log(`[tea-ui] these are declared but ship nothing; they carry a deprecation notice on npm.`);
-}
+  if (skipped.length > 0) {
+    console.log(
+      `[tea-ui] skipping ${skipped.length} private package(s): ${skipped.map((n) => `@tea-ui/${n}`).join(", ")}`,
+    );
+    /*
+     * Not "they carry a deprecation notice on npm". They do not, yet. All four
+     * are already published at 0.1.0 and still installable, and `private: true`
+     * only stops the *next* publish. Marking them needs a separate, authenticated
+     * `npm deprecate` against the live registry, which this run cannot do — so
+     * the line has to name the outstanding step rather than describe a state
+     * that only becomes true after someone runs that command.
+     */
+    console.log(
+      `[tea-ui] they export nothing. The 0.1.0 versions already on npm are still installable:`
+        + ` they need an explicit \`npm deprecate\` to say so, which this run cannot do.`,
+    );
+  }
 
 const ordered = [];
 const seen = new Set();
