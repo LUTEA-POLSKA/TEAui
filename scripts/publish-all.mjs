@@ -120,19 +120,30 @@ function isPublished(name, version) {
 }
 
 const published = [];
+const skippedExisting = [];
 for (const name of ordered) {
   const label = `@tea-ui/${name}`;
   const version = manifests.get(name).version;
 
   if (isPublished(label, version)) {
     console.log(`\n[tea-ui] ${label} ${version} is already published — skipping`);
-    published.push(label);
+    /*
+     * Tracked apart from `published` on purpose. A package that was already on
+     * npm was not published by this run, and listing it as such made a failed run
+     * report "Published so far: @tea-ui/utils" when the run had uploaded
+     * nothing at all. On a resumed run that line is the only record of where the
+     * run got to, so it has to mean what it says.
+     */
+    skippedExisting.push(label);
     continue;
   }
 
   console.log(`\n[tea-ui] publishing ${label} ${version}`);
   if (!run("npm", ["publish", "--workspace", label, "--access", "public"], `publishing ${label}`)) {
-    console.error(`\n[tea-ui] stopped at ${label}. Published so far: ${published.join(", ") || "none"}`);
+    console.error(`\n[tea-ui] stopped at ${label}. Uploaded by this run: ${published.join(", ") || "none"}`);
+    if (skippedExisting.length > 0) {
+      console.error(`[tea-ui] Already on npm, untouched by this run: ${skippedExisting.join(", ")}`);
+    }
     console.error(`[tea-ui] ${label} has not been published. Fix and re-run; the rest will be skipped.`);
     process.exit(1);
   }
@@ -140,3 +151,6 @@ for (const name of ordered) {
 }
 
 console.log(`\n[tea-ui] published ${published.length} packages: ${published.join(", ")}`);
+if (skippedExisting.length > 0) {
+  console.log(`[tea-ui] ${skippedExisting.length} already published and left alone: ${skippedExisting.join(", ")}`);
+}
