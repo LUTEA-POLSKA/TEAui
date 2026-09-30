@@ -1,6 +1,6 @@
 {
   "name": "@tea-ui/core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The primitive layer: layout, typography, inputs, feedback, overlays, navigation.",
   "license": "MIT",
   "type": "module",
@@ -29,9 +29,9 @@
     "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
   },
   "dependencies": {
-    "@tea-ui/icons": "^1.0.0",
-    "@tea-ui/tokens": "^1.0.0",
-    "@tea-ui/ux-standards": "^1.0.0",
+    "@tea-ui/icons": "^1.1.0",
+    "@tea-ui/tokens": "^2.0.0",
+    "@tea-ui/ux-standards": "^2.0.0",
     "@tea-ui/utils": "^1.0.0",
     "radix-ui": "^1.4.3"
   },

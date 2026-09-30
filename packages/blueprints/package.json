@@ -1,63 +1,63 @@
 {
-    "name":  "@tea-ui/blueprints",
-    "version":  "0.1.0",
-    "private":  true,
-    "description":  "DECLARED, NOT IMPLEMENTED. Ships no components. Use @tea-ui/admin instead.",
-    "license":  "MIT",
-    "type":  "module",
-    "sideEffects":  false,
-    "files":  [
-                  "dist",
-                  "README.md",
-                  "LICENSE"
-              ],
-    "exports":  {
-                    ".":  {
-                              "types":  "./dist/index.d.ts",
-                              "import":  "./dist/index.js",
-                              "default":  "./dist/index.js"
-                          },
-                    "./package.json":  "./package.json",
-                    "./styles.css":  "./dist/styles.css"
-                },
-    "types":  "./dist/index.d.ts",
-    "module":  "./dist/index.js",
-    "publishConfig":  {
-                          "access":  "public"
-                      },
-    "scripts":  {
-                    "build":  "tsup \u0026\u0026 node ../../scripts/fix-esm-extensions.mjs blueprints \u0026\u0026 node ../../scripts/sync-styles.mjs",
-                    "prepublishOnly":  "node ../../scripts/prepublish-guard.mjs"
-                },
-    "dependencies":  {
-                         "@tea-ui/admin":  "^1.0.0",
-                         "@tea-ui/core":  "^1.0.0",
-                         "@tea-ui/patterns":  "^0.1.0",
-                         "@tea-ui/public":  "^1.0.0",
-                         "@tea-ui/templates":  "^0.1.0",
-                         "@tea-ui/tokens":  "^1.0.0",
-                         "@tea-ui/ux-standards":  "^1.0.0",
-                         "@tea-ui/utils":  "^1.0.0"
-                     },
-    "peerDependencies":  {
-                             "react":  "\u003e=18.2.0 \u003c20.0.0",
-                             "react-dom":  "\u003e=18.2.0 \u003c20.0.0"
-                         },
-    "keywords":  [
-                     "blueprints",
-                     "react",
-                     "screens",
-                     "design-system",
-                     "tea-ui"
-                 ],
-    "author":  "landnevermore",
-    "repository":  {
-                       "type":  "git",
-                       "url":  "git+https://github.com/landnevermore/TEAui.git",
-                       "directory":  "packages/blueprints"
-                   },
-    "homepage":  "https://landnevermore.github.io/TEAui/docs/",
-    "bugs":  {
-                 "url":  "https://github.com/landnevermore/TEAui/issues"
-             }
+    "name": "@tea-ui/blueprints",
+    "version": "0.1.1",
+    "private": true,
+    "description": "DECLARED, NOT IMPLEMENTED. Ships no components. Use @tea-ui/admin instead.",
+    "license": "MIT",
+    "type": "module",
+    "sideEffects": false,
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./package.json": "./package.json",
+        "./styles.css": "./dist/styles.css"
+    },
+    "types": "./dist/index.d.ts",
+    "module": "./dist/index.js",
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "tsup && node ../../scripts/fix-esm-extensions.mjs blueprints && node ../../scripts/sync-styles.mjs",
+        "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
+    },
+    "dependencies": {
+        "@tea-ui/admin": "^1.1.0",
+        "@tea-ui/core": "^1.1.0",
+        "@tea-ui/patterns": "^0.1.1",
+        "@tea-ui/public": "^1.0.1",
+        "@tea-ui/templates": "^0.1.1",
+        "@tea-ui/tokens": "^2.0.0",
+        "@tea-ui/ux-standards": "^2.0.0",
+        "@tea-ui/utils": "^1.0.0"
+    },
+    "peerDependencies": {
+        "react": ">=18.2.0 <20.0.0",
+        "react-dom": ">=18.2.0 <20.0.0"
+    },
+    "keywords": [
+        "blueprints",
+        "react",
+        "screens",
+        "design-system",
+        "tea-ui"
+    ],
+    "author": "landnevermore",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/landnevermore/TEAui.git",
+        "directory": "packages/blueprints"
+    },
+    "homepage": "https://landnevermore.github.io/TEAui/docs/",
+    "bugs": {
+        "url": "https://github.com/landnevermore/TEAui/issues"
+    }
 }
