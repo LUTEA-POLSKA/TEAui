@@ -72,7 +72,7 @@ jobs:
 
       - name: Upload the measured report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bundle-report
           path: reports/
@@ -116,7 +116,7 @@ jobs:
       - name: Capture
         run: npm run test:visual --if-present
         continue-on-error: true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: screenshots
