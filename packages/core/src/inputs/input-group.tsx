@@ -82,7 +82,7 @@ export interface InputGroupProps extends Omit<React.ComponentProps<"div">, "chil
 /**
  * @example
  * ```tsx
- * <InputGroup label="Server durchsuchen">
+ * <InputGroup label="Search servers">
  *   <InputGroupStart>
  *     <Search aria-hidden className="size-4" />
  *   </InputGroupStart>

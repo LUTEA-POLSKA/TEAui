@@ -15,8 +15,8 @@ import { useFieldControlProps } from "./field";
  * Three things it gets right that a hand-rolled range never does:
  *
  *  - **A real value text.** `aria-valuetext` is what a screen reader reads
- *    instead of the raw number, so a percentage slider says "40 Prozent" and a
- *    temperature slider says "18 Grad". `formatValue` is how you say it.
+ *    instead of the raw number, so a percentage slider says "40 %" and a
+ *    temperature slider says "18 degrees". `formatValue` is how you say it.
  *  - **One tab stop, with arrows and Home/End.** Radix owns the roving focus;
  *    the value is only reachable because the thumb is focusable.
  *  - **The filled track is the value.** A range is readable with no colour
@@ -61,12 +61,12 @@ export interface SliderProps
  * @example
  * ```tsx
  * <Field>
- *   <FieldLabel>Speicherplatz</FieldLabel>
+ *   <FieldLabel>Storage</FieldLabel>
  *   <Slider
- *     label="Speicherplatz in Prozent"
+ *     label="Storage as a percentage"
  *     defaultValue={[40]}
  *     showValue
- *     formatValue={(v) => `${v} Prozent`}
+ *     formatValue={(v) => `${v} %`}
  *   />
  * </Field>
  * ```

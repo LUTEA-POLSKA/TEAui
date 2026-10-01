@@ -20,7 +20,7 @@ import { ThemeControls } from "./display";
  */
 export function useHashRoute(fallback: string): string {
   const read = React.useCallback(
-    () => globalThis.location?.hash.replace(/^#\/?/, "") || fallback,
+    () => globalThis.location?.hash.replace(/^#\/?/, "").split("?")[0] || fallback,
     [fallback],
   );
   const [route, setRoute] = React.useState(read);
@@ -36,6 +36,64 @@ export function useHashRoute(fallback: string): string {
 
 export function navigate(path: string): void {
   globalThis.location.hash = `#/${path}`;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Hash query — the URL half of a filter, a tab or a selection                 */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * `URL_SYNC.inUrl` says a filter, a tab, a selection and an open panel belong in
+ * the URL, because the alternative is a view that cannot be shared, reloaded or
+ * returned to with the Back button. A demo that keeps that state in `useState`
+ * breaks the rule it is supposed to be demonstrating — and a Showcase that
+ * breaks its own standard is worse than no Showcase, because the rule reads as
+ * optional once the reference implementation ignores it.
+ *
+ * So the query half of the hash is a routing concern and it lives here, beside
+ * the path half. `useHashRoute` reads `#/patterns`; this reads and writes
+ * `#/patterns?filter=running&section=sso`. `chrome.tsx` owned the hash before
+ * this and the convention it implies is `?key=value` on the hash — the same
+ * shape as a real query string, minus the round trip through a server.
+ *
+ * **The demo owns the state; this owns the encoding.** A library component that
+ * read the URL itself would be unusable outside a routing framework, which is
+ * the same reason `FilterBar`'s own header comment gives for not owning where
+ * filter state lives. The demo decides *that* the filter is in the URL;
+ * `useHashQuery` only knows how to spell it.
+ */
+export function useHashQuery(): readonly [URLSearchParams, (next: URLSearchParams) => void] {
+  const read = React.useCallback(
+    () => new URLSearchParams(globalThis.location?.hash.split("?")[1] ?? ""),
+    [],
+  );
+  const [params, setParams] = React.useState(read);
+
+  React.useEffect(() => {
+    const onChange = () => setParams(read());
+    globalThis.addEventListener("hashchange", onChange);
+    return () => globalThis.removeEventListener("hashchange", onChange);
+  }, [read]);
+
+  const write = React.useCallback((next: URLSearchParams) => {
+    setParams(next);
+    /*
+     * `replaceState` rather than assigning `location.hash`, and this is the
+     * whole reason the hook exists instead of a `useState`. Assigning the hash
+     * pushes a history entry, so a filter the user types one character at a
+     * time would leave a dozen Back-button steps through a dozen prefixes of one
+     * word. A filter is not a place; it is a lens on the current place. The
+     * Back button still steps between *routes*, which is what it is for.
+     *
+     * The path half is preserved, so a filter cannot silently navigate away
+     * from the section it was applied in.
+     */
+    const search = next.toString();
+    const path = globalThis.location?.hash.split("?")[0] ?? "";
+    globalThis.history.replaceState(null, "", `${path}${search ? `?${search}` : ""}`);
+  }, []);
+
+  return [params, write] as const;
 }
 
 /* -------------------------------------------------------------------------- */

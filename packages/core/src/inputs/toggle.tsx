@@ -174,7 +174,7 @@ export interface ToggleProps
 /**
  * @example
  * ```tsx
- * <Toggle pressed={showGrid} onPressedChange={setShowGrid} aria-label="Gitternetz anzeigen">
+ * <Toggle pressed={showGrid} onPressedChange={setShowGrid} aria-label="Show grid">
  *   <Grid3x3 />
  * </Toggle>
  * ```
@@ -253,9 +253,9 @@ export interface ToggleGroupProps
 /**
  * @example
  * ```tsx
- * <ToggleGroup type="single" value={grid} onValueChange={setGrid} aria-label="Ansicht">
- *   <ToggleGroupItem value="grid">Raster</ToggleGroupItem>
- *   <ToggleGroupItem value="list">Liste</ToggleGroupItem>
+ * <ToggleGroup type="single" value={grid} onValueChange={setGrid} aria-label="View">
+ *   <ToggleGroupItem value="grid">Grid</ToggleGroupItem>
+ *   <ToggleGroupItem value="list">List</ToggleGroupItem>
  * </ToggleGroup>
  * ```
  */

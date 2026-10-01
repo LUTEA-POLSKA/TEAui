@@ -73,7 +73,7 @@ import { ActionBar, FilterBar, SaveBar, type SaveBarState } from "@tea-ui/patter
 import { SettingsTemplate, type SettingsSection } from "@tea-ui/templates";
 
 import { DensityControls } from "./display";
-import { Row, Section } from "./chrome";
+import { Row, Section, useHashQuery } from "./chrome";
 
 /* ========================================================================== */
 /* Demo data — real values, not lorem ipsum                                    */
@@ -904,6 +904,17 @@ export function ArchitectureSection(): React.ReactElement {
  * and a Reset that is always visible cannot demonstrate that it is bound to the
  * filter. Both claims are the entire contract, so both have to be falsifiable
  * here or the demo is theatre.
+ *
+ * **The filter state is in the hash, not in `useState`** — `#/patterns?filter=eu&running=1`,
+ * which is `URL_SYNC.inUrl` applied to the demo that is about filtering. Reload
+ * the page and the view comes back; paste the URL into a message and the other
+ * person sees the same three servers. Neither was true while this was local
+ * state, and a demo of a shared component whose own state cannot be shared is
+ * the exact defect the standard exists to prevent.
+ *
+ * `FilterBar` itself is unchanged and stays state-agnostic: it receives `query`
+ * and reports changes like any consumer. The demo is the layer that decided the
+ * filter belongs in the URL, which is the layer the standard addresses.
  */
 const ROWS = [
   { id: "srv-01", name: "api-01", state: "running", region: "eu-central" },
@@ -914,8 +925,16 @@ const ROWS = [
 ];
 
 function FilterBarDemo(): React.ReactElement {
-  const [query, setQuery] = React.useState("");
-  const [onlyRunning, setOnlyRunning] = React.useState(false);
+  const [params, setParams] = useHashQuery();
+
+  /*
+   * A missing parameter is the default, not an empty string that has to be
+   * written back. `#/patterns` and `#/patterns?filter=` therefore mean the same
+   * thing — unfiltered — so an unfiltered link stays short enough to paste into
+   * a sentence, and there is no second URL for the same view.
+   */
+  const query = params.get("filter") ?? "";
+  const onlyRunning = params.get("running") === "1";
 
   const matches = ROWS.filter((row) => {
     if (onlyRunning && row.state !== "running") return false;
@@ -925,6 +944,13 @@ function FilterBarDemo(): React.ReactElement {
 
   const filtering = query !== "" || onlyRunning;
 
+  /** Mutate a copy, so an unchanged field does not drop the other one. */
+  const update = (mutate: (next: URLSearchParams) => void) => {
+    const next = new URLSearchParams(params);
+    mutate(next);
+    setParams(next);
+  };
+
   return (
     <Stack gap="lg">
       <FilterBar
@@ -932,20 +958,36 @@ function FilterBarDemo(): React.ReactElement {
         matchCount={matches.length}
         totalCount={ROWS.length}
         active={filtering}
-        onReset={() => {
-          setQuery("");
-          setOnlyRunning(false);
-        }}
+        onReset={() =>
+          update((next) => {
+            next.delete("filter");
+            next.delete("running");
+          })
+        }
       >
-<SearchInput
+        <SearchInput
           label="Search servers"
           placeholder="Search name or region"
           value={query}
-          onValueChange={setQuery}
+          onValueChange={(value) =>
+            update((next) => {
+              if (value) next.set("filter", value);
+              else next.delete("filter");
+            })
+          }
         />
         <Button
           variant={onlyRunning ? "primary" : "outline"}
-          onClick={() => setOnlyRunning((previous) => !previous)}
+          // `aria-pressed` because this is a toggle, not a momentary action: the
+          // applied state has to survive being read out, and the colour alone
+          // does not say which variant is currently in force.
+          aria-pressed={onlyRunning}
+          onClick={() =>
+            update((next) => {
+              if (onlyRunning) next.delete("running");
+              else next.set("running", "1");
+            })
+          }
         >
           Running only
         </Button>
@@ -955,6 +997,10 @@ function FilterBarDemo(): React.ReactElement {
         {matches.length === 0
           ? "No server matches. Reset stays in the bar, so the cause is one click away."
           : matches.map((row) => row.name).join(", ")}
+      </Text>
+      <Text tone="subtle" size="micro">
+        <InlineCode>#/patterns{filtering ? `?${params.toString()}` : ""}</InlineCode> — reload or share this
+        address to get the same view.
       </Text>
     </Stack>
   );
@@ -967,70 +1013,106 @@ function FilterBarDemo(): React.ReactElement {
  * that cannot be seen in a three-action screenshot. Delete is deliberately passed
  * *first*: the bar moves it to the far end regardless, which is the point of
  * enforcing the order rather than trusting the caller's.
+ *
+ * Every action reports its selection. A bar of buttons that all do nothing is
+ * the same demo-of-nothing as the hardcoded match count: the claim is that
+ * choosing an action does something, and that has to be falsifiable here.
  */
 function ActionBarDemo(): React.ReactElement {
+  const choose = (label: string) => () => toast({ title: `${label} chosen` });
   return (
     <ActionBar
       label="Server actions"
       actions={[
-        { label: "Delete", tone: "destructive" },
-        { label: "Rename", tone: "default" },
-        { label: "Edit", tone: "primary" },
-        { label: "Restart" },
-        { label: "Snapshot" },
-        { label: "Move to region" },
-        { label: "View logs" },
+        { label: "Delete", tone: "destructive", onSelect: choose("Delete") },
+        { label: "Rename", tone: "default", onSelect: choose("Rename") },
+        { label: "Edit", tone: "primary", onSelect: choose("Edit") },
+        { label: "Restart", onSelect: choose("Restart") },
+        { label: "Snapshot", onSelect: choose("Snapshot") },
+        { label: "Move to region", onSelect: choose("Move to region") },
+        { label: "View logs", onSelect: choose("View logs") },
       ]}
     />
   );
 }
 
 /**
- * The save cycle, stepped through by hand.
+ * The save cycle, with every state reachable and each transition honest.
  *
  * `saving` is the state worth seeing: Discard is disabled, so a click during an
  * in-flight request cannot discard something the request is about to write back.
+ *
+ * **Save now advances the cycle instead of returning to `dirty`.** It used to
+ * `setState("dirty")`, which meant pressing Save took a bar from *unsaved
+ * changes* straight back to *unsaved changes* — the button's only visible effect
+ * was that nothing happened. And the `NEXT` map had `saved: "error"`, so the
+ * "Next state" button turned a successful save into a failure, which is not a
+ * transition any real save can make: the request that produced `saved` resolved.
+ * A failure is what happens when a *different* request is in flight, so `error`
+ * is now entered from `dirty` — the state a user is actually in when they press
+ * Save and it goes wrong.
+ *
+ * `NEXT` is a map rather than an array walked by index. Indexing into a list is
+ * `SaveBarState | undefined` under `noUncheckedIndexedAccess`, and the fix for
+ * that is a non-null assertion or a fallback that can never be reached — both
+ * of which lie about the type. Keyed by state, the next step is total.
  */
+const SAVE_STATES: readonly SaveBarState[] = ["idle", "dirty", "saving", "saved", "error"];
+
+const NEXT: Record<SaveBarState, SaveBarState> = {
+  idle: "dirty",
+  dirty: "saving",
+  saving: "saved",
+  saved: "dirty",
+  error: "idle",
+};
+
 function SaveBarDemo(): React.ReactElement {
   const [state, setState] = React.useState<SaveBarState>("idle");
 
-  /*
-   * A map rather than an array walked by index. Indexing into a list is
-   * `SaveBarState | undefined` under `noUncheckedIndexedAccess`, and the fix for
-   * that is a non-null assertion or a fallback that can never be reached — both
-   * of which lie about the type. Keyed by state, the next step is total.
-   */
-  const NEXT: Record<SaveBarState, SaveBarState> = {
-    idle: "dirty",
-    dirty: "saving",
-    saving: "saved",
-    saved: "error",
-    error: "idle",
-  };
+  /** Save begins the request; the stepper below plays the part of the request. */
+  const save = () => setState("saving");
 
   return (
     <Stack gap="lg">
       <SaveBar
         state={state}
         error={state === "error" ? "Port 443 is blocked by the firewall" : undefined}
-        onSave={() => setState("dirty")}
+        onSave={save}
         onDiscard={() => setState("idle")}
       />
       <Stack gap="sm">
         <Text tone="muted" size="ui">
           Current state: <InlineCode>{state}</InlineCode>
         </Text>
-        <Button variant="outline" onClick={() => setState(NEXT[state])}>
-          Next state
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" onClick={() => setState(NEXT[state])}>
+            Next state
+          </Button>
+          {SAVE_STATES.map((candidate) => (
+            <Button
+              key={candidate}
+              variant={candidate === state ? "primary" : "ghost"}
+              // `aria-pressed`: this is a jump to a named state, so the current
+              // one has to be announced rather than inferred from a colour.
+              aria-pressed={candidate === state}
+              onClick={() => setState(candidate)}
+            >
+              {candidate}
+            </Button>
+          ))}
+        </div>
       </Stack>
     </Stack>
   );
 }
 
+/** The section shown when the URL names none, or names one that cannot be shown. */
+const DEFAULT_SECTION = "profile";
+
 const SETTINGS_SECTIONS: SettingsSection[] = [
   {
-    id: "profile",
+    id: DEFAULT_SECTION,
     label: "Profile",
     description: "How this server is named in the interface.",
     children: (
@@ -1078,16 +1160,73 @@ const SETTINGS_SECTIONS: SettingsSection[] = [
  * state. That is the layer boundary working: there is no recipe for a settings
  * page in this Showcase, and if the template needed one, the test that reads its
  * source would fail on the design token it found.
+ *
+ * **The active section lives in the URL**, as `?section=notifications`, which is
+ * `URL_SYNC.inUrl`'s `tab`/`selection` pair applied to a settings rail. The
+ * template is untouched by this: it still takes `activeSection` and reports
+ * `onSectionChange`, and its own doc comment is right that the router owns which
+ * section is current. The *router* here is the hash, so the demo is the layer
+ * that holds it, and a link to `#/patterns?section=sso` opens on the SSO
+ * section rather than on whatever the last visitor happened to click.
+ *
+ * **The failure is reachable, and the timer is cleaned up.** `error` was passed
+ * unconditionally while no code path could ever produce the `error` *state*, so
+ * the prop described an affordance the demo could not have: a real page that
+ * always showed a firewall error and could never actually fail. The `simulate`
+ * switch below makes the failure a real outcome of a real save, and the timer is
+ * cleared on unmount — a `setTimeout` that fires after the component is gone is
+ * a state update on a dead tree, which in React 18+ is a silent leak and a lie
+ * about what the page did.
  */
 function SettingsTemplateDemo(): React.ReactElement {
-  const [section, setSection] = React.useState("profile");
+  const [params, setParams] = useHashQuery();
   const [saveState, setSaveState] = React.useState<SaveBarState>("idle");
+  const [failNextSave, setFailNextSave] = React.useState(false);
+  const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /*
+   * Read the requested section through the section list rather than trusting the
+   * URL. A hand-edited or stale link can name a section that does not exist, and
+   * it can name a *disabled* one — so `find` over the list is what keeps
+   * `#/patterns?section=nope` and `#/patterns?section=sso` from rendering a
+   * panel the user was told they could not have.
+   *
+   * `DEFAULT_SECTION` rather than `SETTINGS_SECTIONS[0]!.id`: indexing a list
+   * under `noUncheckedIndexedAccess` is `SettingsSection | undefined`, and the
+   * two fixes for that — a non-null assertion, or a fallback that can never be
+   * reached — both lie about the type.
+   */
+  const requested = params.get("section");
+  const section =
+    SETTINGS_SECTIONS.find((entry) => entry.id === requested && !entry.disabled)?.id ??
+    DEFAULT_SECTION;
+
+  const selectSection = (id: string) => {
+    const next = new URLSearchParams(params);
+    next.set("section", id);
+    setParams(next);
+  };
+
+  // Cleared on unmount, and before every new save, so a stale request cannot
+  // resolve over a newer one and report a result that is no longer current.
+  React.useEffect(
+    () => () => {
+      if (timer.current !== null) clearTimeout(timer.current);
+    },
+    [],
+  );
 
   const save = () => {
     setSaveState("saving");
-    // A real product awaits the request here and picks `error` or `saved` from
-    // what came back. The Showcase fakes the wait so the states can be seen.
-    setTimeout(() => setSaveState("saved"), 900);
+    if (timer.current !== null) clearTimeout(timer.current);
+    // A real product awaits the request and picks `error` or `saved` from what
+    // came back. The Showcase fakes the wait so the states can be seen — and
+    // fakes the outcome too, because a demo whose only possible outcome is
+    // success cannot show the failure the component is built around.
+    timer.current = setTimeout(() => {
+      timer.current = null;
+      setSaveState(failNextSave ? "error" : "saved");
+    }, 900);
   };
 
   return (
@@ -1097,16 +1236,32 @@ function SettingsTemplateDemo(): React.ReactElement {
         description="Changes apply to the next deployment."
         sections={SETTINGS_SECTIONS}
         activeSection={section}
-        onSectionChange={setSection}
+        onSectionChange={selectSection}
         saveState={saveState}
         onSave={save}
         onDiscard={() => setSaveState("idle")}
-        error="Port 443 is blocked by the firewall"
+        // Only in the state that has a cause to report. The prop is the text the
+        // user acts on, and a string shown beside a bar that is not failing is
+        // noise that reads as a stale message.
+        error={saveState === "error" ? "Port 443 is blocked by the firewall" : undefined}
         railLabel="Server settings sections"
       />
-      <Button variant="secondary" onClick={() => setSaveState("dirty")}>
-        Mark as changed
-      </Button>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button variant="secondary" onClick={() => setSaveState("dirty")}>
+          Mark as changed
+        </Button>
+        <Button
+          variant="outline"
+          aria-pressed={failNextSave}
+          onClick={() => setFailNextSave((previous) => !previous)}
+        >
+          {failNextSave ? "Next save fails" : "Simulate a failed save"}
+        </Button>
+      </div>
+      <Text tone="subtle" size="micro">
+        <InlineCode>#/patterns?section={section}</InlineCode> — the rail selection is a link, so it can be
+        shared and restored.
+      </Text>
     </Stack>
   );
 }

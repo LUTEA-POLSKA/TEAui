@@ -544,7 +544,7 @@ export interface StepProps extends React.ComponentProps<"li"> {
   index: number;
   /** Index of the current step. */
   current: number;
-  /** Show a state label such as "Abgeschlossen". */
+  /** Show a state label such as "Completed". */
   stateLabel?: string | undefined;
 }
 

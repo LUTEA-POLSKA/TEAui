@@ -263,9 +263,9 @@ export interface FieldLabelProps extends React.ComponentProps<typeof LabelPrimit
  *
  * The required marker is a visible, `aria-hidden` `*` with a `title`, and the
  * requirement itself is carried by the control's `required` / `aria-required`.
- * It is deliberately **not** a visually hidden "Pflichtfeld" word inside the
+ * It is deliberately **not** a visually hidden "Required field" word inside the
  * label: that would append to the control's accessible name, so the control
- * would be announced as "E-Mail Pflichtfeld" instead of "E-Mail", and a
+ * would be announced as "E-Mail Required field" instead of "E-Mail", and a
  * consumer matching on the visible label would find nothing. The attribute
  * already says it, and it says it correctly.
  *
@@ -422,9 +422,9 @@ export interface FieldGroupProps extends Omit<React.ComponentProps<"fieldset">, 
  *
  * @example
  * ```tsx
- * <FieldGroup legend="Benachrichtigungen" disabled={saving}>
+ * <FieldGroup legend="Notifications" disabled={saving}>
  *   <Field>
- *     <FieldLabel>Fehler per E-Mail</FieldLabel>
+ *     <FieldLabel>Errors by email</FieldLabel>
  *     <Switch />
  *   </Field>
  * </FieldGroup>

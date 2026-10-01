@@ -46,6 +46,7 @@ export { RefreshButton, type RefreshButtonProps } from "./data/refresh-button";
 export {
   DEFAULT_SCORE_BANDS,
   LEAD_SCORE_BANDS,
+  SCORE_BANDS,
   Score,
   scoreBand,
   type ScoreBand,

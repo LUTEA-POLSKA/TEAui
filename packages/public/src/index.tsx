@@ -95,7 +95,7 @@ export interface HeroProps extends React.ComponentProps<"section"> {
   lead?: string | undefined;
   /** Primary and secondary actions. */
   actions?: React.ReactNode | undefined;
-  /** Trust markers under the actions: "Seit 2019", "Made in Germany", logos. */
+  /** Trust markers under the actions: "Since 2019", "Made in Germany", logos. */
   reassurance?: React.ReactNode | undefined;
   /**
    * A visual below the copy — a screenshot, a diagram, a live demo. Optional,
@@ -335,7 +335,7 @@ export const Faq = React.forwardRef<HTMLDivElement, React.ComponentProps<"div"> 
 export interface PricingTier {
   name: string;
   price: string;
-  /** The billing period, e.g. "pro Monat". */
+  /** The billing period, e.g. "per month". */
   period?: string | undefined;
   description?: string | undefined;
   features: readonly string[];
@@ -407,7 +407,7 @@ export interface PublicNavLink {
 export interface PublicNavbarProps extends React.ComponentProps<"header"> {
   brand: React.ReactNode;
   links: readonly PublicNavLink[];
-  /** Always-visible action, e.g. "Anmelden". */
+  /** Always-visible action, e.g. "Sign in". */
   action?: React.ReactNode | undefined;
   /** Id of the main region, for the skip link. */
   mainId?: string | undefined;
@@ -596,7 +596,7 @@ export const ConversionForm = React.forwardRef<HTMLFormElement, ConversionFormPr
         {children}
         <div>
           <Button type="submit" loading={busy}>
-            {busy ? "Wird gesendet" : (submitLabel ?? COPY.actions.save)}
+            {busy ? COPY.states.saving : (submitLabel ?? COPY.actions.save)}
           </Button>
         </div>
       </form>

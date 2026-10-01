@@ -65,7 +65,7 @@ export interface AdminShellProps extends React.ComponentProps<"div"> {
   sidebarFooter?: React.ReactNode | undefined;
   /** Top bar, right of the title. */
   actions?: React.ReactNode | undefined;
-  /** A live status summary, e.g. "Alle Dienste online". */
+  /** A live status summary, e.g. "All services online". */
   status?: React.ReactNode | undefined;
   /** Id of the main region; also the skip link's target. */
   mainId?: string | undefined;

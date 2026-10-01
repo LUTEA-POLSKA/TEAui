@@ -55,10 +55,10 @@ export const BLUEPRINTS: readonly BlueprintMeta[] = [
     id: "Billing",
     answers: "What does it cost, who pays, and what happens when the payment does not arrive?",
     includes: [
-      "Preise und Abrechnungsintervalle",
-      "Zahlungsmittel",
-      "Rechnungen",
-      "Planwechsel mit Vorwarnung",
+      "Prices and billing intervals",
+      "Payment methods",
+      "Invoices",
+      "Plan changes with advance notice",
       "Payment failure and lockout",
       "Cancellation",
     ],
@@ -67,22 +67,22 @@ export const BLUEPRINTS: readonly BlueprintMeta[] = [
       "No price-change dialog without a full cost breakdown before saving.",
       "A payment failure is an explained state, not a silent failure.",
     ],
-    provides: ["den Zahlungsanbieter", "Preise und Steuern", "die Rechnungsgestaltung"],
+    provides: ["the payment provider", "prices and taxes", "the invoicing setup"],
   },
   {
     id: "Onboarding",
     answers: "How does a fresh system become usable in the first minutes?",
     includes: [
-      "Einrichtungsschritte",
+      "Setup steps",
       "Progress that survives a cancellation",
       "Empty states that lead to the first action",
-      "Hinweise, die verschwinden, sobald sie erledigt sind",
+      "Hints that disappear once they are done",
     ],
     decisions: [
-      "Ein Schritt gilt als erledigt, wenn er gespeichert ist — nicht wenn er besucht wurde.",
+      "A step counts as done once it is saved — not once it has been visited.",
       "An interrupted task resumes in the right place on the next visit.",
     ],
-    provides: ["die Reihenfolge der Schritte", "welche Schritte ein Produkt braucht"],
+    provides: ["the order of the steps", "which steps a product needs"],
   },
   {
     id: "Settings",
@@ -104,17 +104,17 @@ export const BLUEPRINTS: readonly BlueprintMeta[] = [
     id: "Monitoring",
     answers: "Is the system healthy, and if not: what is broken?",
     includes: [
-      "Dienststatus",
-      "Ressourcenmetriken mit Schwellen",
-      "Ereignis- und Alarmliste",
+      "Service status",
+      "Resource metrics with thresholds",
+      "Event and alert list",
       "Time series with history",
     ],
     decisions: [
       "A refresh never replaces existing content.",
       "An alarm names the cause and the next action, not just a state.",
-      "Veraltete Daten sind als veraltet gekennzeichnet, nicht als aktuelle.",
+      "Stale data is marked as stale, not presented as current.",
     ],
-    provides: ["die Messwerte", "die Schwellen", "die Bedeutung eines Alarms"],
+    provides: ["the measurements", "the thresholds", "what an alert means"],
     schema: "metric: { key, value, unit, at, state: 'normal'|'elevated'|'high'|'critical' }",
   },
   {
@@ -122,15 +122,15 @@ export const BLUEPRINTS: readonly BlueprintMeta[] = [
     answers: "How does a product connect to something else, and what happens when it fails?",
     includes: [
       "Set up a connection",
-      "Verbindungsstatus",
-      "Testsendung",
-      "Fehlerbehandlung mit Wiederholung",
+      "Connection status",
+      "Test message",
+      "Error handling with retry",
     ],
     decisions: [
       "Credentials are never shown in plain text — only once, after saving.",
       "A failed test names the concrete error, not 'connection failed'.",
     ],
-    provides: ["die Gegenstelle", "die Zugangsdaten", "die Protokollwahl"],
+    provides: ["the remote system", "the credentials", "the protocol choice"],
   },
   {
     id: "ApiManagement",
@@ -138,22 +138,22 @@ export const BLUEPRINTS: readonly BlueprintMeta[] = [
     includes: [
       "Keys and tokens",
       "Validity and scope",
-      "Nutzung und Kontingente",
-      "Widerruf",
+      "Usage and quotas",
+      "Revocation",
     ],
     decisions: [
       "A key is shown in plain text exactly once.",
       "Revocation is immediate and confirmed.",
       "A revoked key explains the failure of existing calls.",
     ],
-    provides: ["die Authentifizierung", "die Kontingente", "die Scopes"],
+    provides: ["the authentication", "the quotas", "the scopes"],
   },
   {
     id: "Notifications",
     answers: "How does a user learn that something happened — and what may interrupt them?",
     includes: [
       "Channels and settings",
-      "Zentrale Liste mit Gelesen-Markierung",
+      "A central list with a read marker",
       "Interruptions only for urgent things",
     ],
     decisions: [
@@ -167,7 +167,7 @@ export const BLUEPRINTS: readonly BlueprintMeta[] = [
     id: "Permissions",
     answers: "Who may do what, and how is that shown without hiding it?",
     includes: [
-      "Rollen und Zuordnungen",
+      "Roles and assignments",
       "Checked in the client *and* on the server",
       "An explanation when permission is missing",
     ],
@@ -175,7 +175,7 @@ export const BLUEPRINTS: readonly BlueprintMeta[] = [
       "A hidden action is a bug when it would be possible — prefer disabled with a reason.",
       "A missing permission explains what is missing and who to contact.",
     ],
-    provides: ["das Berechtigungsmodell", "die Rollen", "die Zuordnung"],
+    provides: ["the permission model", "the roles", "the assignment"],
   },
 ] as const;
 

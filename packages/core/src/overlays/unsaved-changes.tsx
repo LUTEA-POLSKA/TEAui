@@ -42,7 +42,7 @@ import { Button } from "../inputs/button";
  * ### The save-first default
  *
  * `UNSAVED_CHANGES.preferSave` is `true`, so passing `save` renders a **three**
- * button dialog with *Speichern* as the primary action and discarding as the one
+ * button dialog with *Save* as the primary action and discarding as the one
  * furthest from the pointer. A guard that only offers "leave and lose it" pushes
  * every user down the cheapest path, and after a week of that the dialog stops
  * being read at all.
@@ -183,7 +183,7 @@ export function useUnsavedChanges({
                 <AlertDialogFooter>
                   {/*
                     Save first in the DOM, then stay, then discard. With
-                    `flex-col-reverse` that puts *Speichern* at the bottom of a
+                    `flex-col-reverse` that puts *Save* at the bottom of a
                     phone stack and on the right on a desktop — and the discard
                     button furthest from both the pointer and the primary action.
                   */}

@@ -15,7 +15,7 @@
  *     into a dashboard that rendered neither on most routes.
  *  2. **A specialized component is still a TEA UI component.** Same API
  *     conventions, same data-attribute vocabulary, same accessibility floor, same
- *     German copy deck. "Specialized" describes the cost, never the quality.
+ *     copy deck. "Specialized" describes the cost, never the quality.
  *
  * Everything here must additionally be readable without colour, because a chart
  * is the one place where colour is the default way of encoding data — and
@@ -37,13 +37,13 @@ export const SPECIALIZED: readonly SpecializedMeta[] = [
   {
     id: "Chart",
     solves: "Time series and comparisons where the history carries the point.",
-    isolates: "eine Zeichenbibliothek",
+    isolates: "a drawing library",
     notInCore: "No product needs charts, and a charting library is the most expensive import in the whole library.",
     rules: [
       "Each series has its own shape or stroke width in addition to colour.",
       "Missing values are shown as a gap, never silently interpolated.",
-      "Achsen und Raster erreichen mindestens 3:1 Kontrast.",
-      "Jedes Diagramm hat eine Textalternative oder eine Datentabelle.",
+      "Axes and gridlines reach at least 3:1 contrast.",
+      "Every chart has a text alternative or a data table.",
     ],
   },
   {
@@ -52,8 +52,8 @@ export const SPECIALIZED: readonly SpecializedMeta[] = [
     notInCore: "Virtualising is a decision you only make once you know the length.",
     rules: [
       "Row height is known and constant, otherwise measure it rather than guess.",
-      "Ein Element mit Fokus wird immer in den sichtbaren Bereich gescrollt.",
-      "Die Gesamtzahl steht sichtbar da, nicht nur die Zahl der geladenen Zeilen.",
+      "A focused element is always scrolled into the visible area.",
+      "The total is on screen, not just the number of loaded rows.",
     ],
   },
   {
@@ -62,7 +62,7 @@ export const SPECIALIZED: readonly SpecializedMeta[] = [
     notInCore: "Trees need a clear domain semantics that Core must not invent.",
     rules: [
       "Arrow keys move, `*` collapses, `Enter` opens.",
-      "Der Zustand eines Astes ist an Form und Text erkennbar, nicht nur an der Farbe.",
+      "The state of a branch is recognisable by shape and text, not by colour alone.",
       "A selection survives renaming.",
     ],
   },
@@ -72,13 +72,13 @@ export const SPECIALIZED: readonly SpecializedMeta[] = [
     notInCore: "A diff is a domain view, not a generic one.",
     rules: [
       "Added and removed are recognisable by sign and word, not only by green and red.",
-      "Zeilennummern und Position bleiben beim Scrollen sichtbar.",
+      "Line numbers and position stay visible while scrolling.",
     ],
   },
   {
     id: "CodeBlock",
     solves: "Source text with syntax highlighting, line numbers and copy.",
-    isolates: "ein Syntaxhervorheber",
+    isolates: "a syntax highlighter",
     notInCore: "A highlighter is large, and most products never show one.",
     rules: [
       "The text stays complete and copyable even without highlighting.",
@@ -91,7 +91,7 @@ export const SPECIALIZED: readonly SpecializedMeta[] = [
     notInCore: "A date without context needs the formatting and timezone rules of the product.",
     rules: [
       "The input is always typeable; the calendar is a help, not a prerequisite.",
-      "Das Format steht sichtbar neben dem Feld, nicht nur im Placeholder.",
+      "The format is visible next to the field, not only in the placeholder.",
     ],
   },
   {
@@ -99,7 +99,7 @@ export const SPECIALIZED: readonly SpecializedMeta[] = [
     solves: "A workflow where items move between columns.",
     notInCore: "A board is a domain view with its own rules.",
     rules: [
-      "Es gibt eine Tastatur-Alternative: eine Liste mit derselben Reihenfolge.",
+      "There is a keyboard alternative: a list with the same order.",
       "A switch is offered with a way to undo it.",
     ],
   },

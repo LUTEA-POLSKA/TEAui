@@ -31,7 +31,7 @@ import { NumberInput, type NumberInputProps } from "./number-input";
  * A `<span>GB</span>` beside an input is invisible to a screen reader, and an
  * input announced as "512" is a number without a scale. So the unit gets a real
  * `id` and is added to the control's `aria-describedby` chain: the field is read
- * as "Speicherplatz, 512, Gigabyte". It is *not* the accessible **name** — the
+ * as "Storage, 512, gigabytes". It is *not* the accessible **name** — the
  * name is what the field is, and the unit is what its value is measured in.
  *
  * ### Why it is not a `type="number"` replacement

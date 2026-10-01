@@ -1,5 +1,5 @@
 import * as React from "react";
-import { METER_BANDS, Meter, type MeterThreshold } from "@tea-ui/core";
+import { Meter, type MeterThreshold } from "@tea-ui/core";
 import type { Tone } from "@tea-ui/tokens";
 import { cn } from "@tea-ui/utils";
 
@@ -36,8 +36,8 @@ import { cn } from "@tea-ui/utils";
  * ### Never colour alone
  *
  * The number, the band word, and the tone are three signals. A score is 62 and
- * reads *Mittel*; greyscale, a screen reader and a colour-blind user all get the
- * same answer.
+ * reads *Elevated*; greyscale, a screen reader and a colour-blind user all get
+ * the same answer.
  */
 export interface ScoreBand {
   /** At or above this value the band applies. Matched top-down. */
@@ -71,10 +71,44 @@ export interface ScoreBand {
  * renders no bar, because a bar at zero is a claim about a reading that was never
  * taken.
  */
+/**
+ * The words a score is described in.
+ *
+ * Deliberately **not** `METER_BANDS`, and the divergence is the point.
+ *
+ * A `Meter` reports a quantity measured *against a limit* — utilisation, memory
+ * pressure — so higher is worse, and the tone ladder (`Normal` / `Elevated` /
+ * `Critical`) is exactly right for it. A `Score` reports *achievement* — a lead
+ * score, an audit result — so higher is better, and that ladder reads backwards:
+ * a lead score of 62 renders "62 Elevated", and 44 renders "44 Critical", which
+ * describes a score rather than a system in trouble. Translating `METER_BANDS`
+ * out of German exposed the coupling rather than creating it — the German
+ * happened to say "Mittel" and "Schwach", which read correctly for a score and
+ * would not have for a meter.
+ *
+ * So the two vocabularies are separate, and this one is a grade scale. The
+ * *tones* stay shared, because colour genuinely does mean the same thing in both
+ * places; only the word follows the direction of the number.
+ */
+export const SCORE_BANDS = {
+  /** At or above the top band. */
+  good: "Good",
+  /** Between the two bands — neither strong nor weak. */
+  fair: "Fair",
+  /** Below the lower band. */
+  poor: "Poor",
+  /**
+   * No score was taken. Not "Poor": a missing measurement is not a bad one, and
+   * `indeterminate` is the case where this component deliberately renders no bar,
+   * because a bar at zero is a claim about a reading that was never taken.
+   */
+  unknown: "No score",
+} as const;
+
 export const DEFAULT_SCORE_BANDS: readonly ScoreBand[] = [
-  { at: 70, tone: "positive", label: METER_BANDS.good },
-  { at: 45, tone: "caution", label: METER_BANDS.fair },
-  { at: 0, tone: "critical", label: METER_BANDS.poor },
+  { at: 70, tone: "positive", label: SCORE_BANDS.good },
+  { at: 45, tone: "caution", label: SCORE_BANDS.fair },
+  { at: 0, tone: "critical", label: SCORE_BANDS.poor },
 ];
 
 /**
@@ -86,9 +120,9 @@ export const DEFAULT_SCORE_BANDS: readonly ScoreBand[] = [
  * half of the divergence is not offered.
  */
 export const LEAD_SCORE_BANDS: readonly ScoreBand[] = [
-  { at: 70, tone: "positive", label: METER_BANDS.good },
-  { at: 40, tone: "caution", label: METER_BANDS.fair },
-  { at: 0, tone: "critical", label: METER_BANDS.poor },
+  { at: 70, tone: "positive", label: SCORE_BANDS.good },
+  { at: 40, tone: "caution", label: SCORE_BANDS.fair },
+  { at: 0, tone: "critical", label: SCORE_BANDS.poor },
 ];
 
 /** The band a score falls into. */
@@ -142,7 +176,7 @@ export const Score = React.forwardRef<HTMLDivElement, ScoreProps>(function Score
   ref,
 ) {
   const resolved = indeterminate
-    ? { at: 0, tone: "neutral" as Tone, label: METER_BANDS.unknown }
+    ? { at: 0, tone: "neutral" as Tone, label: SCORE_BANDS.unknown }
     : scoreBand(value, bands);
   const thresholds = toThresholds(bands);
   const percent = max === 0 ? 0 : Math.min(100, Math.max(0, (value / max) * 100));
@@ -180,7 +214,7 @@ export const Score = React.forwardRef<HTMLDivElement, ScoreProps>(function Score
           value={value}
           max={max}
           label={label ?? caption ?? resolved.label}
-          valueText={`${Math.round(percent)} von ${max} — ${resolved.label}`}
+          valueText={`${Math.round(percent)} of ${max} — ${resolved.label}`}
           thresholds={thresholds}
           showThresholds
         />

@@ -60,8 +60,8 @@ export interface SearchInputProps
  * @example
  * ```tsx
  * <SearchInput
- *   label="Server durchsuchen"
- *   placeholder="Name, IP oder Hostname"
+ *   label="Search servers"
+ *   placeholder="Name, IP or hostname"
  *   value={query}
  *   onValueChange={setQuery}
  *   onSubmit={run}

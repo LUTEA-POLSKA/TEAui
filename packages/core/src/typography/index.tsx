@@ -190,7 +190,7 @@ export const InlineCode = React.forwardRef<HTMLElement, React.ComponentProps<"co
 export interface PreformattedProps extends React.ComponentProps<"pre"> {
   /** Clip instead of growing, with a scrollbar. */
   maxHeight?: number | string | undefined;
-  /** A copy button, labelled in German from the shared copy deck. */
+  /** A copy button, labelled from the shared copy deck. */
   copyable?: boolean | undefined;
   className?: string | undefined;
 }

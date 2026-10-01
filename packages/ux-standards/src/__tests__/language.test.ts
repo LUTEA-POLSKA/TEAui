@@ -21,8 +21,20 @@ import { describe, expect, it } from "vitest";
  * It matches the characters ä ö ü ß, which catches the majority, plus the
  * character-less German that the most-used words have — "Speichern", "Abbrechen",
  * "Eingabe", "Fehler", "Aktiv". It cannot see a German word that is spelled
- * identically in English, or a string built by concatenation. A lint rule is a
- * floor, not proof; the review still has to look.
+ * identically in English, or a string built by concatenation, and it reads string
+ * literals only: German in a doc comment ships in the `.js.map` and is invisible
+ * to it. A lint rule is a floor, not proof; the review still has to look. The
+ * word list below is where each hand-fixed string is recorded, and it is the
+ * receipt for that review, not a substitute for it.
+ *
+ * That blind spot is not theoretical and it is now measured twice. Every German
+ * `@example` in `core`, `admin` and `public` — a `<FieldLabel>Anzahl</FieldLabel>`,
+ * an `aria-label="Ansicht"`, a `Defaults to "Wird geladen"` that no longer matched
+ * the code beneath it — was found by reading, and fixed by reading. And of the
+ * strings removed from `METER_BANDS` and the four scope registries, 96 of 112
+ * would have passed this file untouched. The comment below on the word list is
+ * the full account; the short version is that the guard catches a recurrence of a
+ * *word*, and a reviewer catches a recurrence of a *sentence*.
  */
 
 /**
@@ -68,6 +80,49 @@ const ALLOWED = new Set(["ux-standards/src/terminology.ts"]);
  * recognised by morphology (`ung`, `heit`, `keit`, `lich`, `isch`, `schaft`),
  * which is what actually distinguishes German from English in this vocabulary,
  * and the word list is the second net rather than the only one.
+ *
+ * It happened a second time anyway, which is the finding worth writing down. A
+ * line-by-line audit of the `ux-standards` registries — every `label`,
+ * `title`, `description` and prose array entry, read rather than grepped —
+ * found twenty-three more shipped strings: `label: "Bereit"`,
+ * `label: "Hoch"`, `label: "Fehlt"`, `label: "Kunde"`,
+ * `description: "Erster Kontakt hergestellt, Antwort steht aus."`. Not one of
+ * them has an umlaut, and several are short enough to read as a key name rather
+ * than a language, which is precisely how a word list built from the strings
+ * that were already found misses the ones that were not.
+ *
+ * So the list is a receipt, not a detector. Every entry is a string that had to
+ * be translated by hand, added in the same change that translated it. It stays
+ * incomplete until the next audit, and the honest thing is to say so rather than
+ * to widen it and imply the widening closed anything.
+ *
+ * It happened a third time, and this one is the measurement worth keeping. Once
+ * the `METER_BANDS` registry and the four scope registries were translated, the
+ * strings removed from *those files* were run back through this file's own rules
+ * to see which of them the guard would actually have stopped: **16 of 112**.
+ * Every one of the sixteen had an umlaut, a `ß` or an entry already in this
+ * list. The other ninety-six had none of those, and shipped — `includes:
+ * ["Rechnungen", "Zahlungsmittel"]`, `solves: "Benachrichtigungen lesen,
+ * filtern und als gelesen markieren."`, `good: "Gut"`.
+ *
+ * The same sweep then read past those files and found four more *shipped string
+ * literals* the guard had never been able to see: `<span
+ * className="sr-only">Wird verarbeitet</span>` in `Progress`, `{busy ? "Wird
+ * gesendet" : …}` in the public conversion form, and `Technische Details` /
+ * `Referenz:` in `ErrorState`. `Wird` is in the list below for exactly that
+ * reason — enumerating the phrases one at a time is how four of them got
+ * through.
+ *
+ * The shape of the miss is the finding. The registry packages are *sentences*,
+ * not labels, and a German sentence is mostly function words: `die`, `der`,
+ * `und`, `mit`, `liegt`, `bleibt`, `gilt`. Detecting those reliably needs a
+ * parser or a language model, and neither belongs in a unit test — so they are
+ * not attempted here, and the net stays lexical. What the list gained instead is
+ * the *content* word of every German sentence that shipped, because a recurrence
+ * is a sentence about the same subject and will reach for the same noun. The
+ * four groups below are the ones that were not on the list: the billing and
+ * payment vocabulary, the monitoring vocabulary, the interaction and layout
+ * vocabulary, and the band words.
  */
 const GERMAN_WORDS = [
   // Verbs
@@ -100,6 +155,71 @@ const GERMAN_WORDS = [
   /\bFehlgeschlagen\b/, /\bUngültig\b/, /\bErforderlich\b/, /\bOptional\b/,
   /\bAktuell\b/, /\bKritisch\b/, /\bIn Ordnung\b/, /\bOhne Website\b/,
   /\bIn Planung\b/, /\bNicht verfügbar\b/, /\bNicht gefunden\b/, /\bWird geladen\b/,
+  // From the ux-standards audit, where the German had no umlaut and read like an
+  // identifier. Status and feedback labels: nouns and participles, each one the
+  // `label` of a registry entry that `StatusBadge` or a progress line renders.
+  /\bBereit\b/, /\bErfolgreich\b/, /\bUnbekannt\b/, /\bAusstehend\b/,
+  /\bAbgelaufen\b/, /\bErstellt\b/, /\bPausiert\b/, /\bGestoppt\b/, /\bFehlt\b/,
+  /\bUnbearbeitet\b/, /\bArchiviert\b/, /\bAbgeschlossen\b/, /\bHoch\b/,
+  /\bWartungsmodus\b/, /\bInteresse\b/, /\bKontakt\b/, /\bKontaktiert\b/,
+  /\bKunde\b/, /\bVeraltete\b/, /\bErster\b/, /\bAntwort\b/,
+  // Phrases, because here the words alone would not separate German from code:
+  // `Wird` and `neu` are short enough to occur in ordinary text, and `In Arbeit`
+  // is two words that read as English taken one at a time.
+  /\bWird ausgerollt\b/, /\bStartet neu\b/, /\bIn Arbeit\b/,
+  /\bVeraltete Daten\b/, /\bNeuer Versuch\b/, /\bErster Kontakt\b/,
+  /* --- From the METER_BANDS and scope-registry translation ------------------
+   * The four registry packages, and `METER_BANDS`, in German. Recorded as the
+   * content words rather than the sentences, because a recurrence of the German
+   * will be a new sentence about the same subject and will reuse the noun even
+   * where every function word around it is different. */
+  // The band words. `Unbekannt` is above; these three had no umlaut and no entry.
+  /\bGut\b/, /\bMittel\b/, /\bSchwach\b/,
+  // Billing and payments — the `Billing` and `ApiManagement` blueprints.
+  /\bRechnungen?\b/, /\bZahlungsmittel\b/, /\bAbrechnungsintervalle?\b/,
+  /\bPlanwechsel\b/, /\bZahlungsanbieter\b/, /\bRechnungsgestaltung\b/,
+  /\bKontingente?\b/, /\bWiderruf\b/, /\bAuthentifizierung\b/,
+  // Monitoring — the `Monitoring` blueprint and the `MonitoringTemplate`.
+  /\bDienststatus\b/, /\bDienste\b/, /\bRessourcenmetriken?\b/, /\bEreignis\b/,
+  /\bEreignisse\b/, /\bEreignisliste[n]?\b/, /\bAlarmliste[n]?\b/, /\bMesswerte\b/,
+  /\bSchwellen\b/, /\bSchwellenwerte?\b/, /\bStatusleiste\b/, /\bZeitreihe[n]?\b/,
+  // Interaction, list and layout vocabulary — `PATTERNS` and the interaction
+  // contracts in `BLUEPRINTS`, where German reads as a sentence rather than a label.
+  /\bSortierung\b/, /\bFilterzustand\b/, /\bFilterwert\b/, /\bUngelesen\b/,
+  /\bEintrag\b/, /\bReihenfolge\b/, /\bReihe\b/, /\bSchritte?\b/, /\bSpalte\b/,
+  /\bSpalten\b/, /\bZeile\b/, /\bZeilen\b/, /\bZeilennummern?\b/, /\bTabelle\b/,
+  /\bMetrik\b/, /\bPaginierung\b/, /\bLogformat\b/, /\bPersistenz\b/,
+  // Access, permissions and channels.
+  /\bRollen\b/, /\bZuordnungen?\b/, /\bBerechtigungen\b/, /\bBerechtigungsmodell\b/,
+  /\bGelesen\b/, /\bMarkierung\b/, /\bZugangsdaten\b/,
+  /\bZugang\b/, /\bGegenstelle\b/, /\bProtokollwahl\b/, /\bTestsendung\b/,
+  // The specialised components — `SPECIALIZED`, where German sat in `rules`.
+  /\bAchsen\b/, /\bRaster\b/, /\bKontrast\b/, /\bDiagramm\b/, /\bTextalternative\b/,
+  /\bDatentabelle\b/, /\bZeichenbibliothek\b/, /\bSyntaxhervorheber\b/,
+  /\bTastatur\b/, /\bPlatzhalter\b/, /\bGesamtzahl\b/, /\bZustand\b/,
+  /\bZentrale\b/, /\bsichtbar\b/, /\bunsichtbar\b/,
+  // Copy and legal — the landing and auth templates.
+  /\bTexte\b/, /\bSEO-Texte\b/, /\bRechtliches\b/, /\bWeiterleitung\b/,
+  /\bFehlertexte?\b/, /\bWeiterer Zugang\b/,
+  // The infinitive and participle forms a German sentence is built from. The
+  // single most common shape in the registries: a claim about what a component
+  // does, stated as a verb phrase.
+  /\bmarkiert\b/, /\bbleibt\b/, /\bbleiben\b/, /\bgespeichert\b/, /\bbesucht\b/,
+  /\berreicht\b/, /\bbraucht\b/, /\berledigt\b/, /\bverschwinden\b/, /\bliegt\b/,
+  /\bgilt\b/, /\bgibt\b/, /\bverarbeitet\b/, /\bbelegt\b/, /\bgescrollt\b/,
+  /\bScrollen\b/, /\bdurchsuchen\b/, /\bwurde\b/, /\bworden\b/,
+  // Single words that read as an English token and so were invisible: `Raster`
+  // is "grid", `Gut` is "good", `Mittel` is "fair". `Aktionen` is "actions".
+  /\bAktionen?\b/, /\bAnzeigename\b/, /\bPflichtfeld\b/, /\bProzent\b/,
+  /\bRessourcen\b/, /\bSeit\b/, /\bMonat\b/, /\bMonate\b/, /\bTage\b/, /\bTagen\b/,
+  /\bWoche\b/, /\bWochen\b/, /\bZeitraum\b/, /\bZeit\b/, /\bFarbe\b/, /\bZahl\b/,
+  // The German present tense of *werden*, plus the two words that were still
+  // shipped in `public` and `admin` after everything above was translated.
+  // `Wird` is enumerated here rather than one phrase at a time because the
+  // phrases it heads are open-ended — `Wird geladen`, `Wird ausgerollt`,
+  // `Wird gesendet` — and each one cost a string literal to discover.
+  /\bWird\b/, /\bWerde\b/, /\bWurde\b/, /\bWurden\b/,
+  /\bTechnisch\w*/, /\bReferenz\b/, /\bGitternetz\b/, /\bLade\b/,
 ];
 
 /**
@@ -144,6 +264,18 @@ function stripComments(source: string): string {
  * approval: every entry is one more thing to translate, and deleting an entry
  * here is a change that has to be justified by the string actually changing in
  * the source. A count would be easier to game and worse to read.
+ *
+ * **It is empty.** `METER_BANDS` and the four scope registries have been
+ * translated, the two entries that were parked here are gone from the source, and
+ * the German the word list above could not see has been added to the list rather
+ * than suppressed here. That is the only way this set is allowed to shrink: by
+ * changing the string, or by making the guard able to see it.
+ *
+ * An empty holding pen is a better state than a short one. A set that is never
+ * emptied is a suppression list with a comment explaining why, and the second
+ * test below is what stops that from happening quietly — it fails on the first
+ * entry whose string is no longer in any source file, so the cost of parking a
+ * string here is that the next person to fix it also has to delete the entry.
  */
 const KNOWN_GERMAN = new Set<string>([]);
 
@@ -201,6 +333,11 @@ describe("shipped source", () => {
     // not quietly become a place where anything is allowed. An entry that no
     // longer exists in the source means a string was translated, and the
     // entry should have been deleted in the same change.
+    //
+    // This asserts nothing while `KNOWN_GERMAN` is empty, and that is the point
+    // of the empty set rather than an argument against it: the test is armed for
+    // the first entry anybody parks, so parking costs the next person an edit
+    // rather than costing this file its meaning.
     const stillPresent = new Set<string>();
 
     for (const file of sourceFiles(PACKAGES)) {

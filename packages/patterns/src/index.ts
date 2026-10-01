@@ -43,24 +43,24 @@ export interface PatternMeta {
 export const PATTERNS: readonly PatternMeta[] = [
   {
     id: "MasterDetail",
-    solves: "Eine Liste und ein Detailbereich, in dem ein Eintrag gelesen oder bearbeitet wird.",
+    solves: "A list and a detail area in which an entry is read or edited.",
     avoidWhen: "The list never has more than five items — two pages are better than that.",
     composes: ["ScrollArea", "Tabs", "Field", "ButtonGroup"],
     contract: [
       "Selection and detail synchronise the URL, so the state stays shareable.",
-      "Unten 1024px wird der Detailbereich zum Drawer, nicht zur zweiten Spalte.",
+      "Below 1024px the detail area becomes a drawer rather than a second column.",
       "Leaving with unsaved changes asks first — see UNSAVED_CHANGES.",
     ],
   },
   {
     id: "Crud",
     solves: "A resource list with create, read, update and delete.",
-    avoidWhen: "Nur eine dieser Operationen wird je Session gebraucht.",
+    avoidWhen: "Only one of those operations is ever needed per session.",
     composes: ["Table", "Toolbar", "SearchInput", "Select", "ConfirmDialog", "EmptyState"],
     contract: [
       "Delete is never the most prominent action in a row.",
       "A success is confirmed; an error names the cause and the next step.",
-      "Filter, Sortierung und Seite liegen in der URL.",
+      "Filter, sort order and page live in the URL.",
       "With no matches, the filter is named as the cause, not the emptiness.",
     ],
   },
@@ -77,24 +77,24 @@ export const PATTERNS: readonly PatternMeta[] = [
   },
   {
     id: "NotificationCenter",
-    solves: "Benachrichtigungen lesen, filtern und als gelesen markieren.",
+    solves: "Read notifications, filter them, and mark them as read.",
     avoidWhen: "At most one notification per day — a toast is enough for that.",
     composes: ["ScrollArea", "StatusBadge", "Tabs", "Button"],
     contract: [
-      "Ungelesen wird nie nur durch Farbe markiert.",
-      "Nach dem Markieren bleibt der Eintrag sichtbar; er verschwindet nicht.",
+      "Unread is never marked by colour alone.",
+      "After marking, the entry stays visible; it does not disappear.",
       "A live region announces new entries, not the opening of the panel.",
     ],
   },
   {
     id: "FilterBar",
-    solves: "Eine Liste filtern, ohne die Liste zu verlassen.",
-    avoidWhen: "Es genau einen sinnvollen Filterwert gibt.",
+    solves: "Filter a list without leaving the list.",
+    avoidWhen: "There is only one sensible filter value.",
     composes: ["SearchInput", "Select", "ToggleGroup", "Button"],
     contract: [
       "The match count sits next to the filter, not inside the empty result.",
       "Reset stays visible as long as a filter is active.",
-      "Filterzustand liegt in der URL.",
+      "The filter state lives in the URL.",
     ],
   },
   {

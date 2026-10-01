@@ -37,7 +37,7 @@ import { dataSlot } from "../internal";
  * usually wrong claim.
  *
  * `aria-valuetext` is the part that makes the number useful: a raw `87` for a
- * range of `0…100` is announced as a bare figure, and "87 von 100 GB belegt" is
+ * range of `0…100` is announced as a bare figure, and "87 of 100 GB used" is
  * the sentence the user needed.
  */
 export interface MeterThreshold {
@@ -57,7 +57,7 @@ export interface MeterProps extends Omit<React.ComponentProps<"div">, "color"> {
    * paragraph in a style guide.
    */
   label: string;
-  /** The measurement in words, e.g. "18,4 GB von 25 GB belegt". */
+  /** The measurement in words, e.g. "18.4 GB of 25 GB used". */
   valueText?: string | undefined;
   /**
    * Where the colour changes, highest first. The first band whose `at` the
@@ -173,22 +173,45 @@ export const Meter = React.forwardRef<HTMLDivElement, MeterProps>(function Meter
 });
 
 /**
- * The German band labels a score or a meter falls into.
+ * The band labels a score or a meter falls into.
  *
  * A band is a word, not a hue. The audit's four score renderings included a bare
  * `font-mono` number with no colour at all, which is the honest end of that road
  * — and two others that used a hex, which is the dishonest end. This is the
  * middle: the number, the word, and the tone as the third signal.
+ *
+ * ### Why these four words and not `Good`/`Fair`/`Poor`
+ *
+ * Because they are not invented here. Each one is the label the shared status
+ * registry already gives that *tone* for a quantity measured against a limit, so
+ * a band and a `StatusBadge` on the same screen cannot describe one reading two
+ * ways — which is precisely the divergence `packages/ux-standards/src/status.ts`
+ * exists to end.
+ *
+ * | band   | tone      | registry label | registry description                          |
+ * |--------|-----------|----------------|-----------------------------------------------|
+ * | `good` | `positive`| `Normal`       | "Utilisation is within the usual range."      |
+ * | `fair` | `caution` | `Elevated`     | "Utilisation is approaching the limit."       |
+ * | `poor` | `critical`| `Critical`     | "Utilisation has exceeded the limit."         |
+ * | `unknown` | `neutral` | `Unknown`    | "There is no current measurement."            |
+ *
+ * The keys stay `good`/`fair`/`poor`/`unknown` because they are API surface —
+ * they are the tone-agnostic names a caller reads, and renaming them to match a
+ * label would couple the key to a word this file is free to translate. A
+ * self-describing set (`Good`/`Fair`/`Poor`) was rejected because `Score` and
+ * `MetricCard` in the admin layer render these words beside numbers where higher
+ * is *better*, while `Meter` renders them where higher is *worse*; one shared
+ * vocabulary that reads correctly in both is the tone ladder, not a grade scale.
  */
 export const METER_BANDS = {
-  /** Measured and worth acting on. */
-  good: "Gut",
-  /** Measurable, worth watching, not yet a problem. */
-  fair: "Mittel",
-  /** Approaching or past a limit. */
-  poor: "Schwach",
+  /** Within the usual range. Measured, and nothing to act on. */
+  good: "Normal",
+  /** Approaching the limit. Worth watching, not yet a problem. */
+  fair: "Elevated",
+  /** At or past the limit. Action is required. */
+  poor: "Critical",
   /** No measurement, or a value outside the range entirely. */
-  unknown: "Unbekannt",
+  unknown: "Unknown",
 } as const;
 
 export type MeterBand = keyof typeof METER_BANDS;

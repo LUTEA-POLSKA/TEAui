@@ -67,8 +67,8 @@ const TITLE_SIZE = {
  * ```tsx
  * <PanelHeader
  *   level={3}
- *   title="Ressourcen"
- *   description="Aktuelle Messwerte"
+ *   title="Resources"
+ *   description="Current readings"
  *   icon={<Activity size={14} />}
  *   actions={<RefreshButton refreshing={busy} onClick={reload} />}
  * />

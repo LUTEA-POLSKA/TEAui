@@ -63,7 +63,7 @@ const HEALTH = domain<"online" | "degraded" | "offline" | "unknown" | "maintenan
     description: "The service is unreachable.",
   },
   unknown: {
-    label: "Unbekannt",
+    label: "Unknown",
     tone: "neutral",
     description: "There is no current measurement.",
   },
@@ -86,7 +86,7 @@ const RESOURCE = domain<"normal" | "elevated" | "high" | "critical">({
     description: "Utilisation is approaching the limit.",
   },
   high: {
-    label: "Hoch",
+    label: "High",
     tone: "caution",
     description: "Utilisation is above the target and should be watched.",
   },
@@ -99,7 +99,7 @@ const RESOURCE = domain<"normal" | "elevated" | "high" | "critical">({
 
 const BACKUP = domain<"succeeded" | "running" | "pending" | "failed" | "expired">({
   succeeded: {
-    label: "Erfolgreich",
+    label: "Successful",
     tone: "positive",
     description: "The backup was written completely and verified.",
   },
@@ -109,7 +109,7 @@ const BACKUP = domain<"succeeded" | "running" | "pending" | "failed" | "expired"
     description: "The backup is being written.",
   },
   pending: {
-    label: "Ausstehend",
+    label: "Pending",
     tone: "neutral",
     description: "The backup is scheduled but has not started yet.",
   },
@@ -119,7 +119,7 @@ const BACKUP = domain<"succeeded" | "running" | "pending" | "failed" | "expired"
     description: "The backup was aborted and is not usable.",
   },
   expired: {
-    label: "Abgelaufen",
+    label: "Expired",
     tone: "caution",
     description: "The backup is older than the retention period.",
   },
@@ -137,7 +137,7 @@ const CERTIFICATE = domain<"valid" | "expiring" | "expired" | "invalid" | "unkno
     description: "The certificate expires soon and should be renewed.",
   },
   expired: {
-    label: "Abgelaufen",
+    label: "Expired",
     tone: "critical",
     description: "The certificate has expired. The connection is no longer trustworthy.",
   },
@@ -147,7 +147,7 @@ const CERTIFICATE = domain<"valid" | "expiring" | "expired" | "invalid" | "unkno
     description: "The certificate could not be verified.",
   },
   unknown: {
-    label: "Unbekannt",
+    label: "Unknown",
     tone: "neutral",
     description: "There is no current measurement.",
   },
@@ -160,22 +160,22 @@ const CONTAINER = domain<"running" | "created" | "paused" | "restarting" | "stop
     description: "The container is started and running.",
   },
   created: {
-    label: "Erstellt",
+    label: "Created",
     tone: "neutral",
     description: "The container is created but not started.",
   },
   paused: {
-    label: "Pausiert",
+    label: "Paused",
     tone: "info",
     description: "The container is paused and keeps its state.",
   },
   restarting: {
-    label: "Startet neu",
+    label: "Restarting",
     tone: "info",
     description: "The container is being restarted.",
   },
   stopped: {
-    label: "Gestoppt",
+    label: "Stopped",
     tone: "neutral",
     description: "The container is stopped.",
   },
@@ -193,7 +193,7 @@ const WEBSITE = domain<"online" | "deploying" | "degraded" | "offline" | "error"
     description: "The website is reachable and is being served.",
   },
   deploying: {
-    label: "Wird ausgerollt",
+    label: "Deploying",
     tone: "info",
     description: "A new version is being rolled out.",
   },
@@ -213,7 +213,7 @@ const WEBSITE = domain<"online" | "deploying" | "degraded" | "offline" | "error"
     description: "An error occurred while delivering the website.",
   },
   unknown: {
-    label: "Unbekannt",
+    label: "Unknown",
     tone: "neutral",
     description: "There is no current measurement.",
   },
@@ -227,7 +227,7 @@ const DEPENDENCY = domain<"ok" | "warning" | "missing" | "error">({
     description: "The dependency is outdated or worth a look.",
   },
   missing: {
-    label: "Fehlt",
+    label: "Missing",
     tone: "critical",
     description: "The dependency is required but is not installed.",
   },
@@ -263,7 +263,7 @@ const CRM = domain<
   | "archived"
 >({
   unprocessed: {
-    label: "Unbearbeitet",
+    label: "Unprocessed",
     tone: "neutral",
     description: "The entry was recorded but has not been assessed yet.",
   },
@@ -273,14 +273,14 @@ const CRM = domain<
     description: "No website was found for the entry.",
   },
   opportunity: {
-    label: "Interesse",
+    label: "Opportunity",
     tone: "info",
     description: "There is a sign of interest, but no contact yet.",
   },
   contacted: {
-    label: "Kontaktiert",
+    label: "Contacted",
     tone: "info",
-    description: "Erster Kontakt hergestellt, Antwort steht aus.",
+    description: "First contact made, awaiting a reply.",
   },
   conversation: {
     label: "In conversation",
@@ -293,12 +293,12 @@ const CRM = domain<
     description: "An offer was created and is waiting for a decision.",
   },
   customer: {
-    label: "Kunde",
+    label: "Customer",
     tone: "positive",
     description: "The onboarding is complete.",
   },
   archived: {
-    label: "Archiviert",
+    label: "Archived",
     tone: "neutral",
     description: "The entry is closed and is not worked on further.",
   },
@@ -311,12 +311,12 @@ const PROJECT = domain<"planning" | "active" | "on_hold" | "review" | "delivered
     description: "The project is planned but has not started yet.",
   },
   active: {
-    label: "In Arbeit",
+    label: "In progress",
     tone: "info",
     description: "The project is being worked on.",
   },
   on_hold: {
-    label: "Pausiert",
+    label: "On hold",
     tone: "caution",
     description: "The project is on hold and waits for a decision or a contribution.",
   },
@@ -326,7 +326,7 @@ const PROJECT = domain<"planning" | "active" | "on_hold" | "review" | "delivered
     description: "The result is being reviewed and accepted.",
   },
   delivered: {
-    label: "Abgeschlossen",
+    label: "Delivered",
     tone: "positive",
     description: "The project has been accepted.",
   },

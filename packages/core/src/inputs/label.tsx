@@ -27,7 +27,7 @@ import { dataSlot, stateAttributes } from "../internal";
 export interface LabelProps extends React.ComponentProps<typeof LabelPrimitive.Root> {
   /**
    * Mark the label's control as required. Renders a visible asterisk plus a
-   * visually hidden "Pflichtfeld", because an asterisk is a shape a screen
+   * visually hidden "Required", because an asterisk is a shape a screen
    * reader cannot report.
    *
    * The control still needs `aria-required` — inside a `Field` that comes from
@@ -43,7 +43,7 @@ export interface LabelProps extends React.ComponentProps<typeof LabelPrimitive.R
  * @example
  * ```tsx
  * <Label htmlFor="display-name" required>
- *   Anzeigename
+ *   Display name
  * </Label>
  * <Input id="display-name" aria-required />
  * ```

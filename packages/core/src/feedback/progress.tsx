@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Progress as ProgressPrimitive } from "radix-ui";
 import type { Tone } from "@tea-ui/tokens";
+import { COPY } from "@tea-ui/ux-standards";
 import { cn } from "@tea-ui/utils";
 
 import { dataSlot, stateAttributes } from "../internal";
@@ -37,7 +38,7 @@ export interface ProgressProps
   /** The accessible name. Required. */
   label: string;
   /**
-   * Human-readable value, e.g. "3 von 8". Without it a screen reader announces
+   * Human-readable value, e.g. "3 of 8". Without it a screen reader announces
    * a bare percentage, which is rarely the thing the user needs to know.
    */
   valueText?: string | undefined;
@@ -74,7 +75,7 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(function
           {...dataSlot("progress", "indicator")}
         />
       </ProgressPrimitive.Root>
-      {isIndeterminate ? <span className="sr-only">Wird verarbeitet</span> : null}
+      {isIndeterminate ? <span className="sr-only">{COPY.states.processing}</span> : null}
     </div>
   );
 });

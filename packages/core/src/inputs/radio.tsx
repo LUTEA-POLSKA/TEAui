@@ -51,10 +51,10 @@ export interface RadioGroupProps
 /**
  * @example
  * ```tsx
- * <FieldGroup legend="Zeitraum">
+ * <FieldGroup legend="Period">
  *   <RadioGroup defaultValue="week">
- *     <Radio value="day">Tag</Radio>
- *     <Radio value="week">Woche</Radio>
+ *     <Radio value="day">Day</Radio>
+ *     <Radio value="week">Week</Radio>
  *   </RadioGroup>
  * </FieldGroup>
  * ```

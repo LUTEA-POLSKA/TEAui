@@ -38,7 +38,7 @@ import {
  * `MoreHorizontal` is imported from the curated icon surface, never from
  * `lucide-react`. `IconButton` supplies the accessible name and hides the glyph
  * from the accessibility tree itself, so the overflow button is named
- * "Weitere Aktionen" rather than announced as a bare button.
+ * "More actions" rather than announced as a bare button.
  */
 export interface RowAction {
   /** The action's name. Shown in the menu, and its accessible name in the row. */
@@ -160,7 +160,7 @@ export function RowActions({
  */
 export interface DestructiveRowAction extends RowAction {
   level: ConsequenceLevel;
-  /** What is being destroyed, e.g. "Der Server". */
+  /** What is being destroyed, e.g. "The server". */
   what: string;
   /** The word the user must type at `irreversible`. */
   confirmWord?: string | undefined;
@@ -186,7 +186,7 @@ export interface DestructiveRowAction extends RowAction {
  * await runRowAction({
  *   level: "irreversible",
  *   label: "Delete",
- *   what: `Der Server ${server.name}`,
+ *   what: `The server ${server.name}`,
  *   confirmWord: server.name,
  *   onSelect: () => remove(server.id),
  * });

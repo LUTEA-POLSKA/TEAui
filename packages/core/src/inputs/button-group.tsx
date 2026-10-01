@@ -62,10 +62,10 @@ export interface ButtonGroupProps extends Omit<React.ComponentProps<"div">, "chi
 /**
  * @example
  * ```tsx
- * <ButtonGroup label="Ansicht" joined>
+ * <ButtonGroup label="View" joined>
  *   <Button variant="outline">Tag</Button>
- *   <Button variant="outline">Woche</Button>
- *   <Button variant="outline">Monat</Button>
+ *   <Button variant="outline">Week</Button>
+ *   <Button variant="outline">Month</Button>
  * </ButtonGroup>
  * ```
  */

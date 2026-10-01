@@ -54,7 +54,7 @@ export interface NumberInputProps
  * @example
  * ```tsx
  * <Field>
- *   <FieldLabel>Anzahl</FieldLabel>
+ *   <FieldLabel>Count</FieldLabel>
  *   <NumberInput min={1} max={64} defaultValue={4} />
  * </Field>
  * ```

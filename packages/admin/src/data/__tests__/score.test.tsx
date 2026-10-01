@@ -6,18 +6,18 @@ import { DEFAULT_SCORE_BANDS, LEAD_SCORE_BANDS, Score, scoreBand } from "../scor
 
 describe("score bands", () => {
   it("matches the highest threshold the value reaches", () => {
-    expect(scoreBand(85).label).toBe("Gut");
-    expect(scoreBand(70).label).toBe("Gut");
-    expect(scoreBand(69).label).toBe("Mittel");
-    expect(scoreBand(45).label).toBe("Mittel");
-    expect(scoreBand(44).label).toBe("Schwach");
-    expect(scoreBand(0).label).toBe("Schwach");
+    expect(scoreBand(85).label).toBe("Good");
+    expect(scoreBand(70).label).toBe("Good");
+    expect(scoreBand(69).label).toBe("Fair");
+    expect(scoreBand(45).label).toBe("Fair");
+    expect(scoreBand(44).label).toBe("Poor");
+    expect(scoreBand(0).label).toBe("Poor");
   });
 
   it("gives a value below every threshold a verdict rather than nothing", () => {
     // A score with no band is a score with no verdict — the one outcome the
     // component exists to prevent.
-    expect(scoreBand(-5).label).toBe("Schwach");
+    expect(scoreBand(-5).label).toBe("Poor");
     expect(scoreBand(-5).tone).toBe("critical");
   });
 
@@ -31,8 +31,8 @@ describe("score bands", () => {
   it("offers the threshold difference but not the tone difference", () => {
     // The threshold difference is a real domain difference and is kept: 42 sits
     // in the middle band under 40 and in the low band under 45.
-    expect(scoreBand(42, LEAD_SCORE_BANDS).label).toBe("Mittel");
-    expect(scoreBand(42, DEFAULT_SCORE_BANDS).label).toBe("Schwach");
+    expect(scoreBand(42, LEAD_SCORE_BANDS).label).toBe("Fair");
+    expect(scoreBand(42, DEFAULT_SCORE_BANDS).label).toBe("Poor");
 
     // The tone difference is not. Below *both* thresholds — the zone the audit
     // found reading as a red error in the auditor and as grey "no data" on the
@@ -51,7 +51,7 @@ describe("Score", () => {
 
     expect(screen.getByText("72")).toBeInTheDocument();
     // The word is what survives greyscale, a screen reader and colour blindness.
-    expect(screen.getByText("Gut")).toBeInTheDocument();
+    expect(screen.getByText("Good")).toBeInTheDocument();
   });
 
   it("carries the score into the accessibility tree as a sentence", () => {
@@ -59,33 +59,33 @@ describe("Score", () => {
 
     const meter = screen.getByRole("meter", { name: "Lead-Qualität" });
     // The number alone is never the answer; the number, the scale and the band are.
-    expect(meter).toHaveAttribute("aria-valuetext", "72 von 100 — Gut");
+    expect(meter).toHaveAttribute("aria-valuetext", "72 of 100 — Good");
   });
 
   it("does not read the number twice when a label is given", () => {
     render(<Score value={72} caption="Lead-Qualität" label="Lead-Qualität" />);
     // The number is `aria-hidden` beside an explicit name, so a screen reader
-    // gets "Lead-Qualität, 72, Gut" and not "72, 72, Gut".
+    // gets "Lead-Qualität, 72, Good" and not "72, 72, Good".
     expect(screen.getByText("72")).toHaveAttribute("aria-hidden", "true");
   });
 
   it("renders no bar for an unknown score, because a bar at zero is a claim", () => {
     render(<Score value={0} caption="Lead-Qualität" indeterminate />);
 
-    expect(screen.getByText("Unbekannt")).toBeInTheDocument();
+    expect(screen.getByText("No score")).toBeInTheDocument();
     // Drawing an empty bar asserts a measurement that was never taken.
     expect(screen.queryByRole("meter")).not.toBeInTheDocument();
   });
 
   it("keeps the same verdict for the same number across both tables", () => {
     const { rerender } = render(<Score value={42} caption="Reife" />);
-    expect(screen.getByText("Schwach")).toBeInTheDocument();
+    expect(screen.getByText("Poor")).toBeInTheDocument();
 
     rerender(<Score value={42} caption="Reife" bands={LEAD_SCORE_BANDS} />);
     // The threshold moved, so the word is allowed to move with it — but the low
     // score is stated as bad on both, which is the half the audit flagged.
-    expect(screen.getByText("Mittel")).toBeInTheDocument();
-    expect(screen.queryByText("Unbekannt")).not.toBeInTheDocument();
+    expect(screen.getByText("Fair")).toBeInTheDocument();
+    expect(screen.queryByText("No score")).not.toBeInTheDocument();
   });
 });
 

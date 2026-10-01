@@ -63,7 +63,7 @@ export interface ConfirmDialogProps {
   onOpenChange: (open: boolean) => void;
   /** How bad it is. Determines the protection. */
   level: ConsequenceLevel;
-  /** The noun phrase, e.g. "Der Server" or "Alle Backups". */
+  /** The noun phrase, e.g. "The server" or "All backups". */
   what: string;
   title?: string | undefined;
   /** Extra detail beyond the generated consequence sentence. */

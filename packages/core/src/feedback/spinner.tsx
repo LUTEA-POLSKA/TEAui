@@ -25,8 +25,8 @@ export interface SpinnerProps extends Omit<React.ComponentProps<"svg">, "childre
   /** Visible size. */
   size?: SpinnerSize;
   /**
-   * Accessible name. Defaults to "Wird geladen". Pass an empty string only if
-   * the surrounding surface already announces the wait — never pass nothing.
+   * Accessible name. Defaults to `COPY.states.loading`. Pass an empty string only
+   * if the surrounding surface already announces the wait — never pass nothing.
    */
   label?: string;
   className?: string | undefined;

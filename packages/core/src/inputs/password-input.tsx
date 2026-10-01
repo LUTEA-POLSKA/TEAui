@@ -16,8 +16,8 @@ import { InputGroup, InputGroupEnd } from "./input-group";
  *    glyph is on screen tells a screen reader user nothing about the state. The
  *    button reports whether the password is *currently* visible, and its name
  *    says what pressing it will do.
- *  - **The name says the effect, not the state.** "Passwort anzeigen" while
- *    hidden, "Passwort verbergen" while shown. A button labelled "Anzeigen"
+ *  - **The name says the effect, not the state.** "Show password" while
+ *    hidden, "Hide password" while shown. A button labelled "Show"
  *    that sometimes hides is a button nobody trusts.
  *  - **Paste is never blocked.** A password manager fills this field by
  *    pasting. A `onPaste` handler that refuses a paste — a pattern the source
@@ -58,7 +58,7 @@ export interface PasswordInputProps
   className?: string | undefined;
 }
 
-/** No German string for these exists in `COPY`, so they are typed here. */
+/** Neither of these exists in `COPY`, so they are typed here. */
 const DEFAULT_SHOW_LABEL = "Show password";
 const DEFAULT_HIDE_LABEL = "Hide password";
 

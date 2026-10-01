@@ -210,6 +210,14 @@ const RETRY_LABEL: Record<ErrorRecovery, string> = {
 };
 
 /**
+ * The two labels `ErrorState` hardcodes rather than takes as props, for the same
+ * reason and in the same English. `technicalLabel` and `referenceLabel` are the
+ * pair a product replaces when its console is not called a "Konsole".
+ */
+const TECHNICAL_LABEL = "Technical details";
+const REFERENCE_LABEL = "Reference:";
+
+/**
  * An error, rendered as an answer rather than a string.
  *
  * The visible text is always "what happened, and why". The recovery action is
@@ -245,14 +253,16 @@ export const ErrorState = React.forwardRef<HTMLDivElement, ErrorStateProps>(func
       ) : null}
       {error.technical ? (
         <details className="w-full text-start">
-          <summary className="cursor-pointer text-micro text-fg-muted">Technische Details</summary>
+          <summary className="cursor-pointer text-micro text-fg-muted">{TECHNICAL_LABEL}</summary>
           <pre className="mt-2 overflow-auto whitespace-pre-wrap border border-line bg-surface-2 p-2 text-left font-mono text-micro text-fg-muted">
             {error.technical}
           </pre>
         </details>
       ) : null}
       {error.reference ? (
-        <p className="font-mono text-micro text-fg-subtle">Referenz: {error.reference}</p>
+        <p className="font-mono text-micro text-fg-subtle">
+          {REFERENCE_LABEL} {error.reference}
+        </p>
       ) : null}
     </div>
   );

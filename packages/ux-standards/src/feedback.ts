@@ -59,7 +59,7 @@ export interface FeedbackMeta {
   readonly blocking: boolean;
   /** Whether a live region should announce a change into this state. */
   readonly announce: boolean;
-  /** Default German noun phrase for a progress line, e.g. "Loading". */
+  /** Default noun phrase for a progress line, e.g. "Loading". */
   readonly label: string;
 }
 
@@ -69,7 +69,7 @@ export const FEEDBACK: Readonly<Record<FeedbackState, FeedbackMeta>> = {
     tone: "neutral",
     blocking: false,
     announce: false,
-    label: "Bereit",
+    label: "Ready",
   },
   loading: {
     kind: "initial",
@@ -97,7 +97,7 @@ export const FEEDBACK: Readonly<Record<FeedbackState, FeedbackMeta>> = {
     tone: "positive",
     blocking: false,
     announce: true,
-    label: "Erfolgreich",
+    label: "Successful",
   },
   warning: {
     kind: "background",
@@ -160,14 +160,14 @@ export const FEEDBACK: Readonly<Record<FeedbackState, FeedbackMeta>> = {
     tone: "info",
     blocking: true,
     announce: true,
-    label: "Wartungsmodus",
+    label: "Maintenance",
   },
   stale: {
     kind: "background",
     tone: "caution",
     blocking: false,
     announce: true,
-    label: "Veraltete Daten",
+    label: "Stale data",
   },
   syncing: {
     kind: "background",
@@ -181,7 +181,7 @@ export const FEEDBACK: Readonly<Record<FeedbackState, FeedbackMeta>> = {
     tone: "info",
     blocking: false,
     announce: true,
-    label: "Neuer Versuch",
+    label: "Retrying",
   },
 };
 

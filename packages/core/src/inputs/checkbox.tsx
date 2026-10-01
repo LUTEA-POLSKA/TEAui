@@ -48,7 +48,7 @@ export interface CheckboxProps
  * @example
  * ```tsx
  * <Field>
- *   <FieldLabel>Benachrichtigungen per E-Mail</FieldLabel>
+ *   <FieldLabel>Notifications by email</FieldLabel>
  *   <Checkbox defaultChecked />
  * </Field>
  * ```
