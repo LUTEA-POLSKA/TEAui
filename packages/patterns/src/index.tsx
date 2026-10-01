@@ -13,9 +13,13 @@
  * behaviour that comes with it.
  *
  * This module publishes the **contract** for that layer. The compositions
- * themselves follow, each landing here as it is built, so a product can ask
- * "what does TEA UI already know how to do?" and get an answer that is
- * type-checked rather than a paragraph in a document.
+ * themselves land here as they are built, so a product can ask "what does TEA UI
+ * already know how to do?" and get an answer that is type-checked rather than a
+ * paragraph in a document.
+ *
+ * Two have landed: `FilterBar` and `ActionBar`. They are exported from this
+ * module, so the registry above and the compositions below cannot drift apart —
+ * a pattern that is declared but not exported is a promise nobody is kept to.
  */
 
 /** The questions a pattern answers, and therefore the axis it is judged on. */
@@ -116,3 +120,13 @@ export function patternMeta(id: string): PatternMeta | undefined {
  * actually knows — and so a new pattern is a type change, not a silent string.
  */
 export type PatternId = (typeof PATTERNS)[number]["id"];
+
+/* --- compositions ---------------------------------------------------------- */
+
+export { FilterBar, type FilterBarProps } from "./filters/filter-bar";
+export {
+  ActionBar,
+  type ActionBarAction,
+  type ActionBarProps,
+  type ActionBarTone,
+} from "./actions/action-bar";

@@ -36,22 +36,28 @@ const directory = dirname(resolve(target));
 /**
  * Packages that are declared but ship nothing.
  *
- * These are part of the architecture and the boundary check knows about them, so
- * they are not accidents: `patterns`, `templates`, `blueprints` and `specialized`
- * describe compositions that have not been written. What they must not be is
- * *installable*. A `@tea-ui/patterns` that resolves on import and exports one
- * empty array teaches a consumer that the library has a pattern layer, and the
+ * `templates`, `blueprints` and `specialized` are part of the architecture and
+ * the boundary check knows about them, so they are not accidents: they describe
+ * compositions that have not been written. What they must not be is
+ * *installable*. A `@tea-ui/templates` that resolves on import and exports one
+ * empty array teaches a consumer that the library has a template layer, and the
  * only way to undo that is a deprecation notice and a patch — a published
  * version number is spent the moment it goes out.
  *
  * So the refusal is here rather than in a checklist, because the guard is the
  * only thing that runs on every publish without anyone remembering.
  *
- * `private: true` in the manifest blocks the publish; this blocks it again with
- * a reason, and it holds even if that field is dropped in a later edit.
+ * `private: true` in the manifest blocks the publish; this blocks it again with a
+ * reason, and it holds even if that field is dropped in a later edit.
+ *
+ * `patterns` is **not** in this set any more. It used to be, and it shipped a
+ * registry with no compositions behind it — a package whose `PATTERNS` array
+ * named six patterns and exported none of them, which is worse than an empty
+ * package because the array looks like an answer. It now exports `FilterBar` and
+ * `ActionBar`, so it has something to install and the refusal no longer applies.
+ * The remaining three still do.
  */
 const NOT_IMPLEMENTED = new Set([
-  "@tea-ui/patterns",
   "@tea-ui/templates",
   "@tea-ui/blueprints",
   "@tea-ui/specialized",
@@ -65,8 +71,8 @@ if (NOT_IMPLEMENTED.has(manifest.name)) {
       `package, and a consumer who installs it gets a module that resolves and ` +
       `contains no components.\n\n` +
       `Remove the package from the workspace when it has a real export, or leave it ` +
-      `as \`private: true\`. It is already published at 0.1.0 and carries a ` +
-      `deprecation notice on npm.`,
+      `as \`private: true\`. It is already published at 0.1.0 and is still ` +
+      `installable, so it also needs an explicit \`npm deprecate\` to say so.`,
   );
   process.exit(1);
 }

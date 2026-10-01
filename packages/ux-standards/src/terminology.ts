@@ -139,6 +139,14 @@ export const COPY = {
     of: "of",
     rowsPerPage: "Rows per page",
     selectedRows: "{count} selected",
+    /*
+     * Two keys rather than one "{count} matches", because a filter bar that
+     * reports "1 matches" is the kind of detail a design system exists to
+     * remove. Splitting on the singular means a product with different plural
+     * rules replaces two strings instead of shipping a grammar bug.
+     */
+    matchesOne: "1 match",
+    matchesMany: "{count} matches",
   },
 
   /* --- formatting ---------------------------------------------------------- */

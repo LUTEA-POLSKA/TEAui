@@ -112,6 +112,13 @@ const PUBLIC_CONTRACT = {
   ],
   "@tea-ui/admin": ["AdminShell", "Page", "PageHeader", "StatTile", "StatGrid", "EmptyState", "ErrorState", "LoadingState"],
   "@tea-ui/public": ["Section", "Hero", "Feature", "FeatureGrid", "CallToAction", "PublicNavbar", "PublicFooter", "PricingTable", "Faq", "ConversionForm"],
+  /*
+   * `patterns` joined this list when it shipped its first two compositions.
+   * Being measured by the same tool as everything else is the point: the
+   * Showcase table used to carry hand-written counts, and two of them were
+   * wrong. A number only stays true if something recomputes it.
+   */
+  "@tea-ui/patterns": ["PATTERNS", "patternMeta", "FilterBar", "ActionBar"],
 };
 
 for (const [name, expected] of Object.entries(PUBLIC_CONTRACT)) {

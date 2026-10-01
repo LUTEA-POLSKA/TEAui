@@ -1,6 +1,10 @@
 # @tea-ui/patterns
 
-Multi-component patterns that span more than one component.
+Composable arrangements that solve recurring interaction problems.
+
+Ships `FilterBar` and `ActionBar`. The remaining patterns are declared in
+`PATTERNS` with the interaction contract each one is held to — a registry entry
+is a promise, so it ships with a boundary rather than on its own.
 
 Part of [TEA UI](https://landnevermore.github.io/TEAui/) — a design system built once and reused across
 products. The whole system is documented at https://landnevermore.github.io/TEAui/docs/.

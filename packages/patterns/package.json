@@ -1,8 +1,7 @@
 {
     "name": "@tea-ui/patterns",
     "version": "0.1.1",
-    "private": true,
-    "description": "DECLARED, NOT IMPLEMENTED. Ships no components. Use @tea-ui/core and @tea-ui/admin instead.",
+        "description": "Composable arrangements that solve recurring interaction problems: FilterBar, ActionBar.",
     "license": "MIT",
     "type": "module",
     "sideEffects": false,
@@ -30,10 +29,7 @@
         "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
     },
     "dependencies": {
-        "@tea-ui/admin": "^1.1.0",
         "@tea-ui/core": "^1.1.0",
-        "@tea-ui/icons": "^1.1.0",
-        "@tea-ui/tokens": "^2.0.0",
         "@tea-ui/ux-standards": "^2.0.0",
         "@tea-ui/utils": "^1.0.0",
         "radix-ui": "^1.4.3"

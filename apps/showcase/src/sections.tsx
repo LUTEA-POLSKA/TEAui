@@ -799,7 +799,11 @@ export function PlaygroundSection(): React.ReactElement {
  * `symbols: null` means the package is declared in the boundary check and ships
  * nothing. That is a real state worth showing, but it has to be distinguishable
  * from "has exports we did not count" — so it is its own value, not a dash in
- * the same column.
+ * the same column. Every non-null number is the one `npm run check:exports`
+ * prints for that package, so the column can be re-checked instead of believed.
+ *
+ * `@tea-ui/patterns` used to sit in the null rows and no longer does: it ships
+ * `FilterBar` and `ActionBar` and is now measured by that script like the rest.
  */
 const PACKAGES: Array<{ name: string; role: string; symbols: number | null; gzip: string }> = [
   { name: "@tea-ui/utils", role: "Class merging, variants, prefixing", symbols: 4, gzip: "0.7 kB" },
@@ -809,7 +813,7 @@ const PACKAGES: Array<{ name: string; role: string; symbols: number | null; gzip
   { name: "@tea-ui/core", role: "Primitives: layout, type, inputs, overlays", symbols: 62, gzip: "0.7 kB" },
   { name: "@tea-ui/admin", role: "Shell, metrics, states, data surfaces", symbols: 8, gzip: "0.4 kB" },
   { name: "@tea-ui/public", role: "Marketing, site, content, conversion", symbols: 10, gzip: "2.9 kB" },
-  { name: "@tea-ui/patterns", role: "Reusable interaction compositions", symbols: null, gzip: "—" },
+  { name: "@tea-ui/patterns", role: "Reusable interaction compositions", symbols: 4, gzip: "1.4 kB" },
   { name: "@tea-ui/templates", role: "Complete page structures", symbols: null, gzip: "—" },
   { name: "@tea-ui/blueprints", role: "Feature systems (auth, billing, onboarding)", symbols: null, gzip: "—" },
   { name: "@tea-ui/specialized", role: "Heavy opt-ins: charts, trees, diff", symbols: null, gzip: "—" },

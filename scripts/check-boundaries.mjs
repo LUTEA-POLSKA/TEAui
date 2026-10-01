@@ -40,8 +40,13 @@ const ALLOWED = {
  * templates themselves. The set is printed on every run, because a package that
  * sits in here for a long time is a claim the system is making without
  * evidence, and that should stay visible.
+ *
+ * `patterns` graduated out of this set when it shipped `FilterBar` and
+ * `ActionBar`. Being listed here is a statement about code, so it has to be
+ * removed when the code lands rather than when the plan is revisited — a set
+ * that keeps a shipped package in it teaches everyone to ignore the output.
  */
-const PLANNED = new Set(["patterns", "templates", "blueprints", "specialized"]);
+const PLANNED = new Set(["templates", "blueprints", "specialized"]);
 
 const violations = [];
 const packages = Object.keys(ALLOWED).sort(
