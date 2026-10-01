@@ -90,3 +90,11 @@ export function templateMeta(id: string): TemplateMeta | undefined {
 }
 
 export type TemplateId = (typeof TEMPLATES)[number]["id"];
+
+/* --- compositions ---------------------------------------------------------- */
+
+export {
+  SettingsTemplate,
+  type SettingsSection,
+  type SettingsTemplateProps,
+} from "./settings-template";

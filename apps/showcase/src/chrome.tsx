@@ -53,6 +53,7 @@ export const SHOWCASE_NAV: readonly ShowcaseNavItem[] = [
   { id: "gallery", label: "Gallery", description: "Every element, three columns" },
   { id: "themes", label: "Themes", description: "Three identities, one API" },
   { id: "admin", label: "Admin UI", description: "Shell, metrics, states" },
+  { id: "patterns", label: "Patterns", description: "Compositions that own an interaction" },
   { id: "ux", label: "UX Standards", description: "The rules, not the theory" },
   { id: "accessibility", label: "Accessibility", description: "WCAG 2.2 AA, verifiable" },
   { id: "playground", label: "Playground", description: "States and events" },

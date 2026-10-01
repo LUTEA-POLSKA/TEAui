@@ -10,6 +10,7 @@ import {
   AdminSection,
   ArchitectureSection,
   HomeSection,
+  PatternsSection,
   PlaygroundSection,
   ThemesSection,
   UxSection,
@@ -40,6 +41,7 @@ function Showcase(): React.ReactElement {
         {route === "gallery" ? <GallerySection /> : null}
         {route === "themes" ? <ThemesSection /> : null}
         {route === "admin" ? <AdminSection /> : null}
+      {route === "patterns" ? <PatternsSection /> : null}
         {route === "ux" ? <UxSection /> : null}
         {route === "accessibility" ? <AccessibilitySection /> : null}
         {route === "playground" ? <PlaygroundSection /> : null}

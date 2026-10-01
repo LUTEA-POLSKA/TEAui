@@ -29,10 +29,12 @@ import {
   FieldLabel,
   Heading,
   InlineCode,
+  Input,
   Kbd,
   List,
   Panel,
   Progress,
+  SearchInput,
   Stack,
   StatusBadge,
   Table,
@@ -67,6 +69,8 @@ import {
   StatTile,
   type NavItem,
 } from "@tea-ui/admin";
+import { ActionBar, FilterBar, SaveBar, type SaveBarState } from "@tea-ui/patterns";
+import { SettingsTemplate, type SettingsSection } from "@tea-ui/templates";
 
 import { DensityControls } from "./display";
 import { Row, Section } from "./chrome";
@@ -813,8 +817,8 @@ const PACKAGES: Array<{ name: string; role: string; symbols: number | null; gzip
   { name: "@tea-ui/core", role: "Primitives: layout, type, inputs, overlays", symbols: 62, gzip: "0.7 kB" },
   { name: "@tea-ui/admin", role: "Shell, metrics, states, data surfaces", symbols: 8, gzip: "0.4 kB" },
   { name: "@tea-ui/public", role: "Marketing, site, content, conversion", symbols: 10, gzip: "2.9 kB" },
-  { name: "@tea-ui/patterns", role: "Reusable interaction compositions", symbols: 4, gzip: "1.4 kB" },
-  { name: "@tea-ui/templates", role: "Complete page structures", symbols: null, gzip: "—" },
+  { name: "@tea-ui/patterns", role: "Reusable interaction compositions", symbols: 7, gzip: "1.4 kB" },
+  { name: "@tea-ui/templates", role: "Complete page structures", symbols: 3, gzip: "1.0 kB" },
   { name: "@tea-ui/blueprints", role: "Feature systems (auth, billing, onboarding)", symbols: null, gzip: "—" },
   { name: "@tea-ui/specialized", role: "Heavy opt-ins: charts, trees, diff", symbols: null, gzip: "—" },
 ];
@@ -885,6 +889,268 @@ export function ArchitectureSection(): React.ReactElement {
           </Text>
         </Panel>
       </div>
+    </Section>
+  );
+}
+
+/* --- patterns -------------------------------------------------------------- */
+
+/**
+ * A filter over a fixed list, so the count is real rather than decorative.
+ *
+ * The Showcase used to render `FilterBar` with a hardcoded number, which proves
+ * nothing: a count that never changes cannot demonstrate that it is announced,
+ * and a Reset that is always visible cannot demonstrate that it is bound to the
+ * filter. Both claims are the entire contract, so both have to be falsifiable
+ * here or the demo is theatre.
+ */
+const ROWS = [
+  { id: "srv-01", name: "api-01", state: "running", region: "eu-central" },
+  { id: "srv-02", name: "api-02", state: "degraded", region: "eu-central" },
+  { id: "srv-03", name: "worker-01", state: "running", region: "us-east" },
+  { id: "srv-04", name: "worker-02", state: "stopped", region: "us-east" },
+  { id: "srv-05", name: "db-01", state: "running", region: "eu-west" },
+];
+
+function FilterBarDemo(): React.ReactElement {
+  const [query, setQuery] = React.useState("");
+  const [onlyRunning, setOnlyRunning] = React.useState(false);
+
+  const matches = ROWS.filter((row) => {
+    if (onlyRunning && row.state !== "running") return false;
+    if (!query) return true;
+    return `${row.name} ${row.region}`.toLowerCase().includes(query.toLowerCase());
+  });
+
+  const filtering = query !== "" || onlyRunning;
+
+  return (
+    <Stack gap="lg">
+      <FilterBar
+        label="Filter servers"
+        matchCount={matches.length}
+        totalCount={ROWS.length}
+        active={filtering}
+        onReset={() => {
+          setQuery("");
+          setOnlyRunning(false);
+        }}
+      >
+<SearchInput
+          label="Search servers"
+          placeholder="Search name or region"
+          value={query}
+          onValueChange={setQuery}
+        />
+        <Button
+          variant={onlyRunning ? "primary" : "outline"}
+          onClick={() => setOnlyRunning((previous) => !previous)}
+        >
+          Running only
+        </Button>
+      </FilterBar>
+
+      <Text tone="muted" size="ui">
+        {matches.length === 0
+          ? "No server matches. Reset stays in the bar, so the cause is one click away."
+          : matches.map((row) => row.name).join(", ")}
+      </Text>
+    </Stack>
+  );
+}
+
+/**
+ * Seven actions on purpose.
+ *
+ * Five render inline and two move into the overflow menu, which is the behaviour
+ * that cannot be seen in a three-action screenshot. Delete is deliberately passed
+ * *first*: the bar moves it to the far end regardless, which is the point of
+ * enforcing the order rather than trusting the caller's.
+ */
+function ActionBarDemo(): React.ReactElement {
+  return (
+    <ActionBar
+      label="Server actions"
+      actions={[
+        { label: "Delete", tone: "destructive" },
+        { label: "Rename", tone: "default" },
+        { label: "Edit", tone: "primary" },
+        { label: "Restart" },
+        { label: "Snapshot" },
+        { label: "Move to region" },
+        { label: "View logs" },
+      ]}
+    />
+  );
+}
+
+/**
+ * The save cycle, stepped through by hand.
+ *
+ * `saving` is the state worth seeing: Discard is disabled, so a click during an
+ * in-flight request cannot discard something the request is about to write back.
+ */
+function SaveBarDemo(): React.ReactElement {
+  const [state, setState] = React.useState<SaveBarState>("idle");
+
+  /*
+   * A map rather than an array walked by index. Indexing into a list is
+   * `SaveBarState | undefined` under `noUncheckedIndexedAccess`, and the fix for
+   * that is a non-null assertion or a fallback that can never be reached — both
+   * of which lie about the type. Keyed by state, the next step is total.
+   */
+  const NEXT: Record<SaveBarState, SaveBarState> = {
+    idle: "dirty",
+    dirty: "saving",
+    saving: "saved",
+    saved: "error",
+    error: "idle",
+  };
+
+  return (
+    <Stack gap="lg">
+      <SaveBar
+        state={state}
+        error={state === "error" ? "Port 443 is blocked by the firewall" : undefined}
+        onSave={() => setState("dirty")}
+        onDiscard={() => setState("idle")}
+      />
+      <Stack gap="sm">
+        <Text tone="muted" size="ui">
+          Current state: <InlineCode>{state}</InlineCode>
+        </Text>
+        <Button variant="outline" onClick={() => setState(NEXT[state])}>
+          Next state
+        </Button>
+      </Stack>
+    </Stack>
+  );
+}
+
+const SETTINGS_SECTIONS: SettingsSection[] = [
+  {
+    id: "profile",
+    label: "Profile",
+    description: "How this server is named in the interface.",
+    children: (
+      <Stack gap="ui">
+        <Field>
+          <FieldLabel>Display name</FieldLabel>
+          <Input defaultValue="api-01" />
+          <FieldDescription>Shown in lists and alerts.</FieldDescription>
+        </Field>
+        <Field>
+          <FieldLabel>Owner team</FieldLabel>
+          <Input defaultValue="platform" />
+        </Field>
+      </Stack>
+    ),
+  },
+  {
+    id: "notifications",
+    label: "Notifications",
+    badge: <Badge tone="caution">2</Badge>,
+    children: (
+      <Stack gap="ui">
+        <Field>
+          <FieldLabel>Alert on degraded state</FieldLabel>
+          <Input defaultValue="yes" />
+          <FieldDescription>A degraded server pages the on-call rotation.</FieldDescription>
+        </Field>
+      </Stack>
+    ),
+  },
+  {
+    id: "sso",
+    label: "Single sign-on",
+    disabled: true,
+    disabledReason: "Requires a plan with SAML support",
+    children: <Text tone="muted">Unavailable on this plan.</Text>,
+  },
+];
+
+/**
+ * A whole settings page, composed rather than styled.
+ *
+ * Every region here is a TEA UI component — `PageHeader`, `SectionNavigation`,
+ * `Panel`, `SaveBar` — and this file contributes the section list and two bits of
+ * state. That is the layer boundary working: there is no recipe for a settings
+ * page in this Showcase, and if the template needed one, the test that reads its
+ * source would fail on the design token it found.
+ */
+function SettingsTemplateDemo(): React.ReactElement {
+  const [section, setSection] = React.useState("profile");
+  const [saveState, setSaveState] = React.useState<SaveBarState>("idle");
+
+  const save = () => {
+    setSaveState("saving");
+    // A real product awaits the request here and picks `error` or `saved` from
+    // what came back. The Showcase fakes the wait so the states can be seen.
+    setTimeout(() => setSaveState("saved"), 900);
+  };
+
+  return (
+    <Stack gap="lg">
+      <SettingsTemplate
+        title="Server settings"
+        description="Changes apply to the next deployment."
+        sections={SETTINGS_SECTIONS}
+        activeSection={section}
+        onSectionChange={setSection}
+        saveState={saveState}
+        onSave={save}
+        onDiscard={() => setSaveState("idle")}
+        error="Port 443 is blocked by the firewall"
+        railLabel="Server settings sections"
+      />
+      <Button variant="secondary" onClick={() => setSaveState("dirty")}>
+        Mark as changed
+      </Button>
+    </Stack>
+  );
+}
+
+/**
+ * Patterns and templates, with the behaviours running.
+ *
+ * These four demos are the reason the packages are not just registries. A
+ * registry of names is a claim; a bar that refuses to discard while a request is
+ * in flight is evidence. The demos are therefore interactive where the contract
+ * is about state, because a static screenshot cannot show a `saving` state
+ * disabling anything.
+ */
+export function PatternsSection(): React.ReactElement {
+  return (
+    <Section
+      eyebrow="Patterns"
+      title="Compositions that own an interaction"
+      lead="A pattern is not a component. It arranges components and decides how they behave together, so the arrangement stops being rebuilt in every product."
+    >
+      <Stack gap="xl">
+        <Panel title="FilterBar" level={3} description="The count stays in the bar, and Reset is bound to the filter.">
+          <FilterBarDemo />
+        </Panel>
+
+        <Panel
+          title="ActionBar"
+          level={3}
+          description="Seven actions. Primary left, destructive right, overflow past five."
+        >
+          <ActionBarDemo />
+        </Panel>
+
+        <Panel title="SaveBar" level={3} description="The cycle a form actually goes through, including the failure.">
+          <SaveBarDemo />
+        </Panel>
+
+        <Panel
+          title="SettingsTemplate"
+          level={3}
+          description="A complete page, assembled from the layers below it."
+        >
+          <SettingsTemplateDemo />
+        </Panel>
+      </Stack>
     </Section>
   );
 }

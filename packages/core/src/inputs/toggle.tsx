@@ -363,7 +363,12 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(fu
       }
       rerenderForRegistry();
     },
-    [indicator],
+    // Empty on purpose: the body touches only `itemNodes` (a ref, stable by
+    // definition) and `rerenderForRegistry` (a `useReducer` dispatch, also
+    // stable). It read `indicator` here for no reason, which meant every toggle
+    // of that prop handed every item a new callback identity and re-registered
+    // the whole set for nothing.
+    [],
   );
 
   // A ref object rather than the node itself, so the prop identity is stable and

@@ -118,7 +118,8 @@ const PUBLIC_CONTRACT = {
    * Showcase table used to carry hand-written counts, and two of them were
    * wrong. A number only stays true if something recomputes it.
    */
-  "@tea-ui/patterns": ["PATTERNS", "patternMeta", "FilterBar", "ActionBar"],
+  "@tea-ui/patterns": ["PATTERNS", "patternMeta", "FilterBar", "ActionBar", "SectionNavigation", "SaveBar", "useUnsavedChanges"],
+  "@tea-ui/templates": ["TEMPLATES", "templateMeta", "SettingsTemplate"],
 };
 
 for (const [name, expected] of Object.entries(PUBLIC_CONTRACT)) {

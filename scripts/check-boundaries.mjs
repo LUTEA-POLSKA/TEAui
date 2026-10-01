@@ -46,7 +46,7 @@ const ALLOWED = {
  * removed when the code lands rather than when the plan is revisited — a set
  * that keeps a shipped package in it teaches everyone to ignore the output.
  */
-const PLANNED = new Set(["templates", "blueprints", "specialized"]);
+const PLANNED = new Set(["blueprints", "specialized"]);
 
 const violations = [];
 const packages = Object.keys(ALLOWED).sort(

@@ -130,3 +130,14 @@ export {
   type ActionBarProps,
   type ActionBarTone,
 } from "./actions/action-bar";
+export { SaveBar, type SaveBarProps, type SaveBarState } from "./forms/save-bar";
+export {
+  useUnsavedChanges,
+  type UnsavedChangesOptions,
+  type UseUnsavedChanges,
+} from "./forms/use-unsaved-changes";
+export {
+  SectionNavigation,
+  type SectionNavItem,
+  type SectionNavigationProps,
+} from "./navigation/section-navigation";

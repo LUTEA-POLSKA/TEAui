@@ -43,6 +43,7 @@ export const COPY = {
   /* --- actions: verb-first, concrete, no filler ---------------------------- */
   actions: {
     save: "Save",
+    discard: "Discard",
     cancel: "Cancel",
     close: "Close",
     dismissAll: "Dismiss all",
@@ -91,6 +92,7 @@ export const COPY = {
     refreshing: "Refreshing",
     processing: "Processing",
     saving: "Saving",
+    saved: "Saved",
     empty: "No entries",
     error: "Error",
     success: "Success",

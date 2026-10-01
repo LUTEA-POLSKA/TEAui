@@ -36,11 +36,11 @@ const directory = dirname(resolve(target));
 /**
  * Packages that are declared but ship nothing.
  *
- * `templates`, `blueprints` and `specialized` are part of the architecture and
- * the boundary check knows about them, so they are not accidents: they describe
+ * `blueprints` and `specialized` are part of the architecture and the boundary
+ * check knows about them, so they are not accidents: they describe
  * compositions that have not been written. What they must not be is
- * *installable*. A `@tea-ui/templates` that resolves on import and exports one
- * empty array teaches a consumer that the library has a template layer, and the
+ * *installable*. A `@tea-ui/blueprints` that resolves on import and exports one
+ * empty array teaches a consumer that the library has a blueprint layer, and the
  * only way to undo that is a deprecation notice and a patch — a published
  * version number is spent the moment it goes out.
  *
@@ -57,11 +57,7 @@ const directory = dirname(resolve(target));
  * `ActionBar`, so it has something to install and the refusal no longer applies.
  * The remaining three still do.
  */
-const NOT_IMPLEMENTED = new Set([
-  "@tea-ui/templates",
-  "@tea-ui/blueprints",
-  "@tea-ui/specialized",
-]);
+const NOT_IMPLEMENTED = new Set(["@tea-ui/blueprints", "@tea-ui/specialized"]);
 
 if (NOT_IMPLEMENTED.has(manifest.name)) {
   console.error(

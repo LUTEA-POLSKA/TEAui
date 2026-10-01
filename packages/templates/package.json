@@ -1,8 +1,7 @@
 {
     "name": "@tea-ui/templates",
     "version": "0.1.1",
-    "private": true,
-    "description": "DECLARED, NOT IMPLEMENTED. Ships no components. Compose from @tea-ui/core instead.",
+        "description": "Complete page structures composed from patterns: SettingsTemplate.",
     "license": "MIT",
     "type": "module",
     "sideEffects": false,
@@ -33,9 +32,6 @@
         "@tea-ui/admin": "^1.1.0",
         "@tea-ui/core": "^1.1.0",
         "@tea-ui/patterns": "^0.1.1",
-        "@tea-ui/public": "^1.0.1",
-        "@tea-ui/tokens": "^2.0.0",
-        "@tea-ui/ux-standards": "^2.0.0",
         "@tea-ui/utils": "^1.0.0"
     },
     "peerDependencies": {
