@@ -122,3 +122,22 @@ describe("Sidebar", () => {
     expect(link).toHaveAttribute("href", "#/a");
   });
 });
+
+  describe("header band", () => {
+    it("takes its vertical height from the header, so its divider lines up", () => {
+      // This was a visible step in the browser and no test caught it, because
+      // both rules looked reasonable on their own: `Sidebar` padded its header
+      // `p-3`, and `AdminShell` declared a `h-14` top bar beside it. The sidebar's
+      // divider therefore sat at 56 + 24 = 80px and the page's at 56px.
+      //
+      // The invariant is that the band adds padding on the inline axis only. If
+      // someone makes this `p-3` again to space a header that needs it, the
+      // header owns its own padding instead — and this test says why.
+      render(<Sidebar label="Main" items={ITEMS} activeId="server" header={<div />} />);
+      const band = document.querySelector('[data-slot="tea-sidebar-content"] > div');
+      expect(band?.className).toContain("px-3");
+      expect(band?.className).not.toMatch(/(^|\s)p-3(\s|$)/);
+      // The border is what has to line up, so it must still be there.
+      expect(band?.className).toContain("border-b");
+    });
+  });

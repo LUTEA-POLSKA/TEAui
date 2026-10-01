@@ -195,7 +195,23 @@ export function SidebarContent({
 }: SidebarContentProps): React.ReactElement {
   return (
     <div className={cn("flex min-h-0 flex-1 flex-col", className)} {...dataSlot("sidebar", "content")}>
-      {header ? <div className="shrink-0 border-b border-line p-3">{header}</div> : null}
+      {/*
+        `px-3`, not `p-3`, and that one character class is a layout fix rather
+        than a style preference.
+
+        With vertical padding, this band's height is the header's own height
+        *plus* the padding on both sides, so the divider under it lands lower
+        than the divider under a `h-14` top bar beside it — 80px against 56px,
+        with the two rules of the same shell disagreeing about where the header
+        ends. Measured in the browser, not reasoned about: the sidebar's line sat
+        a visible step below the page's.
+
+        Padding only on the inline axis keeps the brand's own height authoritative
+        for the vertical one, so a header that declares `h-14` puts both dividers
+        on the same pixel row. `beforeNav` and `footer` keep `p-3` — they are
+        content in a scroll region, not a band that has to line up with anything.
+      */}
+      {header ? <div className="shrink-0 border-b border-line px-3">{header}</div> : null}
       {beforeNav ? <div className="shrink-0 p-3">{beforeNav}</div> : null}
       {/*
         `min-h-0` on the scroll region is load-bearing. A flex child with

@@ -48,6 +48,15 @@ import { type NavItemData } from "@tea-ui/core";
 export interface AdminShellProps extends React.ComponentProps<"div"> {
   /** Product name, shown in the sidebar header. */
   product: string;
+  /**
+   * One line under the product name in the sidebar header — what the product
+   * *is*, as opposed to what it is called. "Home Server Manager" under "MLHSM".
+   *
+   * Optional, and omitted rather than faked: a placeholder tagline is worse than
+   * no tagline, because it puts a line of invented copy into the most prominent
+   * position on the page.
+   */
+  tagline?: string | undefined;
   nav: readonly NavItemData[];
   /** Id of the current route. */
   activeId: string;
@@ -65,6 +74,7 @@ export interface AdminShellProps extends React.ComponentProps<"div"> {
 
 export function AdminShell({
   product,
+  tagline,
   nav,
   activeId,
   onNavigate,
@@ -91,15 +101,26 @@ export function AdminShell({
           items={nav}
           activeId={activeId}
           onNavigate={onNavigate}
-          header={<SidebarBrand product={product} />}
+          header={<SidebarBrand product={product} tagline={tagline} />}
           footer={sidebarFooter}
         />
 
         <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
           <DrawerContent side="start" showCloseButton={false} className="w-72">
             <DrawerHeader>
-              <DrawerTitle className="flex items-center justify-between">
-                {product}
+              <DrawerTitle className="flex items-center justify-between gap-2">
+                <span className="min-w-0">
+                  <span className="block truncate text-ui font-semibold text-fg">{product}</span>
+                  {/*
+                    The same two lines as the desktop sidebar header. A drawer is
+                    the same screen at a narrower width, and a brand that loses
+                    its tagline below 1024px is a brand that changes identity
+                    depending on the device.
+                  */}
+                  {tagline ? (
+                    <span className="block truncate text-micro text-fg-muted">{tagline}</span>
+                  ) : null}
+                </span>
                 <IconButton label={COPY.navigation.closeMenu} variant="ghost" size="sm" onClick={() => setDrawerOpen(false)}>
                   <X size={16} aria-hidden="true" />
                 </IconButton>
@@ -146,13 +167,35 @@ export function AdminShell({
 }
 
 /**
- * The brand row. Its `h-14` is the height of the top bar beside it, so the
- * sidebar's first line and the page header sit on one baseline.
+ * The brand row.
+ *
+ * Its height is the height of the top bar beside it, so the sidebar's divider
+ * and the page's divider land on the same pixel row. That only works because
+ * `Sidebar` pads its header on the inline axis only — with vertical padding the
+ * band would be taller than the `h-14` it declares and the two lines would step
+ * apart again. One of the two rules has to be authoritative for the vertical
+ * axis, and it is this one, because it is the one a product sets.
+ *
+ * Name and tagline are centred **as a pair**, so the optical middle of the block
+ * stays put when the tagline wraps to two lines. Centring each line separately
+ * would shift the name up every time the description grew, which is the kind of
+ * movement nobody can name as a bug.
  */
-function SidebarBrand({ product }: { product: string }): React.ReactElement {
+function SidebarBrand({
+  product,
+  tagline,
+}: {
+  product: string;
+  tagline?: string | undefined;
+}): React.ReactElement {
   return (
     <div className="flex h-14 items-center">
-      <span className="text-ui font-semibold text-fg">{product}</span>
+      <div className="min-w-0">
+        <span className="block truncate text-ui font-semibold text-fg">{product}</span>
+        {tagline ? (
+          <span className="block truncate text-micro text-fg-muted">{tagline}</span>
+        ) : null}
+      </div>
     </div>
   );
 }

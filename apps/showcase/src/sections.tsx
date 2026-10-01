@@ -240,6 +240,7 @@ export function AdminSection(): React.ReactElement {
       <div className="overflow-hidden border border-line">
         <AdminShell
           product="TEA Showroom"
+          tagline="Design system console"
           nav={DEMO_NAV}
           activeId={active}
           onNavigate={setActive}
