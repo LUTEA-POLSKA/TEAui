@@ -11,6 +11,12 @@
  * resolved through `@tea-ui/ux-standards`.
  */
 export { AdminShell, Page, PageHeader, type AdminShellProps, type NavItem, type PageHeaderProps, type PageProps } from "./shell";
+export {
+  DesktopShell,
+  type DesktopPlatform,
+  type DesktopShellProps,
+  type DesktopWindow,
+} from "./shell/desktop-shell";
 
 export {
   EmptyState,

@@ -110,7 +110,7 @@ const PUBLIC_CONTRACT = {
     "formatBytes",
     "formatDateTime",
   ],
-  "@tea-ui/admin": ["AdminShell", "Page", "PageHeader", "StatTile", "StatGrid", "EmptyState", "ErrorState", "LoadingState"],
+  "@tea-ui/admin": ["AdminShell", "DesktopShell", "Page", "PageHeader", "StatTile", "StatGrid", "SCORE_BANDS", "EmptyState", "ErrorState", "LoadingState"],
   "@tea-ui/public": ["Section", "Hero", "Feature", "FeatureGrid", "CallToAction", "PublicNavbar", "PublicFooter", "PricingTable", "Faq", "ConversionForm"],
   /*
    * `patterns` joined this list when it shipped its first two compositions.

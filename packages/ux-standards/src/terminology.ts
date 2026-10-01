@@ -117,6 +117,26 @@ export const COPY = {
     search: "Search",
   },
 
+  /* --- window --------------------------------------------------------------- */
+  window: {
+    /*
+     * Window controls for a desktop shell. `closeWindow` rather than reusing
+     * `actions.close`, because a button that closes the *window* and a button
+     * that closes a *dialog* cannot share a name: "Close" on a titlebar tells a
+     * screen reader user the dialog is going away, and the dialog is not.
+     */
+    minimize: "Minimize",
+    maximize: "Maximize",
+    restore: "Restore",
+    closeWindow: "Close window",
+    /**
+     * The drag region is decorative — it is a place to put the mouse, not
+     * content — but a screen reader user still needs a name for the bar that
+     * holds the window controls, or the buttons arrive with no context.
+     */
+    titlebar: "Window title bar",
+  },
+
   /* --- destructive --------------------------------------------------------- */
   destructive: {
     undoTitle: "Undone",

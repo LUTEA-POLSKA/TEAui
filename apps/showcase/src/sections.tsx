@@ -46,6 +46,8 @@ import {
   TableRow,
   Text,
   Textarea,
+  ToggleGroup,
+  ToggleGroupItem,
   formatBytes,
   formatDuration,
   toast,
@@ -63,10 +65,13 @@ import {
   MetricCard,
   RefreshButton,
   RefreshingIndicator,
+  DesktopShell,
   RowActions,
   Score,
   StatGrid,
   StatTile,
+  type DesktopPlatform,
+  type DesktopWindow,
   type NavItem,
 } from "@tea-ui/admin";
 import { ActionBar, FilterBar, SaveBar, type SaveBarState } from "@tea-ui/patterns";
@@ -1307,6 +1312,133 @@ export function PatternsSection(): React.ReactElement {
           <SettingsTemplateDemo />
         </Panel>
       </Stack>
+    </Section>
+  );
+}
+
+/* --- desktop shell --------------------------------------------------------- */
+
+/**
+ * What a product writes to develop its desktop UI in a browser tab: the same
+ * `DesktopShell`, with the window operations stubbed out.
+ *
+ * That is possible *because* the shell takes the window as a prop. Nothing in
+ * `admin` imports `@tauri-apps/api`, so this file compiles with no Tauri
+ * toolchain and no Rust side — which is the whole reason the API is injected
+ * rather than imported. In a real window these three lines become
+ * `getCurrentWindow().minimize()` and friends.
+ */
+function DesktopShellDemo(): React.ReactElement {
+  const [platform, setPlatform] = React.useState<DesktopPlatform>("windows");
+  const [maximized, setMaximized] = React.useState(false);
+  const [action, setAction] = React.useState<string>("none yet");
+
+  const hostWindow = React.useMemo<DesktopWindow>(
+    () => ({
+      minimize: () => setAction("minimize"),
+      toggleMaximize: () => setAction("toggleMaximize"),
+      close: () => setAction("close"),
+      isMaximized: () => maximized,
+      onMaximizeChange: () => () => {},
+    }),
+    [maximized],
+  );
+
+  return (
+    <Stack gap="lg">
+      <Stack gap="sm">
+<ToggleGroup
+          type="single"
+          value={platform}
+          onValueChange={(next: string) => {
+            // Radix reports `""` when the pressed item is released, and the
+            // platform is not optional — same reasoning as the theme switcher.
+            if (!next) return;
+            setPlatform(next as DesktopPlatform);
+            setMaximized(false);
+          }}
+          aria-label="Window platform"
+          selection="outline"
+          indicator
+          className="w-fit"
+        >
+          {(["windows", "linux", "macos"] as const).map((entry) => (
+            <ToggleGroupItem key={entry} value={entry} className="px-4 capitalize">
+              {entry}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+        <Text size="ui" tone="muted">
+          {platform === "macos"
+            ? "macOS draws the traffic lights itself. The shell reserves the leading edge and renders no controls of its own — two sets of window controls is the defect, not the fix."
+            : "Three controls, close rightmost, and every one of them outside the drag region so a press presses instead of dragging the window."}
+        </Text>
+      </Stack>
+
+      {/*
+        * `h-[34rem]` overrides the shell's `h-dvh` through tailwind-merge, so the
+        * window can be reviewed inside a page. In a real window there is nothing
+        * to override — the shell fills the window, which is the point of it.
+        */}
+      <div className="overflow-hidden border border-line-strong">
+        <DesktopShell
+          className="h-[34rem]"
+          product="MLHSM"
+          tagline="Home Server Manager"
+          platform={platform}
+          window={hostWindow}
+          nav={DEMO_NAV}
+          activeId="desktop-overview"
+          onNavigate={() => {}}
+          status={<StatusBadge domain="health" status="online" />}
+          actions={
+            <Button size="sm" variant="outline">
+              Deploy
+            </Button>
+          }
+        >
+          <div className="p-ui">
+            <Stack gap="md">
+              <Heading level={2}>One band, not two</Heading>
+              <Text size="ui" tone="muted">
+                The brand, the page actions and the window controls share a single strip that
+                doubles as the drag region. There is no second header above the navigation, and
+                the shell scrolls inside the window rather than the window scrolling.
+              </Text>
+              <Text size="ui" tone="muted">
+                Last window call:{" "}
+                <InlineCode>{action === "none yet" ? "—" : action}</InlineCode>
+              </Text>
+            </Stack>
+          </div>
+        </DesktopShell>
+      </div>
+    </Stack>
+  );
+}
+
+/**
+ * Desktop shells, reviewable in a browser.
+ *
+ * A window with `decorations: false` has no title bar of its own, which means
+ * the shell has to *be* the title bar. That is a different structure from the
+ * browser shell rather than a variant of it, so it ships as its own component
+ * with its own section here.
+ */
+export function DesktopSection(): React.ReactElement {
+  return (
+    <Section
+      eyebrow="Desktop"
+      title="A shell for a window, not a tab"
+      lead="The same TEA UI in a Tauri window: one draggable band carrying the brand, the page actions and the window controls."
+    >
+      <Panel
+        title="DesktopShell"
+        level={3}
+        description="The window API arrives as a prop, so this runs in a browser tab, in Electron and in Tauri from one source."
+      >
+        <DesktopShellDemo />
+      </Panel>
     </Section>
   );
 }
