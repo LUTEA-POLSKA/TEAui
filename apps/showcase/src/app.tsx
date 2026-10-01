@@ -5,6 +5,7 @@ import { COPY } from "@tea-ui/ux-standards";
 import { ShowcaseFooter, ShowcaseHeader, useHashRoute } from "./chrome";
 import { DisplayProvider, ThemeControls } from "./display";
 import { GallerySection } from "./gallery";
+import { MlhsmApp } from "./apps/mlhsm/app";
 import {
   AccessibilitySection,
   AdminSection,
@@ -16,6 +17,30 @@ import {
   ThemesSection,
   UxSection,
 } from "./sections";
+
+/**
+ * Routes that are not documentation.
+ *
+ * `#/app` is the one place the Showcase steps out of its own chrome, because a
+ * product brings its own shell, its own navigation and its own scroll. Wrapping
+ * an application in `ShowcaseHeader` and `ShowcaseFooter` would mean the page
+ * around it supplied the padding, the layout and the frame — so the thing being
+ * demonstrated would never be the thing on screen. That is the same reason the
+ * old Components page was removed.
+ *
+ * Everything below the prefix renders app-shaped from here to the bottom of the
+ * module: `#/app`, `#/app/servers`, `#/app/storage`, `#/app/settings`.
+ */
+const APP_PREFIX = "app";
+
+function isAppRoute(route: string): boolean {
+  return route === APP_PREFIX || route.startsWith(`${APP_PREFIX}/`);
+}
+
+/** The screen segment of `#/app/<screen>`, or the landing screen. */
+function appScreenOf(route: string): string {
+  return route.slice(APP_PREFIX.length + 1) || "overview";
+}
 
 /**
  * TEA UI Showcase.
@@ -33,6 +58,23 @@ function Showcase(): React.ReactElement {
   const go = React.useCallback((id: string) => {
     globalThis.location.hash = `#/${id}`;
   }, []);
+
+  const exitApp = React.useCallback(() => {
+    globalThis.location.hash = "#/home";
+  }, []);
+
+  // Before anything else: an app route is an app, not a section.
+  if (isAppRoute(route)) {
+    return (
+      <MlhsmApp
+        initialScreen={appScreenOf(route)}
+        onScreenChange={(screen) => {
+          globalThis.location.hash = `#/${APP_PREFIX}/${screen}`;
+        }}
+        onExit={exitApp}
+      />
+    );
+  }
 
   return (
     <div className="bg-canvas text-fg">

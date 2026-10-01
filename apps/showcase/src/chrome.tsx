@@ -104,10 +104,22 @@ export interface ShowcaseNavItem {
   id: string;
   label: string;
   description: string;
+  /**
+   * The route renders **without** the Showcase chrome, because it is an
+   * application and not documentation. The header marks it so the link reads
+   * as leaving the Showcase rather than moving between two of its pages.
+   */
+  escape?: boolean;
 }
 
 export const SHOWCASE_NAV: readonly ShowcaseNavItem[] = [
   { id: "home", label: "Home", description: "Why TEA UI exists" },
+  {
+    id: "app",
+    label: "Example app",
+    description: "MLHSM, built with TEA UI",
+    escape: true,
+  },
   { id: "gallery", label: "Gallery", description: "Every element, three columns" },
   { id: "themes", label: "Themes", description: "Three identities, one API" },
   { id: "admin", label: "Admin UI", description: "Shell, metrics, states" },
