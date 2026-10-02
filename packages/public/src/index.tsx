@@ -411,6 +411,16 @@ export interface PublicNavbarProps extends React.ComponentProps<"header"> {
   action?: React.ReactNode | undefined;
   /** Id of the main region, for the skip link. */
   mainId?: string | undefined;
+  /**
+   * The skip link's label. Defaults to TEA UI's own deck.
+   *
+   * Added because the skip link was hardcoded to the English deck with no way to
+   * override it — the same defect as `StatusDot`'s label. A consumer rendering the
+   * navbar in another language got an English string as the first thing a screen reader
+   * announced, and the only way out was to render a *second* skip link beside this one:
+   * two skip links, two landmarks, and the English one still there.
+   */
+  skipToContentLabel?: string | undefined;
   className?: string | undefined;
 }
 
@@ -424,7 +434,7 @@ export interface PublicNavbarProps extends React.ComponentProps<"header"> {
  * navigation.
  */
 export const PublicNavbar = React.forwardRef<HTMLElement, PublicNavbarProps>(function PublicNavbar(
-  { brand, links, action, mainId = "tea-public-main", className, children, ...props },
+  { brand, links, action, mainId = "tea-public-main", skipToContentLabel, className, children, ...props },
   ref,
 ) {
   const [open, setOpen] = React.useState(false);
@@ -435,7 +445,7 @@ export const PublicNavbar = React.forwardRef<HTMLElement, PublicNavbarProps>(fun
       className={cn("sticky top-0 z-header border-b border-line bg-canvas", className)}
       {...props}
     >
-      <SkipLink targetId={mainId} />
+      <SkipLink targetId={mainId}>{skipToContentLabel}</SkipLink>
       <Container size="full" className="flex h-16 items-center gap-6">
         <Link href="#" className="text-ui font-semibold tracking-tight text-fg no-underline hover:no-underline">
           {brand}
