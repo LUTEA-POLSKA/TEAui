@@ -56,6 +56,7 @@ const THEME_LABEL: Record<ThemeName, string> = {
 
 const DENSITY_LABEL: Record<Density, string> = {
   compact: "Compact",
+  dense: "Dense",
   default: "Default",
   comfortable: "Comfortable",
 };

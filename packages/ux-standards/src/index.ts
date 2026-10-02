@@ -16,10 +16,13 @@ export {
   statusMeta,
   statusEntries,
   statusKeysWithTone,
+  resourceStatusMeta,
   type StatusMeta,
   type StatusDomain,
   type StatusKey,
   type AnyStatusKey,
+  type ResourceStatus,
+  type ResourceStatusRender,
 } from "./status";
 
 /* The tone vocabulary is defined in the token layer — a theme colours it, the

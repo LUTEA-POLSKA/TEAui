@@ -67,9 +67,14 @@ export interface StatusDotProps<D extends StatusDomain> extends StatusBaseProps<
 }
 
 /**
- * A dot plus a word. `rounded-full` here is one of the five documented
- * geometric exceptions: a status indicator is a *mark*, not a surface, and the
- * design language's square rule applies to surfaces.
+ * A dot plus a word. A fully rounded one here is one of the documented geometric
+ * exceptions: a status indicator is a *mark*, not a surface, and the design
+ * language's square rule applies to surfaces.
+ *
+ * The class name is deliberately not written out. Tailwind scans this file for
+ * class names, comments included, so naming the rounded utility in prose emitted
+ * the banned utility into every consumer's compiled stylesheet — the
+ * documentation of the ban was the only reason the banned class existed.
  */
 export function StatusDot<D extends StatusDomain>({
   domain,

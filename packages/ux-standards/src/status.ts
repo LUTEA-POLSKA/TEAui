@@ -186,6 +186,47 @@ const CONTAINER = domain<"running" | "created" | "paused" | "restarting" | "stop
   },
 });
 
+const LIFECYCLE = domain<"none" | "provisioning" | "starting" | "stopping" | "updating">({
+  none: {
+    label: "Idle",
+    tone: "neutral",
+    description: "No operation is running. Whatever was happening has finished.",
+  },
+  provisioning: {
+    label: "Being created",
+    tone: "info",
+    description: "The resource is being built and is not usable yet.",
+  },
+  starting: {
+    label: "Starting",
+    tone: "info",
+    description: "The resource is starting and is not reachable yet.",
+  },
+  stopping: {
+    label: "Stopping",
+    tone: "neutral",
+    description: "The resource is shutting down.",
+  },
+  updating: {
+    label: "Updating",
+    tone: "info",
+    description: "A change is being applied. The resource may restart while it runs.",
+  },
+});
+
+const AVAILABILITY = domain<"active" | "suspended">({
+  active: {
+    label: "Available",
+    tone: "neutral",
+    description: "The resource is available to its owner.",
+  },
+  suspended: {
+    label: "Suspended",
+    tone: "caution",
+    description: "The resource is held by the operator. Its owner cannot reach it.",
+  },
+});
+
 const WEBSITE = domain<"online" | "deploying" | "degraded" | "offline" | "error" | "unknown">({
   online: {
     label: "Online",
@@ -347,6 +388,8 @@ export const STATUS = {
   backup: BACKUP,
   certificate: CERTIFICATE,
   container: CONTAINER,
+  lifecycle: LIFECYCLE,
+  availability: AVAILABILITY,
   website: WEBSITE,
   dependency: DEPENDENCY,
   security: SECURITY,
@@ -389,4 +432,89 @@ export function statusKeysWithTone<D extends StatusDomain>(domain: D, tone: Tone
   return statusEntries(domain)
     .filter(([, meta]) => meta.tone === tone)
     .map(([key]) => key);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Resource status: three axes, and the rule that composes them                 */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A resource that can be busy, reachable and locked at the same time.
+ *
+ * The audit of a hosting product found the opposite: one flat list of nine states,
+ * in which `online`, `starting`, `provisioning` and `suspended` competed for the
+ * same slot. A flat list cannot express the three states that actually co-occur,
+ * and the two that matter most are the ones a customer is watching:
+ *
+ *   - a server that is **starting** is not **online**, and saying so is the
+ *     difference between an honest interface and one that reports success before
+ *     the backend has confirmed it;
+ *   - a **suspended** server may well be running — it is held by the operator, so
+ *     the owner cannot reach it. Collapsing that into the health axis loses the
+ *     reason, and a customer who is told "offline" about a running server files
+ *     the wrong support request.
+ *
+ * So the state is three fields, and {@link resourceStatusMeta} is the only
+ * supported way to render it. A product that builds this itself will get it wrong
+ * in one of exactly the two ways above.
+ */
+export interface ResourceStatus {
+  /** Reachability, once nothing is in flight. */
+  readonly health: StatusKey<"health">;
+  /** The operation in flight, or `none`. */
+  readonly lifecycle: StatusKey<"lifecycle">;
+  /** Whether the owner may reach it. */
+  readonly availability: StatusKey<"availability">;
+}
+
+/**
+ * What a surface should actually render.
+ *
+ * `primary` is the one word in the badge. `suppressed` is the health state the
+ * primary one is standing in for, so a detail row or a tooltip can still offer it
+ * — silently dropping it would be the same loss as flattening the axes, just
+ * quieter.
+ */
+export interface ResourceStatusRender {
+  readonly primary: StatusMeta;
+  readonly suppressed: StatusMeta | null;
+  readonly availability: StatusMeta | null;
+}
+
+/**
+ * Compose the three axes into what a surface shows.
+ *
+ * The rule, in order:
+ *
+ *   1. `lifecycle !== "none"` wins. A resource in flight is described by what is
+ *      happening to it, never by what it would be when idle.
+ *   2. otherwise `health` is shown.
+ *   3. `availability === "suspended"` is **additional**, never a replacement — so
+ *      a suspended server that is also starting says both.
+ *
+ * `availability` returns `null` for `active`, and `lifecycle` returns `null` in
+ * `suppressed` for `none`, so a caller cannot accidentally render a badge for the
+ * absence of something.
+ *
+ * @example
+ * ```ts
+ * const shown = resourceStatusMeta({
+ *   health: "online",
+ *   lifecycle: "starting",
+ *   availability: "active",
+ * });
+ * shown.primary.label;      // "Starting"
+ * shown.suppressed?.label;  // "Online" — offered as detail, not as the headline
+ * shown.availability;       // null
+ * ```
+ */
+export function resourceStatusMeta(status: ResourceStatus): ResourceStatusRender {
+  const inFlight = status.lifecycle !== "none";
+
+  return {
+    primary: inFlight ? statusMeta("lifecycle", status.lifecycle) : statusMeta("health", status.health),
+    suppressed: inFlight ? statusMeta("health", status.health) : null,
+    availability:
+      status.availability === "active" ? null : statusMeta("availability", status.availability),
+  };
 }

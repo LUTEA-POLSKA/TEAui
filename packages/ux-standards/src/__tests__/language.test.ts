@@ -220,6 +220,22 @@ const GERMAN_WORDS = [
   // `Wird gesendet` — and each one cost a string literal to discover.
   /\bWird\b/, /\bWerde\b/, /\bWurde\b/, /\bWurden\b/,
   /\bTechnisch\w*/, /\bReferenz\b/, /\bGitternetz\b/, /\bLade\b/,
+  /* --- The fourth occurrence, and the one the previous three did not predict -----
+   * `core/src/format/index.ts` shipped German in two places while this file
+   * reported green: `formatDuration` returned `2 Std. 14 Min.` and the exported
+   * `TIME_FORMAT_TOKENS` returned `Nie`, `Gerade eben` and `Vor 3 Min.`.
+   *
+   * The reason is the one this file already names: German without an umlaut that is
+   * not on the list. It is worse here than in the registries, because the previous
+   * three sweeps were over *registry labels* — a category that can be enumerated. A
+   * formatter was not in any of those sweeps, so the class of thing being swept was
+   * never the class of thing that shipped.
+   *
+   * `Vor` is the one worth flagging. It is a preposition, it is two letters of
+   * nothing in particular, and the timestamp helpers are exactly where a reader
+   * looks first when something reads wrong. */
+  /\bVor\b/, /\bNie\b/, /\bGerade\b/, /\bSek\.?\b/, /\bStd\.?\b/, /\bMin\.?\b/,
+  /\bTg\.?\b/, /\bZuletzt\b/,
 ];
 
 /**

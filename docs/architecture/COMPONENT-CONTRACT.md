@@ -27,7 +27,17 @@ out of date.
   `sx`, and no `styles` object.
 - Only semantic utilities. `bg-canvas`, `text-fg-muted`, `border-line` — never
   `bg-red-300`, never `text-[9px]`, never a raw hex. The Tailwind default
-  palettes are reset out of the build, so a violation **does not compile**.
+  palettes are reset out of the build, so most violations **do not compile**.
+- The one place that is not true is worth stating exactly. Tailwind extracts
+  class candidates from a `@source` directory by scanning raw text, and raw
+  text includes comments — so a class that is only ever *named in prose* is
+  still emitted into the compiled stylesheet. The fully-rounded utility was
+  banned here and by the lint rule, and shipped anyway, because two comments
+  explaining the ban were the only places it was written down.
+  `tokens/src/__tests__/banned-classes.test.ts` now fails if any scanned source
+  names it, and it reads the `@source` roots from `index.css` so it cannot
+  drift. Practical consequence: **do not write the name of a banned class in a
+  comment.** Describe it instead.
 - Only `rounded-none` (default) and `rounded-pill`. `pill` is reserved for
   avatars, status dots, switches, radio controls, media controls, loaders and
   progress.

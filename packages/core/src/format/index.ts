@@ -10,8 +10,8 @@
  *    dominant TEA surface is storage, and storage is measured in binary units, so
  *    binary is the default and decimal is opt-in for things that genuinely mean
  *    decimal — a transfer rate, a licence cap.
- *  - **Relative time is German and short.** "Vor 3 Std." rather than
- *    "vor 3 Stunden", because these appear in dense table cells.
+ *  - **Relative time is short.** "3 min ago" rather than "three minutes ago",
+ *    because these appear in dense table cells.
  */
 
 export type ByteSystem = "binary" | "decimal";
@@ -24,12 +24,22 @@ export interface FormatBytesOptions {
   system?: ByteSystem | undefined;
   /** Maximum fraction digits. Defaults to 1, and 0 below 10 units. */
   digits?: number | undefined;
+  /**
+   * BCP 47 tag for the digit and separator conventions. Defaults to
+   * {@link DEFAULT_LOCALE}.
+   *
+   * Added because this formatter had no way to localise at all: it called
+   * `formatNumber` without forwarding one, so a byte value was rendered with German
+   * separators in an English interface — and storage is the single value a customer
+   * reads most often.
+   */
+  locale?: string | undefined;
   /** Rendered when the input is not a usable number. */
   fallback?: string | undefined;
 }
 
 export function formatBytes(value: number, options: FormatBytesOptions = {}): string {
-  const { system = "binary", fallback = "–" } = options;
+  const { system = "binary", locale = DEFAULT_LOCALE, fallback = "–" } = options;
   if (!Number.isFinite(value)) return fallback;
 
   const negative = value < 0;
@@ -38,14 +48,14 @@ export function formatBytes(value: number, options: FormatBytesOptions = {}): st
   const units = system === "binary" ? BINARY_UNITS : DECIMAL_UNITS;
 
   if (magnitude < base) {
-    return `${negative ? "-" : ""}${formatNumber(magnitude, { digits: 0 })} ${units[0]}`;
+    return `${negative ? "-" : ""}${formatNumber(magnitude, { digits: 0, locale })} ${units[0]}`;
   }
 
   const exponent = Math.min(units.length - 1, Math.floor(Math.log(magnitude) / Math.log(base)));
   const scaled = magnitude / base ** exponent;
   const digits = options.digits ?? (scaled < 10 ? 1 : 0);
 
-  return `${negative ? "-" : ""}${formatNumber(scaled, { digits })} ${units[exponent]}`;
+  return `${negative ? "-" : ""}${formatNumber(scaled, { digits, locale })} ${units[exponent]}`;
 }
 
 export interface FormatNumberOptions {
@@ -56,7 +66,19 @@ export interface FormatNumberOptions {
   fallback?: string | undefined;
 }
 
-const DEFAULT_LOCALE = "de-DE";
+/**
+ * The locale every formatter falls back to.
+ *
+ * It was `de-DE`, and it was wrong in a way no test looking at locale arguments
+ * could have caught: a package whose entire copy deck is English — changed from
+ * German deliberately, for the reason spelled out in `terminology.ts` — shipped
+ * German *number formatting*. `1.234` in an English interface, and 1.5 GiB rendered
+ * as `1,5 GiB` because the byte formatter had no `locale` to override the default.
+ *
+ * The default is the language the documentation is written in, which is the same
+ * rule the copy deck already follows. A consumer that needs another sets it.
+ */
+const DEFAULT_LOCALE = "en";
 
 export function formatNumber(value: number, options: FormatNumberOptions = {}): string {
   const { digits = 0, locale = DEFAULT_LOCALE, unit, fallback = "–" } = options;
@@ -82,36 +104,48 @@ const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
 /**
- * A compact duration: `2 Std. 14 Min.`. Two units at most — a duration with
+ * A compact duration: `2 h 14 min`. Two units at most — a duration with
  * four units is a number the reader has to do arithmetic on.
  */
 export function formatDuration(milliseconds: number, fallback = "–"): string {
   if (!Number.isFinite(milliseconds) || milliseconds < 0) return fallback;
-  if (milliseconds < MINUTE) return `${Math.round(milliseconds / 1000)} Sek.`;
+  if (milliseconds < MINUTE) return `${Math.round(milliseconds / 1000)} s`;
 
   const totalMinutes = Math.floor(milliseconds / MINUTE);
   const days = Math.floor(totalMinutes / (60 * 24));
   const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
   const minutes = totalMinutes % 60;
 
-  if (days > 0) return `${days} Tg. ${hours} Std.`;
-  if (hours > 0) return minutes > 0 ? `${hours} Std. ${minutes} Min.` : `${hours} Std.`;
-  return `${minutes} Min.`;
+  if (days > 0) return `${days} d ${hours} h`;
+  if (hours > 0) return minutes > 0 ? `${hours} h ${minutes} min` : `${hours} h`;
+  return `${minutes} min`;
 }
 
 const FORMATTING = {
-  never: "Nie",
-  justNow: "Gerade eben",
-  minutesAgo: (n: number) => `Vor ${n} Min.`,
-  hoursAgo: (n: number) => `Vor ${n} Std.`,
-  daysAgo: (n: number) => `Vor ${n} Tg.`,
-  lastUpdated: "Zuletzt aktualisiert",
+  never: "Never",
+  justNow: "Just now",
+  minutesAgo: (n: number) => `${n} min ago`,
+  hoursAgo: (n: number) => `${n} h ago`,
+  daysAgo: (n: number) => `${n} d ago`,
+  lastUpdated: "Last updated",
 } as const;
 
 export interface FormatRelativeTimeOptions {
   now?: Date | number | undefined;
-  /** Return the absolute timestamp instead, e.g. for a `<time title>`. */
+  /**
+   * Render this timestamp instead of a relative one, e.g. for a `<time title>`.
+   * Ignored when `value` is in the future.
+   */
   absolute?: Date | number | undefined;
+  /**
+   * BCP 47 tag for the absolute timestamps this falls back to. Defaults to
+   * {@link DEFAULT_LOCALE}.
+   *
+   * Added for the same reason as in {@link FormatBytesOptions}: the relative strings
+   * and the absolute fallback were two different languages, so one value could read
+   * `5 min ago` on Monday and a German date on Monday evening.
+   */
+  locale?: string | undefined;
   fallback?: string | undefined;
 }
 
@@ -119,20 +153,31 @@ export function formatRelativeTime(
   value: Date | number | null | undefined,
   options: FormatRelativeTimeOptions = {},
 ): string {
-  const { fallback = "–" } = options;
+  const { locale = DEFAULT_LOCALE, fallback = "–" } = options;
   if (value === null || value === undefined) return fallback;
   const timestamp = value instanceof Date ? value.getTime() : value;
   if (!Number.isFinite(timestamp)) return fallback;
 
   const now = options.now === undefined ? Date.now() : options.now instanceof Date ? options.now.getTime() : options.now;
   const delta = now - timestamp;
-  if (delta < 0) return formatDateTime(timestamp, { dateStyle: "medium", timeStyle: "short" });
+  if (delta < 0) return formatDateTime(timestamp, { locale, dateStyle: "medium", timeStyle: "short" });
+
+  // `absolute` was documented, typed and never read: the body of this function did
+  // not mention it, so a caller passing it got a relative string and no signal that
+  // the option did nothing. It is the one option here whose whole purpose is to
+  // produce the *other* format, so it is honoured first.
+  if (options.absolute !== undefined) {
+    const at = options.absolute instanceof Date ? options.absolute.getTime() : options.absolute;
+    if (Number.isFinite(at)) {
+      return formatDateTime(at, { locale, dateStyle: "medium", timeStyle: "short" });
+    }
+  }
 
   if (delta < MINUTE) return FORMATTING.justNow;
   if (delta < HOUR) return FORMATTING.minutesAgo(Math.floor(delta / MINUTE));
   if (delta < DAY) return FORMATTING.hoursAgo(Math.floor(delta / HOUR));
   if (delta < DAY * 30) return FORMATTING.daysAgo(Math.floor(delta / DAY));
-  return formatDateTime(timestamp, { dateStyle: "medium" });
+  return formatDateTime(timestamp, { locale, dateStyle: "medium" });
 }
 
 export interface FormatDateTimeOptions {

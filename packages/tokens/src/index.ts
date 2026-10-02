@@ -35,7 +35,7 @@ export function isThemeName(value: unknown): value is ThemeName {
  * control inside it through custom properties, so density composes instead of
  * multiplying into a `size` prop on every component.
  */
-export const DENSITIES = ["compact", "default", "comfortable"] as const;
+export const DENSITIES = ["compact", "dense", "default", "comfortable"] as const;
 
 export type Density = (typeof DENSITIES)[number];
 

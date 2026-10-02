@@ -85,6 +85,38 @@
   --tea-touch-min: 2.75rem;
 }
 
+/* `dense` is for logs, event streams, terminal output and technical tables: places
+ * where the number of rows on screen is the point.
+ *
+ * Two values are deliberately NOT reduced, and both are the reason this step exists
+ * next to `compact` rather than replacing it:
+ *
+ *   --tea-text-ui stays at 13px. Density buys vertical rhythm, not legibility. The
+ *   audit found 9px and 10px carrying real UI text, and 11px is the documented
+ *   floor; a table that needs to be shorter is not a reason to make the type
+ *   smaller, and a 12px step was measured and rejected for exactly that.
+ *
+ *   --tea-touch-min stays at 44px. WCAG 2.5.8 is a floor, and a density setting is
+ *   not an accessibility control. A dense table on a phone gets 44px targets, which
+ *   is why the row height here is the one value that is allowed to feel tight on a
+ *   pointer device only.
+ */
+[data-density="dense"] {
+  --tea-control-h: 1.5rem; /* 24px — one line of log output         */
+  --tea-control-px: 0.5rem;
+  --tea-control-icon: 0.875rem;
+  --tea-row-h: 1.5rem;
+  --tea-cell-py: 0.25rem;
+  --tea-cell-px: 0.5rem;
+  --tea-gap: 0.5rem;
+  --tea-section-gap: 1rem;
+  --tea-field-gap: 0.75rem;
+  --tea-pad-card: 0.75rem;
+  --tea-text-ui: 0.8125rem; /* 13px — UNCHANGED from compact, on purpose   */
+  --tea-text-label: 0.6875rem;
+  --tea-touch-min: 2.75rem; /* 44px — a floor, not a density setting   */
+}
+
 [data-density="comfortable"] {
   --tea-control-h: 2.25rem; /* 36px                                         */
   --tea-control-px: 0.875rem;
@@ -274,8 +306,16 @@
    * TEA geometry is angular by default: every surface radius is 0. The
    * `pill` step is a named exception, reserved for the semantics listed in
    * UX-Standards §34 — avatars, status dots, switches, radio controls, media
-   * controls, loaders and progress. `rounded-full` outside that set is an
-   * anti-pattern, not a style choice.
+   * controls, loaders and progress. The fully-rounded utility outside that set is
+   * an anti-pattern, not a style choice, and the lint rule bans it.
+   *
+   * That utility's name is written nowhere in this file, and neither is the
+   * name of any other banned class. This stylesheet is a Tailwind source, and
+   * Tailwind extracts class names from comments as readily as from markup — so
+   * the two prose sentences that used to name it were the only thing producing
+   * it. `banned-classes.test.ts` fails the build if any scanned source names it,
+   * and it reads the `@source` roots from this file so it cannot drift. A doc
+   * comment must not be able to add a class to a consumer's bundle.
    * ---------------------------------------------------------------------- */
   --radius-none: 0px;
   --radius-pill: 9999px;
