@@ -474,10 +474,26 @@ export interface ResourceStatus {
  * primary one is standing in for, so a detail row or a tooltip can still offer it
  * — silently dropping it would be the same loss as flattening the axes, just
  * quieter.
+ *
+ * **The wire keys come back alongside the metadata, and they are not redundant.**
+ * A consumer rendering these labels in its own language needs the *key*, not the
+ * English word. Without the key the only route is to look the English word up again,
+ * which is a translation table that silently falls through to English the moment this
+ * registry gains a state — and a status is exactly the thing a customer sees in their
+ * own language. The key is what travels; the label is what is displayed.
  */
 export interface ResourceStatusRender {
+  /** Domain and wire key of the badge's word. */
+  readonly primaryKey: { readonly domain: "health" | "lifecycle"; readonly key: string };
   readonly primary: StatusMeta;
+  /** Domain and key of the state `primary` stands in for, when it stands in for one. */
+  readonly suppressedKey: { readonly domain: "health"; readonly key: StatusKey<"health"> } | null;
   readonly suppressed: StatusMeta | null;
+  /** `null` for `availability: "active"` — the absence of a badge is not a badge. */
+  readonly availabilityKey: {
+    readonly domain: "availability";
+    readonly key: StatusKey<"availability">;
+  } | null;
   readonly availability: StatusMeta | null;
 }
 
@@ -504,6 +520,7 @@ export interface ResourceStatusRender {
  *   availability: "active",
  * });
  * shown.primary.label;      // "Starting"
+ * shown.primaryKey.key;     // "starting" — translate this, not the label
  * shown.suppressed?.label;  // "Online" — offered as detail, not as the headline
  * shown.availability;       // null
  * ```
@@ -512,8 +529,16 @@ export function resourceStatusMeta(status: ResourceStatus): ResourceStatusRender
   const inFlight = status.lifecycle !== "none";
 
   return {
+    primaryKey: inFlight
+      ? { domain: "lifecycle", key: status.lifecycle }
+      : { domain: "health", key: status.health },
     primary: inFlight ? statusMeta("lifecycle", status.lifecycle) : statusMeta("health", status.health),
+    suppressedKey: inFlight ? { domain: "health", key: status.health } : null,
     suppressed: inFlight ? statusMeta("health", status.health) : null,
+    availabilityKey:
+      status.availability === "active"
+        ? null
+        : { domain: "availability", key: status.availability },
     availability:
       status.availability === "active" ? null : statusMeta("availability", status.availability),
   };

@@ -120,6 +120,33 @@ describe("resourceStatusMeta", () => {
     expect(shown.availability?.label).toBe("Suspended");
   });
 
+  it("returns the wire keys, because a consumer translates the key and not the label", () => {
+    // Without the keys the only route to a translated label is a table mapping TEA
+    // UI's English words back to their own vocabulary — which falls through to English
+    // silently, on the one state somebody adds next.
+    const shown = resourceStatusMeta({
+      health: "offline",
+      lifecycle: "starting",
+      availability: "suspended",
+    });
+
+    expect(shown.primaryKey).toEqual({ domain: "lifecycle", key: "starting" });
+    expect(shown.suppressedKey).toEqual({ domain: "health", key: "offline" });
+    expect(shown.availabilityKey).toEqual({ domain: "availability", key: "suspended" });
+  });
+
+  it("keys `health` directly when nothing is in flight", () => {
+    const shown = resourceStatusMeta({
+      health: "degraded",
+      lifecycle: "none",
+      availability: "active",
+    });
+
+    expect(shown.primaryKey).toEqual({ domain: "health", key: "degraded" });
+    expect(shown.suppressedKey).toBeNull();
+    expect(shown.availabilityKey).toBeNull();
+  });
+
   it("returns null rather than a badge for the absence of something", () => {
     // `lifecycle: "none"` and `availability: "active"` are not states to render. A
     // caller that forgot to check would otherwise put "Idle" or "Available" on
