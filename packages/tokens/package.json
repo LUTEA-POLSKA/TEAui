@@ -1,65 +1,65 @@
 {
-  "name": "@tea-ui/tokens",
-  "version": "2.0.0",
-  "description": "Design tokens: colour, spacing, radii, motion, density, and the themes.",
-  "license": "MIT",
-  "type": "module",
-  "sideEffects": [
-    "*.css"
-  ],
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    },
-    "./styles.css": "./src/index.css",
-    "./themes.css": "./src/themes.css",
-    "./package.json": "./package.json",
-    "./fonts.css": "./dist/fonts.css"
-  },
-  "types": "./dist/index.d.ts",
-  "module": "./dist/index.js",
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "build": "tsup && node ../../scripts/fix-esm-extensions.mjs tokens && npm run build:css",
-    "build:css": "tailwindcss -i ./src/index.css -o ./dist/styles.css --minify && node ../../scripts/build-fonts.mjs",
-    "prepublishOnly": "node ../../scripts/prepublish-guard.mjs"
-  },
-  "devDependencies": {
-    "@tailwindcss/cli": "^4.1.14",
-    "tailwindcss": "^4.1.14",
-    "tw-animate-css": "^1.4.0"
-  },
-  "dependencies": {
-    "@fontsource-variable/jetbrains-mono": "^5.3.0",
-    "@fontsource-variable/jost": "^5.3.0",
-    "@fontsource/lilita-one": "^5.3.0"
-  },
-  "keywords": [
-    "design-tokens",
-    "css",
-    "theme",
-    "dark-mode",
-    "tailwind",
-    "tea-ui",
-    "design-system"
-  ],
-  "author": "landnevermore",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/landnevermore/TEAui.git",
-    "directory": "packages/tokens"
-  },
-  "homepage": "https://landnevermore.github.io/TEAui/docs/",
-  "bugs": {
-    "url": "https://github.com/landnevermore/TEAui/issues"
-  }
+    "name":  "@tea-ui/tokens",
+    "version":  "2.0.0",
+    "description":  "Design tokens: colour, spacing, radii, motion, density, and the themes.",
+    "license":  "MIT",
+    "type":  "module",
+    "sideEffects":  [
+                        "*.css"
+                    ],
+    "files":  [
+                  "dist",
+                  "README.md",
+                  "LICENSE"
+              ],
+    "exports":  {
+                    ".":  {
+                              "types":  "./dist/index.d.ts",
+                              "import":  "./dist/index.js",
+                              "default":  "./dist/index.js"
+                          },
+                    "./styles.css":  "./src/index.css",
+                    "./themes.css":  "./src/themes.css",
+                    "./package.json":  "./package.json",
+                    "./fonts.css":  "./dist/fonts.css"
+                },
+    "types":  "./dist/index.d.ts",
+    "module":  "./dist/index.js",
+    "publishConfig":  {
+                          "access":  "public"
+                      },
+    "scripts":  {
+                    "build":  "tsup \u0026\u0026 node ../../scripts/fix-esm-extensions.mjs tokens \u0026\u0026 npm run build:css",
+                    "build:css":  "tailwindcss -i ./src/index.css -o ./dist/styles.css --minify \u0026\u0026 node ../../scripts/build-fonts.mjs",
+                    "prepublishOnly":  "node ../../scripts/prepublish-guard.mjs"
+                },
+    "devDependencies":  {
+                            "@tailwindcss/cli":  "^4.1.14",
+                            "tailwindcss":  "^4.1.14"
+                        },
+    "dependencies":  {
+                         "@fontsource-variable/jetbrains-mono":  "^5.3.0",
+                         "@fontsource-variable/jost":  "^5.3.0",
+                         "@fontsource/lilita-one":  "^5.3.0",
+                         "tw-animate-css":  "^1.4.0"
+                     },
+    "keywords":  [
+                     "design-tokens",
+                     "css",
+                     "theme",
+                     "dark-mode",
+                     "tailwind",
+                     "tea-ui",
+                     "design-system"
+                 ],
+    "author":  "landnevermore",
+    "repository":  {
+                       "type":  "git",
+                       "url":  "git+https://github.com/landnevermore/TEAui.git",
+                       "directory":  "packages/tokens"
+                   },
+    "homepage":  "https://landnevermore.github.io/TEAui/docs/",
+    "bugs":  {
+                 "url":  "https://github.com/landnevermore/TEAui/issues"
+             }
 }
