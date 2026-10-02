@@ -421,6 +421,19 @@ export interface PublicNavbarProps extends React.ComponentProps<"header"> {
    * two skip links, two landmarks, and the English one still there.
    */
   skipToContentLabel?: string | undefined;
+  /**
+   * The main navigation's accessible name, and the open/close labels for the mobile menu
+   * button.
+   *
+   * Added for the same reason as `skipToContentLabel`, and it matters more here: the
+   * mobile menu button is the *only* way to reach the navigation below `md`, so a consumer
+   * rendering this navbar in another language shipped an English label on the control its
+   * whole menu depends on — and had no prop to change it. The `aria-label` on the two
+   * `<nav>` elements had the same problem in a quieter form.
+   */
+  navigationLabel?: string | undefined;
+  openMenuLabel?: string | undefined;
+  closeMenuLabel?: string | undefined;
   className?: string | undefined;
 }
 
@@ -434,7 +447,12 @@ export interface PublicNavbarProps extends React.ComponentProps<"header"> {
  * navigation.
  */
 export const PublicNavbar = React.forwardRef<HTMLElement, PublicNavbarProps>(function PublicNavbar(
-  { brand, links, action, mainId = "tea-public-main", skipToContentLabel, className, children, ...props },
+  { brand, links, action, mainId = "tea-public-main",
+    skipToContentLabel,
+    navigationLabel,
+    openMenuLabel,
+    closeMenuLabel,
+    className, children, ...props },
   ref,
 ) {
   const [open, setOpen] = React.useState(false);
@@ -450,7 +468,7 @@ export const PublicNavbar = React.forwardRef<HTMLElement, PublicNavbarProps>(fun
         <Link href="#" className="text-ui font-semibold tracking-tight text-fg no-underline hover:no-underline">
           {brand}
         </Link>
-        <nav aria-label={COPY.navigation.main} className="hidden items-center gap-5 md:flex">
+        <nav aria-label={navigationLabel ?? COPY.navigation.main} className="hidden items-center gap-5 md:flex">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -465,7 +483,7 @@ export const PublicNavbar = React.forwardRef<HTMLElement, PublicNavbarProps>(fun
         <HStack gap="ui" className="ms-auto">
           {action}
           <IconButton
-            label={COPY.navigation.openMenu}
+            label={openMenuLabel ?? COPY.navigation.openMenu}
             variant="ghost"
             className="md:hidden"
             aria-expanded={open}
@@ -482,14 +500,14 @@ export const PublicNavbar = React.forwardRef<HTMLElement, PublicNavbarProps>(fun
         <DrawerContent side="end" className="w-80">
           <DrawerHeader>
             <DrawerTitle className="flex items-center justify-between text-ui">
-              {COPY.navigation.main}
-              <IconButton label={COPY.navigation.closeMenu} variant="ghost" size="sm" onClick={() => setOpen(false)}>
+              {navigationLabel ?? COPY.navigation.main}
+              <IconButton label={closeMenuLabel ?? COPY.navigation.closeMenu} variant="ghost" size="sm" onClick={() => setOpen(false)}>
                 <X size={18} aria-hidden="true" />
               </IconButton>
             </DrawerTitle>
           </DrawerHeader>
           <DrawerBody>
-            <nav aria-label={COPY.navigation.main}>
+            <nav aria-label={navigationLabel ?? COPY.navigation.main}>
               <Stack gap="ui">
                 {links.map((link) => (
                   <Link
@@ -517,11 +535,21 @@ export interface PublicFooterProps extends React.ComponentProps<"footer"> {
   columns: ReadonlyArray<{ heading: string; links: readonly PublicNavLink[] }>;
   /** Legal line: imprint, privacy, copyright. Never optional on a public site. */
   legal: React.ReactNode;
+  /**
+   * The line under the brand mark.
+   *
+   * Added because TEA UI's English tagline shipped verbatim under every consumer's brand.
+   * A German product rendered "Build once. Generalize properly. Reuse everywhere." in the
+   * middle of its own footer — TEA UI's own motto, on someone else's website, where it
+   * makes no sense to anyone who visits. A tagline is the one line that has to belong to
+   * the consumer.
+   */
+  tagline?: React.ReactNode;
   className?: string | undefined;
 }
 
 export const PublicFooter = React.forwardRef<HTMLElement, PublicFooterProps>(function PublicFooter(
-  { brand, columns, legal, className, ...props },
+  { brand, columns, legal, tagline, className, ...props },
   ref,
 ) {
   return (
@@ -531,7 +559,7 @@ export const PublicFooter = React.forwardRef<HTMLElement, PublicFooterProps>(fun
           <div>
             <div className="text-ui font-semibold text-fg">{brand}</div>
             <Text size="micro" tone="muted" className="mt-2 max-w-xs">
-              Build once. Generalize properly. Reuse everywhere.
+              {tagline ?? "Build once. Generalize properly. Reuse everywhere."}
             </Text>
           </div>
           {columns.map((column) => (
